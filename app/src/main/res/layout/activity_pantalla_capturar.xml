@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#cbfecf"
+    tools:context=".pantalla_capturar">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/titulo2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#005c05"
+            android:padding="15dp"
+            android:text="CAPTURAR"
+            android:textAlignment="center"
+            android:textColor="#ffffff"
+            android:textSize="27sp" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <EditText
+                        android:id="@+id/inpFecha"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:background="#ffffff"
+                        android:ems="10"
+                        android:hint="Fecha"
+                        android:inputType="date" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/inpEstacion"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:background="#ffffff"
+                        android:hint="Estacion"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/inpSector"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:background="#ffffff"
+                        android:hint="Sector" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/inpInvenadero"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:background="#ffffff"
+                        android:hint="Invernadero" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/inpNumEmpleado"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:background="#ffffff"
+                        android:hint="Numero de empleado" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/inpFruto"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:background="#ffffff"
+                        android:hint="Fruto" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <EditText
+                        android:id="@+id/inpCubetas"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:background="#ffffff"
+                        android:ems="10"
+                        android:hint="Cubetas contadas"
+                        android:inputType="number" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnGuardar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="60dp"
+                        android:gravity="center"
+                        android:backgroundTint="#008808"
+                        android:text="GUARDAR" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
