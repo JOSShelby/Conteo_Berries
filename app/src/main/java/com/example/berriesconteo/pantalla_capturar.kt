@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 
 class pantalla_capturar : AppCompatActivity() {
 
@@ -34,11 +35,11 @@ class pantalla_capturar : AppCompatActivity() {
         edtCubetas = findViewById(R.id.inpCubetas)
         btnAgregar = findViewById(R.id.btnGuardar)
 
-        dbBerries = DBBerries(applicationContext);
+        dbBerries = DBBerries(applicationContext," DBBerries", null, 1);
 
-        btnAgregar.setOnClickListener(View.OnClickListener
-
-        })
-
+        btnAgregar.setOnClickListener{
+            dbBerries.agregarCubetas(edtFecha.text.toString(), edtEstacion.text.toString(), edtSector.text.toString(), edtInvernadero.text.toString(), edtNumeroEmpleado.text.toString().toInt(), edtFruto.text.toString(), edtCubetas.text.toString().toInt())
+            Toast.makeText(applicationContext, "Se agrego con exito", Toast.LENGTH_SHORT).show()
+        }
     }
 }
