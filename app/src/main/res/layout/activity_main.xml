@@ -41,7 +41,7 @@
                 android:text="CAPTURAR" />
 
             <Button
-                android:id="@+id/subir"
+                android:id="@+id/btnSubir"
                 android:layout_width="150dp"
                 android:layout_height="70dp"
                 android:layout_marginStart="10dp"

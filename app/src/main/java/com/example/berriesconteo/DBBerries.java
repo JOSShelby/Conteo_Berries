@@ -101,11 +101,6 @@ public class DBBerries extends SQLiteOpenHelper {
                 ",('GALERA 10,5',1),('GALERA 10.5',1),('GALERA 11',1),('GALERA 12',1),('GALERA 12 Y 13',1),('GALERA 13',1),('GALERA 14',1),('GALERA 15',1),('GALERA 16',1),('GALERA 17',1)" +
                 ",('GALERA 18',1),('GALERA 19',1);";
         sqLiteDatabase.execSQL(cadenaEstacion);
-
-
-
-
-
     }
     public void agregarCubetas(String fecha, String estacion, String sector, String invernadero, Integer numero_empleado, String fruto, Integer cubetas_cont){
         SQLiteDatabase bd=getWritableDatabase();
@@ -116,7 +111,6 @@ public class DBBerries extends SQLiteOpenHelper {
     }
 
     public void verTabla(){
-
 
         SQLiteDatabase bd=getWritableDatabase();
         if(bd!=null){
@@ -131,13 +125,8 @@ public class DBBerries extends SQLiteOpenHelper {
 
                 Log.d("TablaModulos", " Nombre: " + nombremodulo);
             }
-
             bd.close();
         }
-
-
-
-
-
     }
+
 }
