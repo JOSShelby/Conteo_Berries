@@ -1,24 +1,21 @@
 package com.example.berriesconteo
 
 import android.app.backup.BackupAgentHelper
+import android.database.Cursor
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import com.example.berriesconteo.databinding.ActivityPantallaCapturarBinding
 
 class pantalla_capturar : AppCompatActivity() {
 
-    lateinit var edtFecha: EditText
-    lateinit var edtEstacion: EditText
-    lateinit var edtSector: EditText
-    lateinit var edtInvernadero: EditText
-    lateinit var edtNumeroEmpleado: EditText
-    lateinit var edtFruto: EditText
-    lateinit var edtCubetas: EditText
-    lateinit var btnAgregar: Button
 
+    private lateinit var binding: ActivityPantallaCapturarBinding
 
     private lateinit var dbBerries: DBBerries
 
@@ -26,20 +23,58 @@ class pantalla_capturar : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pantalla_capturar)
 
-        edtFecha = findViewById(R.id.inpFecha)
-        edtEstacion = findViewById(R.id.inpEstacion)
-        edtSector = findViewById(R.id.inpSector)
-        edtInvernadero = findViewById(R.id.inpInvenadero)
-        edtNumeroEmpleado = findViewById(R.id.inpNumEmpleado)
-        edtFruto = findViewById(R.id.inpFruto)
-        edtCubetas = findViewById(R.id.inpCubetas)
-        btnAgregar = findViewById(R.id.btnGuardar)
+        binding = ActivityPantallaCapturarBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        dbBerries = DBBerries(applicationContext," DBBerries", null, 1);
+        var seleccionModulo=0
 
-        btnAgregar.setOnClickListener{
-            dbBerries.agregarCubetas(edtFecha.text.toString(), edtEstacion.text.toString(), edtSector.text.toString(), edtInvernadero.text.toString(), edtNumeroEmpleado.text.toString().toInt(), edtFruto.text.toString(), edtCubetas.text.toString().toInt())
-            Toast.makeText(applicationContext, "Se agrego con exito", Toast.LENGTH_SHORT).show()
+        var spinnermodulo = binding.inpModulo
+        var arrModuloTitulos : MutableList<String>? = mutableListOf()
+
+
+        var dbBerries = DBBerries(applicationContext," DBBerries", null, 9);
+        val db = dbBerries.readableDatabase
+
+        val columns = arrayOf("idmodulo","nombremodulo")
+
+
+
+
+        val cursorModulo: Cursor = db.query("modulosberries", columns, null, null, null, null, "idmodulo ASC")
+
+
+
+        while (cursorModulo.moveToNext()) {
+
+            val nombremodulo = cursorModulo.getString(cursorModulo.getColumnIndexOrThrow("nombremodulo"))
+            println(nombremodulo)
+
+            arrModuloTitulos!!.add(nombremodulo)
         }
+
+        cursorModulo.close()
+        db.close()
+
+
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, arrModuloTitulos!!)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        spinnermodulo.adapter = adapter
+
+
+        spinnermodulo.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                seleccionModulo = position
+
+
+
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Acciones cuando no se selecciona ningún elemento
+            }
+        }
+
+
     }
 }
