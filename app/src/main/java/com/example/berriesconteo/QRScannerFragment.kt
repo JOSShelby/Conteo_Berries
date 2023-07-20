@@ -1,7 +1,10 @@
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,12 +22,26 @@ import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
 import com.journeyapps.barcodescanner.DefaultDecoderFactory
 import com.journeyapps.barcodescanner.BarcodeCallback
+import java.util.Timer
+import java.util.TimerTask
 
 
 class QRScannerFragment : Fragment(), BarcodeCallback  {
 
     private lateinit var barcodeView: DecoratedBarcodeView
     private lateinit var resultTextView: TextView
+
+    private var mListener: OnFragmentInteractionListener? = null
+    private var scanningEnabled = true
+    private val scannerInterval = 2000L //
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        try {
+            mListener = context as OnFragmentInteractionListener
+        } catch (e: ClassCastException) {
+            throw ClassCastException("$context debe implementar OnFragmentInteractionListener")
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_q_r_scanner, container, false)
@@ -46,11 +63,27 @@ class QRScannerFragment : Fragment(), BarcodeCallback  {
 
 
     }
-
+    private var lastScanTime = 0L
     override fun barcodeResult(result: BarcodeResult?) {
         // Aquí puedes obtener el resultado del escaneo del código de barras
         if (result != null) {
-            resultTextView.text  = result.text
+
+
+
+            if (scanningEnabled) {
+                val currentTime = System.currentTimeMillis()
+                if (currentTime - lastScanTime >= scannerInterval) {
+                    lastScanTime = currentTime
+                    mListener?.onValueReturned( result.text)
+                }
+            }
+
+
+
+
+
+
+
             // Maneja el resultado del escaneo como desees
         }
     }
@@ -67,6 +100,10 @@ class QRScannerFragment : Fragment(), BarcodeCallback  {
     override fun onPause() {
         super.onPause()
         barcodeView.pause()
+    }
+
+    interface OnFragmentInteractionListener {
+        fun onValueReturned(value: String) // Puedes cambiar el tipo de dato según lo que necesites devolver
     }
 
 
