@@ -110,7 +110,8 @@ public class DBBerries extends SQLiteOpenHelper {
         }
     }
 
-    public void verTabla(){
+    public void verTabla(SQLiteDatabase db){
+
 
         SQLiteDatabase bd=getWritableDatabase();
         if(bd!=null){
@@ -128,5 +129,8 @@ public class DBBerries extends SQLiteOpenHelper {
             bd.close();
         }
     }
+
+
+
 
 }

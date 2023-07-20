@@ -28,6 +28,12 @@
             android:textColor="#ffffff"
             android:textSize="27sp" />
 
+        <FrameLayout
+            android:id="@+id/container_frame_layout"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_gravity="center"/>
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
