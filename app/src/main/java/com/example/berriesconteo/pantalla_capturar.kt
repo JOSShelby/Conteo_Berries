@@ -36,7 +36,7 @@ class pantalla_capturar : AppCompatActivity() {
         var arrModuloTitulos : MutableList<String>? = mutableListOf()
 
 
-        var dbBerries = DBBerries(applicationContext," DBBerries", null, 9);
+        var dbBerries = DBBerries(applicationContext," DBBerries", null, 16);
         val db = dbBerries.readableDatabase
 
         val columns = arrayOf("idmodulo","nombremodulo")
@@ -66,7 +66,6 @@ class pantalla_capturar : AppCompatActivity() {
 
             val nombreSector = cursorSector.getString(cursorSector.getColumnIndexOrThrow("nombresector"))
             println(nombreSector)
-
             arrSectorTitulos!!.add(nombreSector)
         }
 
@@ -84,12 +83,19 @@ class pantalla_capturar : AppCompatActivity() {
 
             val nombreEstacion = cursorEstacion.getString(cursorEstacion.getColumnIndexOrThrow("nombreestacion"))
             println(nombreEstacion)
-
             arrEstacionTitulos!!.add(nombreEstacion)
         }
 
+        val columnsCubetas = arrayOf("fecha","moduloid","estacion","sector","numero_empleado","fruto","cubetas_contadas","status")
+        val cursorCubetas: Cursor = db.query("cubetascontadasberries", columnsCubetas, null, null, null, null, "idcubeta ASC")
+        while (cursorCubetas.moveToNext()) {
 
+            val numero_empleado = cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("numero_empleado"))
+            println(numero_empleado)
+            arrEstacionTitulos!!.add(numero_empleado)
+        }
 
+        cursorCubetas.close()
         cursorEstacion.close()
         cursorSector.close()
         cursorModulo.close()
