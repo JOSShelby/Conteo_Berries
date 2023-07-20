@@ -17,9 +17,9 @@ class subirDatosBD:AppCompatActivity() {
     }
     private fun exportarDatos() {
         val dbHandler = DBBerries((this)," DBBerries", null,9 )
-        val data = dbHandler.obtenerDatosComoCSV()
+        //val data = dbHandler.obtenerDatosComoCSV()
 
-        val csvFile = File(filesDir, "data.csv")
-        csvFile.writeText(data)
+        //val csvFile = File(filesDir, "data.csv")
+        //csvFile.writeText(data)
     }
 }
