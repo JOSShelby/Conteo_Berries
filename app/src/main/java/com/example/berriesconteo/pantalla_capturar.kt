@@ -2,6 +2,9 @@ package com.example.berriesconteo
 
 import QRScannerFragment
 import android.database.Cursor
+import android.media.AudioAttributes
+import android.media.MediaPlayer
+import android.media.SoundPool
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -9,6 +12,7 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.berriesconteo.databinding.ActivityPantallaCapturarBinding
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -20,6 +24,9 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
     private lateinit var txtEmpleadoid: EditText
 
+    private lateinit var soundPool: SoundPool
+    private var beepSoundId = 0
+
     var seleccionEstacion= 0
     var seleccionModulo= 0
     var seleccionSector= 0
@@ -30,6 +37,8 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pantalla_capturar)
 
+
+
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .add(R.id.container_frame_layout, QRScannerFragment())
@@ -38,6 +47,20 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
         binding = ActivityPantallaCapturarBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val maxStreams = 1
+        val audioAttributes = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_MEDIA)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .build()
+        soundPool = SoundPool.Builder()
+            .setMaxStreams(maxStreams)
+            .setAudioAttributes(audioAttributes)
+            .build()
+
+        // Cargar el sonido de beep
+        beepSoundId = soundPool.load(this, R.raw.beep, 1)
+
 
 
 
@@ -76,7 +99,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
 //       SPINNER DE ESTACIONES
 
-        var seleccionEstacion=0
+
 
         var spinnerEstacion = binding.inpEstacion
         var arrEstacionTitulos : MutableList<String>? = mutableListOf()
@@ -186,16 +209,24 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
     }
 
+
+
+
+
     override fun onValueReturned(value: String) {
 
-        //if(seleccionModulo!=0 && seleccionEstacion!=0 && seleccionSector!=0 && seleccionFruto!=0 ){
+        println("$seleccionModulo,$seleccionEstacion,$seleccionSector,$seleccionFruto");
+
+        soundPool.play(beepSoundId, 1.0f, 1.0f, 0, 0, 1.0f)
+
+        if(seleccionModulo!=0 && seleccionEstacion!=0 && seleccionSector!=0 && seleccionFruto!=0 ){
 
             txtEmpleadoid.setText(value)
 
             val calendar = Calendar.getInstance()
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
-            var dbBerries = DBBerries(applicationContext," DBBerries", null, 9);
+            var dbBerries = DBBerries(applicationContext," DBBerries", null, 1);
 
             val db = dbBerries.writableDatabase
 
@@ -227,9 +258,9 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
             Toast.makeText(this ,"Registrada Nueva Cubeta",Toast.LENGTH_SHORT).show()
 
 
-        //}else{
-          //  Toast.makeText(this ,"Ponga los Datos Minimos",Toast.LENGTH_SHORT).show()
-        //}
+        }else{
+            Toast.makeText(this ,"Ponga los Datos Minimos",Toast.LENGTH_SHORT).show()
+        }
 
 
 
