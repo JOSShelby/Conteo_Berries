@@ -119,7 +119,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
         while (cursorCubetas.moveToNext()) {
             val numero_empleado = cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("numero_empleado"))
 //            println(numero_empleado)
-            arrEstacionTitulos!!.add(numero_empleado)
+
         }
 
 //    SE CIERRAN
@@ -237,21 +237,21 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
             dbVer.execSQL(cadenaAgregarCubeta)
 
-            val columnsEstacion = arrayOf("idcubeta","fecha")
-            val cursorEstacion: Cursor = dbVer.query("cubetascontadasberries", columnsEstacion, null, null, null, null, null)
-
-
-            while (cursorEstacion.moveToNext()) {
-
-                val idcubeta = cursorEstacion.getString(cursorEstacion.getColumnIndexOrThrow("idcubeta"))
-                println(idcubeta)
-
-                val fecha = cursorEstacion.getString(cursorEstacion.getColumnIndexOrThrow("fecha"))
-                println(fecha)
-
-            }
-
-            cursorEstacion.close()
+//            val columnsEstacion = arrayOf("idcubeta","fecha")
+//            val cursorEstacion: Cursor = dbVer.query("cubetascontadasberries", columnsEstacion, null, null, null, null, null)
+//
+//
+//            while (cursorEstacion.moveToNext()) {
+//
+//                val idcubeta = cursorEstacion.getString(cursorEstacion.getColumnIndexOrThrow("idcubeta"))
+//                println(idcubeta)
+//
+//                val fecha = cursorEstacion.getString(cursorEstacion.getColumnIndexOrThrow("fecha"))
+//                println(fecha)
+//
+//            }
+//
+//            cursorEstacion.close()
             dbVer.close()
             db.close()
 
