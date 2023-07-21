@@ -159,13 +159,10 @@ public class DBBerries extends SQLiteOpenHelper {
         if(bd!=null){
 
             String[] columns = {"nombremodulo"};
-
             Cursor cursor = bd.query("modulosberries",columns, null, null, null, null, null);
 
             while (cursor.moveToNext()) {
-
                 String nombremodulo = cursor.getString(cursor.getColumnIndexOrThrow("nombremodulo"));
-
                 Log.d("TablaModulos", " Nombre: " + nombremodulo);
             }
             bd.close();
