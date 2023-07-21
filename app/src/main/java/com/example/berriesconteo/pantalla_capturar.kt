@@ -17,18 +17,15 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
     private lateinit var binding: ActivityPantallaCapturarBinding
     private lateinit var dbBerries: DBBerries
-<<<<<<< HEAD
-//    FUNCION ONCREATE
-=======
 
     private lateinit var txtEmpleadoid: EditText
 
-    var seleccionEstacion=0
-    var seleccionModulo=0
-    var seleccionSector=0
+    var seleccionEstacion= 0
+    var seleccionModulo= 0
+    var seleccionSector= 0
     var seleccionFruto = 0
 
->>>>>>> 4b339d0d5c711c6f0e4bfcbc9473d8742e329e92
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pantalla_capturar)
@@ -42,21 +39,14 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
         binding = ActivityPantallaCapturarBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-<<<<<<< HEAD
-//    SPINER DE MODULOS
-        var seleccionModulo=0
-=======
+
 
         txtEmpleadoid = binding.inpNumEmpleado
 
 
-
-
-
->>>>>>> 4b339d0d5c711c6f0e4bfcbc9473d8742e329e92
         var spinnermodulo = binding.inpModulo
         var arrModuloTitulos : MutableList<String>? = mutableListOf()
-        var dbBerries = DBBerries(applicationContext," DBBerries", null, 16);
+        var dbBerries = DBBerries(applicationContext," DBBerries", null, 1);
         val db = dbBerries.readableDatabase
         val columns = arrayOf("idmodulo","nombremodulo")
         val cursorModulo: Cursor = db.query("modulosberries", columns, null, null, null, null, "idmodulo ASC")
@@ -67,17 +57,12 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
             arrModuloTitulos!!.add(nombremodulo)
         }
 
-<<<<<<< HEAD
-        //SPINNER DE SECTORES
-        var seleccionSector=0
-=======
-
         //spinner de sectores
 
 
 
 
->>>>>>> 4b339d0d5c711c6f0e4bfcbc9473d8742e329e92
+
         var spinnerSector = binding.inpSector
         var arrSectorTitulos : MutableList<String>? = mutableListOf()
         val columnsSector = arrayOf("idsector","nombresector")
@@ -91,12 +76,8 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
 //       SPINNER DE ESTACIONES
 
-<<<<<<< HEAD
         var seleccionEstacion=0
-=======
 
-
->>>>>>> 4b339d0d5c711c6f0e4bfcbc9473d8742e329e92
         var spinnerEstacion = binding.inpEstacion
         var arrEstacionTitulos : MutableList<String>? = mutableListOf()
         val columnsEstacion = arrayOf("idestacion","nombreestacion")
@@ -109,7 +90,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
             arrEstacionTitulos!!.add(nombreEstacion)
         }
 //      SPINNER DE CUBETAS
-        val columnsCubetas = arrayOf("fecha","moduloid","estacion","sector","numero_empleado","fruto","cubetas_contadas","status")
+        val columnsCubetas = arrayOf("fecha","moduloid","estacion","sector","numero_empleado","fruto","status")
         val cursorCubetas: Cursor = db.query("cubetascontadasberries", columnsCubetas, null, null, null, null, "idcubeta ASC")
 
         while (cursorCubetas.moveToNext()) {
@@ -163,8 +144,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                 // Acciones cuando no se selecciona ningún elemento
             }
         }
-<<<<<<< HEAD
-=======
+
 
 
         var spinnerFruto = binding.inpFruto
@@ -208,7 +188,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
     override fun onValueReturned(value: String) {
 
-        if(seleccionModulo!=0 && seleccionEstacion!=0 && seleccionSector!=0 && seleccionFruto!=0 ){
+        //if(seleccionModulo!=0 && seleccionEstacion!=0 && seleccionSector!=0 && seleccionFruto!=0 ){
 
             txtEmpleadoid.setText(value)
 
@@ -247,11 +227,11 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
             Toast.makeText(this ,"Registrada Nueva Cubeta",Toast.LENGTH_SHORT).show()
 
 
-        }else{
-            Toast.makeText(this ,"Ponga los Datos Minimos",Toast.LENGTH_SHORT).show()
-        }
+        //}else{
+          //  Toast.makeText(this ,"Ponga los Datos Minimos",Toast.LENGTH_SHORT).show()
+        //}
 
 
->>>>>>> 4b339d0d5c711c6f0e4bfcbc9473d8742e329e92
+
     }
 }

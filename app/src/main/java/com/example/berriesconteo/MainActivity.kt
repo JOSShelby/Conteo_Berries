@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         var btn2: Button = findViewById(R.id.btnSubir)
         btn2.setOnClickListener{
             //        TRAE LAS CUBETAS
-            var dbBerries = DBBerries(applicationContext," DBBerries", null, 16);
+            var dbBerries = DBBerries(applicationContext," DBBerries", null, 1);
             val db = dbBerries.readableDatabase
 
             var arrEstacionTitulos : MutableList<String>? = mutableListOf()
