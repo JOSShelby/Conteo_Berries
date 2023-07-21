@@ -48,31 +48,134 @@
                 android:weightSum="5"
                 >
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:layout_weight="1"
+                    android:weightSum="3"
+                    android:layout_margin="5dp"
+                    android:elevation="2dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:layout_weight="2"
+                        android:text="Modulo : "
+                        android:textStyle="bold"
+                        />
 
                     <Spinner
                         android:id="@+id/inpModulo"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="#ffffff"
-                        android:hint="Modulo"
+                        android:textAlignment="center"
                         android:layout_weight="1"
+                        android:hint="Modulo"
+
                         />
+
+
+                </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:layout_weight="1"
+                android:weightSum="3"
+                android:layout_margin="5dp"
+                android:orientation="horizontal"
+                android:elevation="2dp"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:text="Sector : "
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    />
                 <Spinner
                     android:id="@+id/inpSector"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="#ffffff"
-                    android:hint="Modulo"
+                    android:hint="Sector"
+                    android:textAlignment="center"
                     android:layout_weight="1"
+                    />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:layout_weight="1"
+                android:weightSum="3"
+                android:layout_margin="5dp"
+                android:orientation="horizontal"
+                android:elevation="2dp"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:text="Estacion : "
+                    android:gravity="center"
+                    android:textStyle="bold"
                     />
                 <Spinner
                     android:id="@+id/inpEstacion"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="#ffffff"
                     android:hint="Modulo"
+                    android:textAlignment="center"
                     android:layout_weight="1"
                     />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_margin="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:layout_weight="1"
+                android:weightSum="3"
+                android:orientation="horizontal"
+                android:elevation="2dp"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:text="Fruto : "
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    />
+
+                <Spinner
+                    android:id="@+id/inpFruto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Fruto"
+                    android:textAlignment="center"
+                    android:layout_weight="1"
+
+                    />
+
+            </LinearLayout>
+
+
 
 
 
@@ -80,47 +183,31 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:layout_margin="5dp"
+                    android:elevation="2dp"
+                    >
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/inpNumEmpleado"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="#ffffff"
-                        android:hint="Numero de empleado" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/inpFruto"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="#ffffff"
-                        android:hint="Fruto" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-
-
-                <LinearLayout
-                    android:layout_marginTop="20dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btnGuardar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="60dp"
                         android:gravity="center"
-                        android:backgroundTint="#008808"
-                        android:text="GUARDAR" />
-                </LinearLayout>
+                        android:hint="Numero de empleado"
+                        android:textStyle="bold"
+
+
+
+
+                        />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+
+
 
             </LinearLayout>
         </ScrollView>
