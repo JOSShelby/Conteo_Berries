@@ -195,7 +195,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
             val calendar = Calendar.getInstance()
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
-            var dbBerries = DBBerries(applicationContext," DBBerries", null, 9);
+            var dbBerries = DBBerries(applicationContext," DBBerries", null, 1);
 
             val db = dbBerries.writableDatabase
 

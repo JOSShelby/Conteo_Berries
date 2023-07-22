@@ -85,14 +85,14 @@ public class DBBerries extends SQLiteOpenHelper {
 
         }
 
-//      INSERT DE LA TABLA CUBETAS
-        try{
-            String cadenaCubetas = "INSERT INTO cubetascontadasberries (fecha, moduloid,estacion,sector,numero_empleado,fruto,status) " +
-                    "VALUES ('20/07/2023',12,23,2,90293,'FRA',1), ('20/07/2023',12,3,11,21393,'FRA',1), ('20/07/2023',14,12,2,90233,'ZAR',1), ('20/07/2023',14,12,2,90233,'ZAR',1), ('20/07/2023',14,12,2,90233,'ZAR',1);";
-            db.execSQL(cadenaCubetas);
-        }catch (SQLException e){
-
-        }
+////      INSERT DE LA TABLA CUBETAS
+//        try{
+//            String cadenaCubetas = "INSERT INTO cubetascontadasberries (fecha, moduloid,estacion,sector,numero_empleado,fruto,status) " +
+//                    "VALUES ('20/07/2023',12,23,2,90293,'FRA',1), ('20/07/2023',12,3,11,21393,'FRA',1), ('20/07/2023',14,12,2,90233,'ZAR',1), ('20/07/2023',14,12,2,90233,'ZAR',1), ('20/07/2023',14,12,2,90233,'ZAR',1);";
+//            db.execSQL(cadenaCubetas);
+//        }catch (SQLException e){
+//
+//        }
     }
 
     @Override
@@ -144,14 +144,14 @@ public class DBBerries extends SQLiteOpenHelper {
 
         }
 
-//      INSERT DE LA TABLA CUBETAS
-        try{
-            String cadenaCubetas = "INSERT INTO cubetascontadasberries (fecha, moduloid,estacion,sector,numero_empleado,fruto,cubetas_contadas, status) " +
-                    "VALUES ('20/07/2023',12,23,2,90293,'FRA', 89,1), ('20/07/2023',12,3,11,21393,'FRA', 91,1), ('20/07/2023',14,12,2,90233,'ZAR', 29,1);";
-            sqLiteDatabase.execSQL(cadenaCubetas);
-        }catch (SQLException e){
-
-        }
+////      INSERT DE LA TABLA CUBETAS
+//        try{
+//            String cadenaCubetas = "INSERT INTO cubetascontadasberries (fecha, moduloid,estacion,sector,numero_empleado,fruto, status) " +
+//                    "VALUES ('20/07/2023',12,23,2,90293,'FRA', 89,1), ('20/07/2023',12,3,11,21393,'FRA', 91,1), ('20/07/2023',14,12,2,90233,'ZAR', 29,1);";
+//            sqLiteDatabase.execSQL(cadenaCubetas);
+//        }catch (SQLException e){
+//
+//        }
     }
 
     public void verTabla(SQLiteDatabase db){
