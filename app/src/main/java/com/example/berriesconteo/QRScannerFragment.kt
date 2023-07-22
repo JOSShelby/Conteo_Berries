@@ -2,10 +2,12 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
+import android.view.SoundEffectConstants
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -57,12 +59,18 @@ class QRScannerFragment : Fragment(), BarcodeCallback  {
         val formats: Collection<BarcodeFormat> = listOf(BarcodeFormat.CODE_128)
         barcodeView.setDecoderFactory(DefaultDecoderFactory(formats))
 
+        barcodeView
+
+
         // Comienza el escaneo cuando el Fragment se muestre
         barcodeView.decodeContinuous(this)
 
 
 
     }
+
+
+
     private var lastScanTime = 0L
     override fun barcodeResult(result: BarcodeResult?) {
         // Aquí puedes obtener el resultado del escaneo del código de barras
@@ -74,6 +82,7 @@ class QRScannerFragment : Fragment(), BarcodeCallback  {
                 val currentTime = System.currentTimeMillis()
                 if (currentTime - lastScanTime >= scannerInterval) {
                     lastScanTime = currentTime
+
                     mListener?.onValueReturned( result.text)
                 }
             }
