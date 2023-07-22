@@ -31,18 +31,19 @@ class MainActivity : AppCompatActivity() {
     println(json);
 //        val gson = Gson()
 //        val arr = gson.toJson(json)
-        val urlRegistros = "http://" + getString(R.string.servidor) + "/kudePOO/aplicacion/apps/appBerries/insertarRegistros.php?array=$json";
+        val urlRegistros = "http://" + getString(R.string.servidor) + "/kudePOO/aplicacion/berries/php/insertarRegistros.php?array=$json";
+//        ruta en el de pruebas
+//        val urlRegistros = "http://" + getString(R.string.servidor) + "/kudePOO/aplicacion/apps/berries/insertarRegistros.php?array=$json";
+
         println(urlRegistros)
 
         val queueResponsivas = newRequestQueue(this)
         var statusCode = -1
         val stringRequestResponsivas = StringRequest(Request.Method.GET, urlRegistros, { response ->
             val jsonRespuesta = JSONObject(response);
-             println(" Respuesta $response");
            statusCode = jsonRespuesta.getInt("statusCode")
 
             if(statusCode==1){
-
 
                 var dbBerries = DBBerries(applicationContext," DBBerries", null, R.string.versionBD);
 
@@ -162,7 +163,7 @@ class MainActivity : AppCompatActivity() {
 
 //                println("-----------------------")
             }
-            var gson = Gson()
+            val gson = Gson()
             val jsonArreglo = gson.toJson(arrCont)
 //                println(jsonArreglo);
 
