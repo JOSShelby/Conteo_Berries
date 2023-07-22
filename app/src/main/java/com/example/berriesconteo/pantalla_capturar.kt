@@ -69,7 +69,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
         var spinnermodulo = binding.inpModulo
         var arrModuloTitulos : MutableList<String>? = mutableListOf()
-        var dbBerries = DBBerries(applicationContext," DBBerries", null, 1);
+        var dbBerries = DBBerries(applicationContext," DBBerries", null, R.string.versionBD);
         val db = dbBerries.readableDatabase
         val columns = arrayOf("idmodulo","nombremodulo")
         val cursorModulo: Cursor = db.query("modulosberries", columns, null, null, null, null, "idmodulo ASC")
@@ -226,7 +226,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
             val calendar = Calendar.getInstance()
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
-            var dbBerries = DBBerries(applicationContext," DBBerries", null, 1);
+            var dbBerries = DBBerries(applicationContext," DBBerries", null, R.string.versionBD);
 
             val db = dbBerries.writableDatabase
 

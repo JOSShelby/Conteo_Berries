@@ -1,11 +1,18 @@
 package com.example.berriesconteo
 
+import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley.newRequestQueue
@@ -18,27 +25,75 @@ import java.sql.DriverManager
 
 class MainActivity : AppCompatActivity() {
     private lateinit var db: SQLiteDatabase
-    fun insertarRegistros(json: String):Int{
+
+    private lateinit var btnSubirDatos:Button
+    fun insertarRegistros(json: String){
     println(json);
 //        val gson = Gson()
 //        val arr = gson.toJson(json)
-        val urlRegistros = "http://" + getString(R.string.servidor) + "/kudePOO/aplicacion/berries/php/insertarRegistros.php?array=$json";
+        val urlRegistros = "http://" + getString(R.string.servidor) + "/kudePOO/aplicacion/apps/appBerries/insertarRegistros.php?array=$json";
+        println(urlRegistros)
+
         val queueResponsivas = newRequestQueue(this)
         var statusCode = -1
         val stringRequestResponsivas = StringRequest(Request.Method.GET, urlRegistros, { response ->
-//            val jsonRespuesta = JSONObject(response);
-//            println(jsonRespuesta);
-//            statusCode = jsonRespuesta.getInt("statusCode")
+            val jsonRespuesta = JSONObject(response);
+             println(" Respuesta $response");
+           statusCode = jsonRespuesta.getInt("statusCode")
+
+            if(statusCode==1){
+
+
+                var dbBerries = DBBerries(applicationContext," DBBerries", null, R.string.versionBD);
+
+                val db = dbBerries.writableDatabase
+
+                db.execSQL("DELETE FROM cubetascontadasberries")
+
+                Toast.makeText(this,"Se subieron los registros Exitosamente",Toast.LENGTH_SHORT).show()
+
+                btnSubirDatos.text = "SUBIR : 0"
+            }else{
+                Toast.makeText(this,"ocurrio un error",Toast.LENGTH_SHORT).show()
+            }
         },{
-            statusCode = -1
+            Toast.makeText(this,"ocurrio un error en la conexion",Toast.LENGTH_SHORT).show()
         })
         queueResponsivas.add(stringRequestResponsivas)
-        return statusCode
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        var dbBerries = DBBerries(applicationContext," DBBerries", null, R.string.versionBD);
+        val db = dbBerries.readableDatabase
+
+        val columnsCubetas = arrayOf("idcubeta")
+        val cursorCubetas: Cursor = db.query("cubetascontadasberries", columnsCubetas, null, null, null, null, "idcubeta ASC")
+
+        btnSubirDatos.text = "SUBIR : ${cursorCubetas.count}"
+    }
+
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // Utilizar NetworkCapabilities para versiones de Android 6.0 (Marshmallow) y posteriores
+            val networkCapabilities = connectivityManager.activeNetwork ?: return false
+            val actNetwork = connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+
+            return actNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                    actNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+        } else {
+            // Utilizar la versión anterior de la API para versiones de Android anteriores a 6.0 (Marshmallow)
+            val networkInfo = connectivityManager.activeNetworkInfo ?: return false
+            return networkInfo.isConnected
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        var arrModuloTitulos : MutableList<String>? = mutableListOf()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -49,21 +104,24 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, pantalla_capturar:: class.java)
             startActivity(intent)
         }
-
+        var dbBerries = DBBerries(applicationContext," DBBerries", null, R.string.versionBD);
+        val db = dbBerries.readableDatabase
 
 //        MANDA LOS DATOS DE SQLITE A PHP
-        var btn2: Button = findViewById(R.id.btnSubir)
-        btn2.setOnClickListener{
+        btnSubirDatos  = findViewById(R.id.btnSubir)
+        btnSubirDatos.setOnClickListener{
             //        TRAE LAS CUBETAS
-            var dbBerries = DBBerries(applicationContext," DBBerries", null, 1);
-            val db = dbBerries.readableDatabase
+
 
             var arrEstacionTitulos : MutableList<String>? = mutableListOf()
             var arrCont : MutableList<MutableList<String>>? = mutableListOf()
             val columnsCubetas = arrayOf("fecha","moduloid","estacion","sector","numero_empleado","fruto")
             val cursorCubetas: Cursor = db.query("cubetascontadasberries", columnsCubetas, null, null, null, null, "idcubeta ASC")
 
+            println("Numeros de cubetas ${cursorCubetas.count}");
 //          RECORRE LA BD
+
+            if(cursorCubetas.count!=0){
             while (cursorCubetas.moveToNext()) {
 
                 var arrayDatos:MutableList<String>? =  mutableListOf()
@@ -107,7 +165,23 @@ class MainActivity : AppCompatActivity() {
             var gson = Gson()
             val jsonArreglo = gson.toJson(arrCont)
 //                println(jsonArreglo);
-            insertarRegistros(jsonArreglo)
+
+
+                if (isNetworkAvailable()) {
+                    // Hay conexión a Internet
+                    insertarRegistros(jsonArreglo)
+                } else {
+                    // No hay conexión a Internet
+                    Toast.makeText(this,"No hay internet disponible",Toast.LENGTH_SHORT).show()
+                }
+
+
+
+
+        }else{
+            Toast.makeText(this,"No se encuentra ningun registro",Toast.LENGTH_SHORT).show()
+        }
         }
     }
 }
+
