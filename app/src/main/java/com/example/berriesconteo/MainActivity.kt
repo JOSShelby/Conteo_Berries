@@ -28,14 +28,12 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var btnSubirDatos:Button
     fun insertarRegistros(json: String){
-    println(json);
-//        val gson = Gson()
-//        val arr = gson.toJson(json)
-        val urlRegistros = "http://" + getString(R.string.servidor) + "/kudePOO/aplicacion/berries/php/insertarRegistros.php?array=$json";
-//        ruta en el de pruebas
-//        val urlRegistros = "http://" + getString(R.string.servidor) + "/kudePOO/aplicacion/apps/berries/insertarRegistros.php?array=$json";
 
-        println(urlRegistros)
+//        RUTA EN PRUEBAS
+        val urlRegistros = "http://" + getString(R.string.servidor) + "/kudePOO/aplicacion/apps/berries/insertarRegistros.php?array=$json";
+
+//        RUTA EN MI LOCAL JOSS
+//        val urlRegistros = "http://" + getString(R.string.servidor) + "/kudePOO/aplicacion/berries/php/insertarRegistros.php?array=$json";
 
         val queueResponsivas = newRequestQueue(this)
         var statusCode = -1
@@ -159,7 +157,7 @@ class MainActivity : AppCompatActivity() {
                 arrayDatos!!.add(fruto)
 
                 arrCont!!.add(arrayDatos)
-
+//                println(arrCont)
 
 //                println("-----------------------")
             }

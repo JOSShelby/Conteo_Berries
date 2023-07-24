@@ -2,7 +2,9 @@
     <string name="app_name">Berries conteo</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-<!--    SERVIDOR LOCAL DE MI MAQUINA-->
-    <string name="servidor">192.184.20.16</string>
+    <!--    SERVIDOR DE LOCAL JOSS-->
+<!--    <string name="servidor">192.184.20.16</string>-->
+<!--    SERVIDOR DE PRUEBAS-->
+    <string name="servidor">192.184.2.20</string>
     <string name="versionBD">2</string>
 </resources>
