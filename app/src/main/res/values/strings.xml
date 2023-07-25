@@ -6,5 +6,5 @@
 <!--    <string name="servidor">192.184.20.16</string>-->
 <!--    SERVIDOR DE PRUEBAS-->
     <string name="servidor">192.184.2.20</string>
-    <string name="versionBD">2</string>
+    <string name="versionBD">1</string>
 </resources>

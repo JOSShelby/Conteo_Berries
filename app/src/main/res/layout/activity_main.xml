@@ -7,6 +7,52 @@
     android:background="#cbfecf"
     tools:context=".MainActivity">
 
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        >
+
+        <LinearLayout
+            android:id="@+id/imgSubido"
+            android:layout_width="300dp"
+            android:layout_height="150dp"
+            android:background="@drawable/redondeo"
+            android:layout_marginTop="75dp"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal"
+            android:weightSum="3"
+            android:visibility="invisible"
+
+            >
+            <TextView
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Los Datos Fueron subidos al KUDE"
+                android:layout_weight="1"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+
+                />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:src="@drawable/paloma"
+                android:background="@color/white"/>
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -30,23 +76,86 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
 
-            <Button
+
+            >
+
+            <LinearLayout
                 android:id="@+id/btnCapturar"
                 android:layout_width="150dp"
-                android:layout_height="70dp"
+                android:layout_height="150dp"
                 android:layout_marginEnd="10dp"
-                android:backgroundTint="#008808"
-                android:text="CAPTURAR" />
+                android:background="@drawable/redondeo"
+                android:orientation="vertical"
+                android:weightSum="2"
+                >
 
-            <Button
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="CAPTURAR"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:layout_weight="1"
+                    />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/capturar"
+                    android:layout_weight="1"
+                    />
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
                 android:id="@+id/btnSubir"
                 android:layout_width="150dp"
-                android:layout_height="70dp"
-                android:layout_marginStart="10dp"
-                android:backgroundTint="#008808"
-                android:text="SUBIR" />
+                android:layout_height="150dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/redondeo"
+                android:orientation="vertical"
+                android:weightSum="2"
+                >
+
+                <ProgressBar
+                    android:id="@+id/cargaSubir"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:progressTint="@color/white"
+                    android:visibility="gone"
+                    />
+
+
+                <TextView
+                    android:id="@+id/txtSubir"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="SUBIR"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:layout_weight="1"
+                    />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/subir"
+                    android:layout_weight="1"
+                    />
+
+
+            </LinearLayout>
+
+
+
+
 
         </LinearLayout>
     </LinearLayout>

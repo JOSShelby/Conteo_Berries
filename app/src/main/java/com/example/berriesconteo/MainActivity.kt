@@ -8,11 +8,18 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.animation.AlphaAnimation
 import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley.newRequestQueue
@@ -26,7 +33,10 @@ import java.sql.DriverManager
 class MainActivity : AppCompatActivity() {
     private lateinit var db: SQLiteDatabase
 
-    private lateinit var btnSubirDatos:Button
+    private lateinit var btnSubirDatos:LinearLayout
+    private lateinit var txtSubir:TextView
+    private lateinit var imgSubido:LinearLayout
+    private lateinit var cargaDatos:ProgressBar
     fun insertarRegistros(json: String){
 
 //        RUTA EN PRUEBAS
@@ -51,7 +61,27 @@ class MainActivity : AppCompatActivity() {
 
                 Toast.makeText(this,"Se subieron los registros Exitosamente",Toast.LENGTH_SHORT).show()
 
-                btnSubirDatos.text = "SUBIR : 0"
+                txtSubir.text = "SUBIR : 0"
+
+
+                cargaDatos.visibility = View.GONE
+
+                // Define la animación de aparición
+                val fadeInAnimation = AlphaAnimation(5f, 1f)
+                fadeInAnimation.duration = 3000 // Duración en milisegundos
+
+                val waitAnimation = AlphaAnimation(1f, 1f)
+                fadeInAnimation.duration = 1000 // Duración en milisegundos
+
+                // Define la animación de desaparición
+                val fadeOutAnimation = AlphaAnimation(1f, 0f)
+                fadeOutAnimation.duration = 500 // Duración en milisegundos
+
+                imgSubido.startAnimation(fadeInAnimation)
+                imgSubido.postDelayed({
+                    imgSubido.startAnimation(fadeOutAnimation)
+                },1000)
+
             }else{
                 Toast.makeText(this,"ocurrio un error",Toast.LENGTH_SHORT).show()
             }
@@ -71,7 +101,7 @@ class MainActivity : AppCompatActivity() {
         val columnsCubetas = arrayOf("idcubeta")
         val cursorCubetas: Cursor = db.query("cubetascontadasberries", columnsCubetas, null, null, null, null, "idcubeta ASC")
 
-        btnSubirDatos.text = "SUBIR : ${cursorCubetas.count}"
+        txtSubir.text = "SUBIR : ${cursorCubetas.count}"
     }
 
     private fun isNetworkAvailable(): Boolean {
@@ -96,9 +126,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        btnSubirDatos = findViewById(R.id.btnSubir)
+        txtSubir = findViewById(R.id.txtSubir)
+
+        imgSubido = findViewById(R.id.imgSubido)
+
+        cargaDatos = findViewById<ProgressBar>(R.id.cargaSubir)
+
 
 //        NOS MANDA A LA PANTALLA DE CAPTURAR CUANDO PRESIONEMOS EL BOTON
-        var btn: Button = findViewById(R.id.btnCapturar)
+        var btn: LinearLayout = findViewById(R.id.btnCapturar)
         btn.setOnClickListener {
             val intent = Intent(this, pantalla_capturar:: class.java)
             startActivity(intent)
@@ -107,9 +144,14 @@ class MainActivity : AppCompatActivity() {
         val db = dbBerries.readableDatabase
 
 //        MANDA LOS DATOS DE SQLITE A PHP
-        btnSubirDatos  = findViewById(R.id.btnSubir)
+
         btnSubirDatos.setOnClickListener{
             //        TRAE LAS CUBETAS
+
+
+            cargaDatos.visibility = View.VISIBLE
+
+
 
 
             var arrEstacionTitulos : MutableList<String>? = mutableListOf()
@@ -178,6 +220,7 @@ class MainActivity : AppCompatActivity() {
 
 
         }else{
+            cargaDatos.visibility = View.GONE
             Toast.makeText(this,"No se encuentra ningun registro",Toast.LENGTH_SHORT).show()
         }
         }

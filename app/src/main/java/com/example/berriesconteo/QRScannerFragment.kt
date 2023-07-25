@@ -53,7 +53,7 @@ class QRScannerFragment : Fragment(), BarcodeCallback  {
         super.onViewCreated(view, savedInstanceState)
 
         barcodeView = view.findViewById(R.id.barcodeView)
-        resultTextView = view.findViewById(R.id.codigoQR)
+        //resultTextView = view.findViewById(R.id.codigoQR)
 
         // Configura el escáner para admitir múltiples formatos
         val formats: Collection<BarcodeFormat> = listOf(BarcodeFormat.CODE_128)

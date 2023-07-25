@@ -7,9 +7,12 @@ import android.media.MediaPlayer
 import android.media.SoundPool
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AlphaAnimation
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
@@ -23,6 +26,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
     private lateinit var dbBerries: DBBerries
 
     private lateinit var txtEmpleadoid: EditText
+    private lateinit var msgCorrecto: RelativeLayout
 
     private lateinit var soundPool: SoundPool
     private var beepSoundId = 0
@@ -47,6 +51,8 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
         binding = ActivityPantallaCapturarBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        msgCorrecto = binding.mensajeCorrecto
 
         val maxStreams = 1
         val audioAttributes = AudioAttributes.Builder()
@@ -255,7 +261,27 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
             dbVer.close()
             db.close()
 
-            Toast.makeText(this ,"Registrada Nueva Cubeta",Toast.LENGTH_SHORT).show()
+
+            // Define la animación de aparición
+            val fadeInAnimation = AlphaAnimation(5f, 1f)
+            fadeInAnimation.duration = 1500 // Duración en milisegundos
+
+            val waitAnimation = AlphaAnimation(1f, 1f)
+            fadeInAnimation.duration = 1000 // Duración en milisegundos
+
+            // Define la animación de desaparición
+            val fadeOutAnimation = AlphaAnimation(1f, 0f)
+            fadeOutAnimation.duration = 500 // Duración en milisegundos
+
+            msgCorrecto.startAnimation(fadeInAnimation)
+            msgCorrecto.postDelayed({
+                msgCorrecto.startAnimation(fadeOutAnimation)
+            },1000)
+
+
+
+
+            //Toast.makeText(this ,"Registrada Nueva Cubeta",Toast.LENGTH_SHORT).show()
 
 
         }else{

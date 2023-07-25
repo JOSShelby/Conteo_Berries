@@ -28,15 +28,11 @@
             android:textColor="#ffffff"
             android:textSize="27sp" />
 
-        <FrameLayout
-            android:id="@+id/container_frame_layout"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_gravity="center"/>
+
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="20dp"
 
             >
@@ -60,7 +56,7 @@
 
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="50dp"
                         android:gravity="center"
                         android:layout_weight="2"
                         android:text="Modulo : "
@@ -83,7 +79,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="50dp"
                 android:background="@color/white"
                 android:layout_weight="1"
                 android:weightSum="3"
@@ -125,7 +121,7 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="50dp"
                     android:layout_weight="2"
                     android:text="Estacion : "
                     android:gravity="center"
@@ -146,7 +142,7 @@
             <LinearLayout
                 android:layout_margin="5dp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="50dp"
                 android:background="@color/white"
                 android:layout_weight="1"
                 android:weightSum="3"
@@ -177,41 +173,72 @@
 
 
 
-
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:layout_margin="5dp"
-                    android:elevation="2dp"
-                    >
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/inpNumEmpleado"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="#ffffff"
-                        android:gravity="center"
-                        android:hint="Numero de empleado"
-                        android:textStyle="bold"
-
-
-
-
-                        />
-                </com.google.android.material.textfield.TextInputLayout>
-
-
-
-
-
-
-
             </LinearLayout>
         </ScrollView>
 
+        <FrameLayout
+            android:id="@+id/container_frame_layout"
+            android:layout_width="300dp"
+            android:layout_height="250dp"
+            android:layout_gravity="center"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_margin="5dp"
+            android:elevation="2dp"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inpNumEmpleado"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#ffffff"
+                android:gravity="center"
+                android:textSize="25dp"
+                android:layout_margin="20dp"
+                android:hint="Numero de empleado"
+                android:textStyle="bold"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/mensajeCorrecto"
+        android:layout_width="300dp"
+        android:layout_height="350dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/white"
+        android:visibility="invisible"
+        >
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/correcto" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Registrado Correctamente"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="100dp"
+
+            />
+
+
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
