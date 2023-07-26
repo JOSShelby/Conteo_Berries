@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#cbfecf"
-    tools:context=".MainActivity">
+    tools:context="com.agrizar.berriesconteo.MainActivity">
 
 
     <RelativeLayout
@@ -123,13 +123,6 @@
                 android:weightSum="2"
                 >
 
-                <ProgressBar
-                    android:id="@+id/cargaSubir"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:progressTint="@color/white"
-                    android:visibility="gone"
-                    />
 
 
                 <TextView

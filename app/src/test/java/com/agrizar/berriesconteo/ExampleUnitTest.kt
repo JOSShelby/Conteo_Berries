@@ -1,4 +1,4 @@
-package com.example.berriesconteo
+package com.agrizar.berriesconteo
 
 import org.junit.Test
 

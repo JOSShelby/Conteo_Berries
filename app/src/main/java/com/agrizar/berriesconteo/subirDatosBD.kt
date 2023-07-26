@@ -1,4 +1,4 @@
-package com.example.berriesconteo
+package com.agrizar.berriesconteo
 
 import android.annotation.SuppressLint
 import android.database.sqlite.SQLiteDatabase

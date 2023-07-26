@@ -1,9 +1,8 @@
-package com.example.berriesconteo
+package com.agrizar.berriesconteo
 
 import QRScannerFragment
 import android.database.Cursor
 import android.media.AudioAttributes
-import android.media.MediaPlayer
 import android.media.SoundPool
 import android.os.Bundle
 import android.view.View
@@ -11,11 +10,10 @@ import android.view.animation.AlphaAnimation
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
+import com.example.berriesconteo.R
 import com.example.berriesconteo.databinding.ActivityPantallaCapturarBinding
 import java.text.SimpleDateFormat
 import java.util.Calendar

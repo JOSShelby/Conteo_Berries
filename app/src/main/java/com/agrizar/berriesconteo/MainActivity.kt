@@ -1,4 +1,4 @@
-package com.example.berriesconteo
+package com.agrizar.berriesconteo
 
 import android.content.Context
 import android.content.Intent
@@ -8,89 +8,21 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import android.view.animation.AlphaAnimation
-import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.view.isGone
-import androidx.core.view.isVisible
-import com.android.volley.Request
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley.newRequestQueue
+import com.example.berriesconteo.R
 import com.google.gson.Gson
-import org.json.JSONArray
-import org.json.JSONObject
-import java.sql.DriverManager
 
 
-
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
     private lateinit var db: SQLiteDatabase
 
     private lateinit var btnSubirDatos:LinearLayout
     private lateinit var txtSubir:TextView
     private lateinit var imgSubido:LinearLayout
-    private lateinit var cargaDatos:ProgressBar
-    fun insertarRegistros(json: String){
-
-//        RUTA EN PRUEBAS
-        val urlRegistros = "http://" + getString(R.string.servidor) + "/kudePOO/aplicacion/apps/berries/insertarRegistros.php?array=$json";
-
-//        RUTA EN MI LOCAL JOSS
-//        val urlRegistros = "http://" + getString(R.string.servidor) + "/kudePOO/aplicacion/berries/php/insertarRegistros.php?array=$json";
-
-        val queueResponsivas = newRequestQueue(this)
-        var statusCode = -1
-        val stringRequestResponsivas = StringRequest(Request.Method.GET, urlRegistros, { response ->
-            val jsonRespuesta = JSONObject(response);
-           statusCode = jsonRespuesta.getInt("statusCode")
-
-            if(statusCode==1){
-
-                var dbBerries = DBBerries(applicationContext," DBBerries", null, R.string.versionBD);
-
-                val db = dbBerries.writableDatabase
-
-                db.execSQL("DELETE FROM cubetascontadasberries")
-
-                Toast.makeText(this,"Se subieron los registros Exitosamente",Toast.LENGTH_SHORT).show()
-
-                txtSubir.text = "SUBIR : 0"
-
-
-                cargaDatos.visibility = View.GONE
-
-                // Define la animación de aparición
-                val fadeInAnimation = AlphaAnimation(5f, 1f)
-                fadeInAnimation.duration = 3000 // Duración en milisegundos
-
-                val waitAnimation = AlphaAnimation(1f, 1f)
-                fadeInAnimation.duration = 1000 // Duración en milisegundos
-
-                // Define la animación de desaparición
-                val fadeOutAnimation = AlphaAnimation(1f, 0f)
-                fadeOutAnimation.duration = 500 // Duración en milisegundos
-
-                imgSubido.startAnimation(fadeInAnimation)
-                imgSubido.postDelayed({
-                    imgSubido.startAnimation(fadeOutAnimation)
-                },1000)
-
-            }else{
-                Toast.makeText(this,"ocurrio un error",Toast.LENGTH_SHORT).show()
-            }
-        },{
-            Toast.makeText(this,"ocurrio un error en la conexion",Toast.LENGTH_SHORT).show()
-        })
-        queueResponsivas.add(stringRequestResponsivas)
-
-    }
 
     override fun onResume() {
         super.onResume()
@@ -131,7 +63,7 @@ class MainActivity : AppCompatActivity() {
 
         imgSubido = findViewById(R.id.imgSubido)
 
-        cargaDatos = findViewById<ProgressBar>(R.id.cargaSubir)
+
 
 
 //        NOS MANDA A LA PANTALLA DE CAPTURAR CUANDO PRESIONEMOS EL BOTON
@@ -149,7 +81,7 @@ class MainActivity : AppCompatActivity() {
             //        TRAE LAS CUBETAS
 
 
-            cargaDatos.visibility = View.VISIBLE
+
 
 
 
@@ -210,7 +142,16 @@ class MainActivity : AppCompatActivity() {
 
                 if (isNetworkAvailable()) {
                     // Hay conexión a Internet
-                    insertarRegistros(jsonArreglo)
+                    var dialogopermiso = dialogPermiso();
+                    val args = Bundle()
+                    args.putString("jsonArreglo", jsonArreglo)
+
+                    dialogopermiso.setArguments(args)
+
+                    //Toast.makeText(this,pallet,Toast.LENGTH_SHORT).show();
+                    dialogopermiso.show(supportFragmentManager, "titulo")
+
+                    //insertarRegistros(jsonArreglo)
                 } else {
                     // No hay conexión a Internet
                     Toast.makeText(this,"No hay internet disponible",Toast.LENGTH_SHORT).show()
@@ -220,10 +161,31 @@ class MainActivity : AppCompatActivity() {
 
 
         }else{
-            cargaDatos.visibility = View.GONE
+
             Toast.makeText(this,"No se encuentra ningun registro",Toast.LENGTH_SHORT).show()
         }
         }
+    }
+
+    override fun Resultado(resultado: Boolean) {
+        txtSubir.text = "SUBIR : 0"
+
+
+                // Define la animación de aparición
+                val fadeInAnimation = AlphaAnimation(5f, 1f)
+                fadeInAnimation.duration = 3000 // Duración en milisegundos
+
+                val waitAnimation = AlphaAnimation(1f, 1f)
+                fadeInAnimation.duration = 1000 // Duración en milisegundos
+
+                // Define la animación de desaparición
+                val fadeOutAnimation = AlphaAnimation(1f, 0f)
+                fadeOutAnimation.duration = 500 // Duración en milisegundos
+
+                imgSubido.startAnimation(fadeInAnimation)
+                imgSubido.postDelayed({
+                    imgSubido.startAnimation(fadeOutAnimation)
+                },1000)
     }
 }
 
