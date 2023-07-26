@@ -8,6 +8,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
+import android.view.WindowManager
 import android.view.animation.AlphaAnimation
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -54,6 +55,9 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        setContentView(R.layout.activity_main)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

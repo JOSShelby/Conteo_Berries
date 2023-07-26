@@ -6,6 +6,7 @@ import android.media.AudioAttributes
 import android.media.SoundPool
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import android.view.animation.AlphaAnimation
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -36,6 +37,10 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        setContentView(R.layout.activity_main)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pantalla_capturar)
 

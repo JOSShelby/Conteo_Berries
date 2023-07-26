@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#cbfecf"
+    android:background="#DDDDDD"
     tools:context="com.agrizar.berriesconteo.MainActivity">
 
 
@@ -63,7 +63,7 @@
             android:id="@+id/titulo1"
             android:textAlignment="center"
             android:layout_width="match_parent"
-            android:background="#005c05"
+            android:background="#45962f"
             android:textColor="#ffffff"
             android:textSize="27dp"
             android:padding="15dp"

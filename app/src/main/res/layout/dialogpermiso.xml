@@ -52,10 +52,10 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtnombre"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="60dp"
                 android:background="#ffffff"
                 android:gravity="center"
-                android:textSize="20dp"
+                android:textSize="18dp"
                 android:layout_margin="20dp"
                 android:hint="Usuario"
                 android:textStyle="bold"
@@ -74,13 +74,14 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtcontraseña"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="60dp"
                 android:background="#ffffff"
                 android:gravity="center"
-                android:textSize="20dp"
+                android:textSize="18dp"
                 android:layout_margin="20dp"
                 android:hint="Contraseña"
                 android:textStyle="bold"
+                android:inputType="textPassword"
                 />
         </com.google.android.material.textfield.TextInputLayout>
 

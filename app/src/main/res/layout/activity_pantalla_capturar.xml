@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#cbfecf"
+    android:background="#DDDDDD"
     tools:context="com.agrizar.berriesconteo.pantalla_capturar">
 
 
@@ -21,7 +21,7 @@
             android:id="@+id/titulo2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#005c05"
+            android:background="#45962f"
             android:padding="15dp"
             android:text="CAPTURAR"
             android:textAlignment="center"
