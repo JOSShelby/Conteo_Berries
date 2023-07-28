@@ -46,7 +46,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="@dimen/height_spiners"
                     android:background="@color/white"
                     android:layout_weight="1"
                     android:weightSum="3"
@@ -56,7 +56,7 @@
 
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="@dimen/height_spiners"
                         android:gravity="center"
                         android:layout_weight="2"
                         android:text="Modulo : "
@@ -66,7 +66,7 @@
                     <Spinner
                         android:id="@+id/inpModulo"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="@dimen/height_spiners"
                         android:textAlignment="center"
                         android:layout_weight="1"
                         android:hint="Modulo"
@@ -79,7 +79,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="@dimen/height_spiners"
                 android:background="@color/white"
                 android:layout_weight="1"
                 android:weightSum="3"
@@ -90,7 +90,7 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="@dimen/height_spiners"
                     android:layout_weight="2"
                     android:text="Sector : "
                     android:gravity="center"
@@ -99,7 +99,7 @@
                 <Spinner
                     android:id="@+id/inpSector"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="@dimen/height_spiners"
                     android:hint="Sector"
                     android:textAlignment="center"
                     android:layout_weight="1"
@@ -110,7 +110,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="@dimen/height_spiners"
                 android:background="@color/white"
                 android:layout_weight="1"
                 android:weightSum="3"
@@ -121,7 +121,7 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="@dimen/height_spiners"
                     android:layout_weight="2"
                     android:text="Estacion : "
                     android:gravity="center"
@@ -130,7 +130,7 @@
                 <Spinner
                     android:id="@+id/inpEstacion"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="@dimen/height_spiners"
                     android:hint="Modulo"
                     android:textAlignment="center"
                     android:layout_weight="1"
@@ -142,7 +142,7 @@
             <LinearLayout
                 android:layout_margin="5dp"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="@dimen/height_spiners"
                 android:background="@color/white"
                 android:layout_weight="1"
                 android:weightSum="3"
@@ -152,7 +152,7 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="@dimen/height_spiners"
                     android:layout_weight="2"
                     android:text="Fruto : "
                     android:gravity="center"
@@ -162,7 +162,7 @@
                 <Spinner
                     android:id="@+id/inpFruto"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="@dimen/height_spiners"
                     android:hint="Fruto"
                     android:textAlignment="center"
                     android:layout_weight="1"
@@ -178,15 +178,17 @@
 
         <FrameLayout
             android:id="@+id/container_frame_layout"
-            android:layout_width="300dp"
-            android:layout_height="250dp"
+            android:layout_marginTop="@dimen/margin_top"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_scaner"
             android:layout_gravity="center"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/margin_top"
             android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="start"
             android:layout_margin="5dp"
             android:elevation="2dp"
             >
@@ -194,14 +196,13 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/inpNumEmpleado"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
                 android:background="#ffffff"
                 android:gravity="center"
-                android:textSize="25dp"
-                android:layout_margin="20dp"
                 android:hint="Numero de empleado"
-                android:textStyle="bold"
-                />
+                android:textSize="25dp"
+                android:textStyle="bold" />
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>

@@ -83,9 +83,9 @@
 
             <LinearLayout
                 android:id="@+id/btnCapturar"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_marginEnd="10dp"
+                android:layout_width="@dimen/width_botones"
+                android:layout_height="@dimen/height_botones"
+                android:layout_marginEnd="@dimen/margin_right"
                 android:background="@drawable/redondeo"
                 android:orientation="vertical"
                 android:weightSum="2"
@@ -115,8 +115,8 @@
 
             <LinearLayout
                 android:id="@+id/btnSubir"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="@dimen/width_botones"
+                android:layout_height="@dimen/height_botones"
                 android:layout_marginEnd="10dp"
                 android:background="@drawable/redondeo"
                 android:orientation="vertical"
