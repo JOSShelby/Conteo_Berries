@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 public class DBBerries extends SQLiteOpenHelper {
     private static final String NOMBRE_BD = "DBBerries.bd";  //NOMBRE DE LA BASE DE DATOS
     private static final  int VERSION_BD=1; //VERSION
@@ -40,12 +42,10 @@ public class DBBerries extends SQLiteOpenHelper {
             "nombreestacion TEXT," +
             "status integer" +
             ");";
-
 //    NOMBRE DE LA BASE DE DATOS Y VERSION
     public DBBerries(Context context, String name, SQLiteDatabase.CursorFactory factory, int version){
         super(context, NOMBRE_BD, null, version);
     }
-
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(TABLA_CUBETASCONT);  //EJECUTA LA ESTRUCTURA PARA CREAR LA TABLA CUBETAS CONTADAS
@@ -84,20 +84,10 @@ public class DBBerries extends SQLiteOpenHelper {
         }catch (SQLException e){
 
         }
-
-////      INSERT DE LA TABLA CUBETAS
-//        try{
-//            String cadenaCubetas = "INSERT INTO cubetascontadasberries (fecha, moduloid,estacion,sector,numero_empleado,fruto,status) " +
-//                    "VALUES ('20/07/2023',12,23,2,90293,'FRA',1), ('20/07/2023',12,3,11,21393,'FRA',1), ('20/07/2023',14,12,2,90233,'ZAR',1), ('20/07/2023',14,12,2,90233,'ZAR',1), ('20/07/2023',14,12,2,90233,'ZAR',1);";
-//            db.execSQL(cadenaCubetas);
-//        }catch (SQLException e){
-//
-//        }
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
 //      BORRAR Y CREAR LA TABLA CUBETAS SI YA EXISTE
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS cubetascontadasberries " );
         sqLiteDatabase.execSQL(TABLA_CUBETASCONT);
@@ -143,21 +133,11 @@ public class DBBerries extends SQLiteOpenHelper {
         }catch (SQLException e){
 
         }
-
-////      INSERT DE LA TABLA CUBETAS
-//        try{
-//            String cadenaCubetas = "INSERT INTO cubetascontadasberries (fecha, moduloid,estacion,sector,numero_empleado,fruto, status) " +
-//                    "VALUES ('20/07/2023',12,23,2,90293,'FRA', 89,1), ('20/07/2023',12,3,11,21393,'FRA', 91,1), ('20/07/2023',14,12,2,90233,'ZAR', 29,1);";
-//            sqLiteDatabase.execSQL(cadenaCubetas);
-//        }catch (SQLException e){
-//
-//        }
     }
 
     public void verTabla(SQLiteDatabase db){
         SQLiteDatabase bd=getWritableDatabase();
         if(bd!=null){
-
             String[] columns = {"nombremodulo"};
             Cursor cursor = bd.query("modulosberries",columns, null, null, null, null, null);
 

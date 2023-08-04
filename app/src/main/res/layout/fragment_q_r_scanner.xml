@@ -4,20 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".QRScannerFragment">
-
+<!--    SCANNER QUE PERMITE USAR LA CAMARA PARA EL NUMERO DE EMPLEADO-->
     <com.journeyapps.barcodescanner.DecoratedBarcodeView
         android:id="@+id/barcodeView"
         android:layout_width="match_parent"
-    android:layout_height="300dp"
-    android:layout_gravity="center"
-    android:layout_marginTop="40dp"
-    android:layout_marginBottom="40dp"
-    android:layout_marginStart="20dp"
-    android:layout_marginEnd="20dp"
-    />
-
-    <!-- Agrega aquí otros elementos de interfaz si lo deseas -->
-    <!-- Por ejemplo, un mensaje personalizado -->
-
-
+        android:layout_height="300dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="40dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        />
 </FrameLayout>

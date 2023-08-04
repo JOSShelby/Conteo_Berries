@@ -44,40 +44,25 @@ class QRScannerFragment : Fragment(), BarcodeCallback  {
             throw ClassCastException("$context debe implementar OnFragmentInteractionListener")
         }
     }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_q_r_scanner, container, false)
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         barcodeView = view.findViewById(R.id.barcodeView)
         //resultTextView = view.findViewById(R.id.codigoQR)
-
         // Configura el escáner para admitir múltiples formatos
         val formats: Collection<BarcodeFormat> = listOf(BarcodeFormat.CODE_128)
         barcodeView.setDecoderFactory(DefaultDecoderFactory(formats))
-
         barcodeView
-
-
         // Comienza el escaneo cuando el Fragment se muestre
         barcodeView.decodeContinuous(this)
-
-
-
     }
-
-
 
     private var lastScanTime = 0L
     override fun barcodeResult(result: BarcodeResult?) {
         // Aquí puedes obtener el resultado del escaneo del código de barras
         if (result != null) {
-
-
-
             if (scanningEnabled) {
                 val currentTime = System.currentTimeMillis()
                 if (currentTime - lastScanTime >= scannerInterval) {
@@ -86,34 +71,21 @@ class QRScannerFragment : Fragment(), BarcodeCallback  {
                     mListener?.onValueReturned( result.text)
                 }
             }
-
-
-
-
-
-
-
             // Maneja el resultado del escaneo como desees
         }
     }
-
     override fun possibleResultPoints(resultPoints: List<ResultPoint>?) {
         // Método opcional para manejar posibles puntos de resultado (no es necesario para el escaneo de códigos de barras)
     }
-
     override fun onResume() {
         super.onResume()
         barcodeView.resume()
     }
-
     override fun onPause() {
         super.onPause()
         barcodeView.pause()
     }
-
     interface OnFragmentInteractionListener {
         fun onValueReturned(value: String) // Puedes cambiar el tipo de dato según lo que necesites devolver
     }
-
-
 }

@@ -27,10 +27,8 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
 
     override fun onResume() {
         super.onResume()
-
-        var dbBerries = DBBerries(applicationContext," DBBerries", null, R.string.versionBD);
+        val dbBerries = DBBerries(applicationContext," DBBerries", null, R.string.versionBD);
         val db = dbBerries.readableDatabase
-
         val columnsCubetas = arrayOf("idcubeta")
         val cursorCubetas: Cursor = db.query("cubetascontadasberries", columnsCubetas, null, null, null, null, "idcubeta ASC")
 
@@ -67,31 +65,27 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
 
         imgSubido = findViewById(R.id.imgSubido)
 
-
-
-
 //        NOS MANDA A LA PANTALLA DE CAPTURAR CUANDO PRESIONEMOS EL BOTON
-        var btn: LinearLayout = findViewById(R.id.btnCapturar)
+        val btn: LinearLayout = findViewById(R.id.btnCapturar)
         btn.setOnClickListener {
             val intent = Intent(this, pantalla_capturar:: class.java)
             startActivity(intent)
         }
-        var dbBerries = DBBerries(applicationContext," DBBerries", null, R.string.versionBD);
+        val dbBerries = DBBerries(applicationContext," DBBerries", null, R.string.versionBD);
         val db = dbBerries.readableDatabase
 
-//        MANDA LOS DATOS DE SQLITE A PHP
+//        NOS MANDA A LA PANTALLA DE CONSULTA CUANDO PRESIONEMOS EL BOTON
+//        val btn2: LinearLayout = findViewById(R.id.btnConsultar)
+//        btn2.setOnClickListener {
+//            val intent = Intent(this, Consultar:: class.java)
+//            startActivity(intent)
+//        }
 
+//        MANDA LOS DATOS DE SQLITE A PHP AL PRESIONAR EL BOTON DE SUBIR
         btnSubirDatos.setOnClickListener{
             //        TRAE LAS CUBETAS
-
-
-
-
-
-
-
-            var arrEstacionTitulos : MutableList<String>? = mutableListOf()
-            var arrCont : MutableList<MutableList<String>>? = mutableListOf()
+            val arrEstacionTitulos : MutableList<String>? = mutableListOf()
+            val arrCont : MutableList<MutableList<String>>? = mutableListOf()
             val columnsCubetas = arrayOf("fecha","moduloid","estacion","sector","numero_empleado","fruto")
             val cursorCubetas: Cursor = db.query("cubetascontadasberries", columnsCubetas, null, null, null, null, "idcubeta ASC")
 
