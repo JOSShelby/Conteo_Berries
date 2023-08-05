@@ -14,27 +14,28 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.berriesconteo.Consultar
 import com.example.berriesconteo.R
 import com.google.gson.Gson
 
-
 class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
+//  VARIABLES
     private lateinit var db: SQLiteDatabase
-
     private lateinit var btnSubirDatos:LinearLayout
     private lateinit var txtSubir:TextView
     private lateinit var imgSubido:LinearLayout
 
     override fun onResume() {
         super.onResume()
+//      LEE LA BASE DE DATOS
         val dbBerries = DBBerries(applicationContext," DBBerries", null, R.string.versionBD);
         val db = dbBerries.readableDatabase
         val columnsCubetas = arrayOf("idcubeta")
         val cursorCubetas: Cursor = db.query("cubetascontadasberries", columnsCubetas, null, null, null, null, "idcubeta ASC")
 
+//      MUESTRA EN EL BOTON DE SUBIR UN CONTEO DE LOS REGISTROS GENERALES
         txtSubir.text = "SUBIR : ${cursorCubetas.count}"
     }
-
     private fun isNetworkAvailable(): Boolean {
         val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
@@ -62,7 +63,6 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
 
         btnSubirDatos = findViewById(R.id.btnSubir)
         txtSubir = findViewById(R.id.txtSubir)
-
         imgSubido = findViewById(R.id.imgSubido)
 
 //        NOS MANDA A LA PANTALLA DE CAPTURAR CUANDO PRESIONEMOS EL BOTON
@@ -71,15 +71,16 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
             val intent = Intent(this, pantalla_capturar:: class.java)
             startActivity(intent)
         }
+//      LEE LA BASE DE DATOS
         val dbBerries = DBBerries(applicationContext," DBBerries", null, R.string.versionBD);
         val db = dbBerries.readableDatabase
 
-//        NOS MANDA A LA PANTALLA DE CONSULTA CUANDO PRESIONEMOS EL BOTON
-//        val btn2: LinearLayout = findViewById(R.id.btnConsultar)
-//        btn2.setOnClickListener {
-//            val intent = Intent(this, Consultar:: class.java)
-//            startActivity(intent)
-//        }
+//      NOS MANDA A LA PANTALLA DE CONSULTA CUANDO PRESIONEMOS EL BOTON
+        val btn2: LinearLayout = findViewById(R.id.btnConsultar)
+        btn2.setOnClickListener {
+            val intent = Intent(this, Consultar:: class.java)
+            startActivity(intent)
+        }
 
 //        MANDA LOS DATOS DE SQLITE A PHP AL PRESIONAR EL BOTON DE SUBIR
         btnSubirDatos.setOnClickListener{
@@ -89,101 +90,78 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
             val columnsCubetas = arrayOf("fecha","moduloid","estacion","sector","numero_empleado","fruto")
             val cursorCubetas: Cursor = db.query("cubetascontadasberries", columnsCubetas, null, null, null, null, "idcubeta ASC")
 
-            println("Numeros de cubetas ${cursorCubetas.count}");
-//          RECORRE LA BD
-
+//          RECORRE LA BD SI HAY REGISTROS EN LA BASE DE DATOS
             if(cursorCubetas.count!=0){
-            while (cursorCubetas.moveToNext()) {
+                while (cursorCubetas.moveToNext()) {
+//                  SE DECLARA LA MUTABLELIST
+                    var arrayDatos:MutableList<String>? =  mutableListOf()
 
-                var arrayDatos:MutableList<String>? =  mutableListOf()
+//                  TRAE LOS REGISTROS DE LA COLUMNA FECHA
+                    val fecha = cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("fecha"))
+                    arrayDatos!!.add(fecha)
 
+//                  TRAE LOS REGISTROS DE LA COLUMNA MODULO
+                    val moduloid = cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("moduloid"))
+                    arrayDatos!!.add(moduloid)
 
-//              TRAE LA FECHAs
-                val fecha = cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("fecha"))
-//                println(fecha)
-                arrayDatos!!.add(fecha)
+//                  TRAE LOS REGISTROS DE LA COLUMNA ESTACION
+                    val estacion = cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("estacion"))
+                    arrayDatos!!.add(estacion)
 
-//              TRAE EL MODULO
-                val moduloid = cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("moduloid"))
-//                println(moduloid)
-                arrayDatos!!.add(moduloid)
+//                  TRAE LOS REGISTROS DE LA COLUMNA SECTOR
+                    val sector = cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("sector"))
+                    arrayDatos!!.add(sector)
 
-//              TRAE LA ESTACION
-                val estacion = cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("estacion"))
-//                println(estacion)
-                arrayDatos!!.add(estacion)
+//                  TRAE LOS REGISTROS DE LA COLUMNA NUMERO DE EMPLEADO
+                    val numero_empleado = cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("numero_empleado"))
+                    arrayDatos!!.add(numero_empleado)
 
-//              TRAE EL SECTOR
-                val sector = cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("sector"))
-//                println(sector)
-                arrayDatos!!.add(sector)
+//                  TRAE LOS REGISTROS DE LA COLUMNA FRUTO
+                    val fruto = cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("fruto"))
+                    arrayDatos!!.add(fruto)
 
-//              TRAE EL NUMERO DE EMPLEADO
-                val numero_empleado = cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("numero_empleado"))
-//                println(numero_empleado)
-                arrayDatos!!.add(numero_empleado)
-
-//              TRAE EL FRUTO
-                val fruto = cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("fruto"))
-//                println(fruto)
-                arrayDatos!!.add(fruto)
-
-                arrCont!!.add(arrayDatos)
-//                println(arrCont)
-
-//                println("-----------------------")
-            }
-            val gson = Gson()
-            val jsonArreglo = gson.toJson(arrCont)
-//                println(jsonArreglo);
-
+//                  METE LOS ARREGLOS QUE SE FORMARON DE LAS COLUMNAS, DENTRO DE UN ARREGLO
+                    arrCont!!.add(arrayDatos)
+                }
+//              CONVIERTE EL ARREGLO A JSON
+                val gson = Gson()
+                val jsonArreglo = gson.toJson(arrCont)
 
                 if (isNetworkAvailable()) {
-                    // Hay conexión a Internet
+//                  SE EJECUTA SI HAY CONEXION A INTERNET
                     var dialogopermiso = dialogPermiso();
                     val args = Bundle()
                     args.putString("jsonArreglo", jsonArreglo)
-
                     dialogopermiso.setArguments(args)
-
-                    //Toast.makeText(this,pallet,Toast.LENGTH_SHORT).show();
                     dialogopermiso.show(supportFragmentManager, "titulo")
-
-                    //insertarRegistros(jsonArreglo)
-                } else {
-                    // No hay conexión a Internet
+                }else{
+//                  SE EJECUTA SI NO HAY CONEXION A INTERNET
                     Toast.makeText(this,"No hay internet disponible",Toast.LENGTH_SHORT).show()
                 }
-
-
-
-
-        }else{
-
-            Toast.makeText(this,"No se encuentra ningun registro",Toast.LENGTH_SHORT).show()
-        }
+            }else{
+//              SE EJECUTA SI NO HAY REGISTROS EN LA BASE DE DATOS
+                Toast.makeText(this,"No se encuentra ningun registro",Toast.LENGTH_SHORT).show()
+            }
         }
     }
-
     override fun Resultado(resultado: Boolean) {
-        txtSubir.text = "SUBIR : 0"
+        txtSubir.text = "SUBIR: 0"
+//      ANIMACION DE APARICION
+        val fadeInAnimation = AlphaAnimation(5f, 1f)
+        fadeInAnimation.duration = 3000 // DURACION EN MILISEGUNDOS
 
+        val waitAnimation = AlphaAnimation(1f, 1f)
+        fadeInAnimation.duration = 1000 // DURACION EN MILISEGUNDOS
 
-                // Define la animación de aparición
-                val fadeInAnimation = AlphaAnimation(5f, 1f)
-                fadeInAnimation.duration = 3000 // Duración en milisegundos
+//      ANIMACION DE SALIDA
+        val fadeOutAnimation = AlphaAnimation(1f, 0f)
+        fadeOutAnimation.duration = 500 // DURACION EN MILISEGUNDOS
 
-                val waitAnimation = AlphaAnimation(1f, 1f)
-                fadeInAnimation.duration = 1000 // Duración en milisegundos
-
-                // Define la animación de desaparición
-                val fadeOutAnimation = AlphaAnimation(1f, 0f)
-                fadeOutAnimation.duration = 500 // Duración en milisegundos
-
-                imgSubido.startAnimation(fadeInAnimation)
-                imgSubido.postDelayed({
-                    imgSubido.startAnimation(fadeOutAnimation)
-                },1000)
+//      SE EJECUTA LA ANIMACION
+        imgSubido.startAnimation(fadeInAnimation)
+        imgSubido.postDelayed({
+            imgSubido.startAnimation(fadeOutAnimation)
+        },1000)
     }
 }
 
