@@ -1,19 +1,27 @@
 package com.example.berriesconteo
 
+import android.content.pm.ActivityInfo
 import android.database.Cursor
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
+import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.agrizar.berriesconteo.DBBerries
 
 class Consultar : AppCompatActivity() {
     private lateinit var imageButton: ImageButton
-
     override fun onCreate(savedInstanceState: Bundle?) {
+
+//      COLOCA LA PANTALLA COMPLETA EN EL DISPOSITIVO
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+
+//      EVITA QUE SE ROTE LA PANTALLA
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_consultar)
 
@@ -32,7 +40,7 @@ class Consultar : AppCompatActivity() {
             linearTituloTabla.isVisible = true
 
 //          SE DECLARAN VARIABLES PARA VER O INSERTAR EN LA BASE DE DATOS
-            var dbBerries = DBBerries(applicationContext," DBBerries", null, R.string.versionBD);
+            val dbBerries = DBBerries(applicationContext," DBBerries", null, R.string.versionBD);
             val db = dbBerries.writableDatabase
             val dbVer = dbBerries.readableDatabase
 
@@ -40,13 +48,10 @@ class Consultar : AppCompatActivity() {
             val conlumnsCubetas = arrayOf("numero_empleado", "COUNT(*) AS num_registros")
             val cursorCubetas: Cursor = db.query("cubetascontadasberries", conlumnsCubetas, null, null, "numero_empleado", null, null)
 
+//          RECORREMOS LOS RESULTADOS DE LA BUSQUEDA DE LA BD
             while (cursorCubetas.moveToNext()) {
                 val numEmp = cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("numero_empleado"))
                 val numCub = cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("num_registros"))
-
-                println("numero empleado: $numEmp")
-                println("numero de cubetas: $numCub")
-                println("=======================================")
 
 //              SE CREA UN LAYOUT PARA METER LOS RESULTADOS
                 val linearLayoutRegistro = LinearLayout(this);
@@ -91,8 +96,11 @@ class Consultar : AppCompatActivity() {
                 txtCubetas.layoutParams = llpCubetas
                 linearLayoutRegistro.addView(txtCubetas)
 
+//              METEMOS LOS LINEAR LAYOUT EN EL LAYOUT DEL XML QUE MANDAMOS LLAMAR
                 linearlistaCosechadores.addView(linearLayoutRegistro)
             }
+
+//          CERRAMOS CONEXIONES
             cursorCubetas.close()
             db.close()
             dbVer.close()

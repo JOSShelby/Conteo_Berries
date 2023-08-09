@@ -32,10 +32,10 @@ class QRScannerFragment : Fragment(), BarcodeCallback  {
 
     private lateinit var barcodeView: DecoratedBarcodeView
     private lateinit var resultTextView: TextView
-
     private var mListener: OnFragmentInteractionListener? = null
     private var scanningEnabled = true
-    private val scannerInterval = 2000L //
+//  SE ESTABLECEN DOS SEGUNDOS DE INTERVALO PARA ESCANEAR
+    private val scannerInterval = 2000L
     override fun onAttach(context: Context) {
         super.onAttach(context)
         try {
@@ -49,19 +49,21 @@ class QRScannerFragment : Fragment(), BarcodeCallback  {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         barcodeView = view.findViewById(R.id.barcodeView)
-        //resultTextView = view.findViewById(R.id.codigoQR)
-        // Configura el escáner para admitir múltiples formatos
+
+//      SE CONFIGURA EL ESCANER PARA ADMITIR VARIOS FORMATOS
         val formats: Collection<BarcodeFormat> = listOf(BarcodeFormat.CODE_128)
         barcodeView.setDecoderFactory(DefaultDecoderFactory(formats))
         barcodeView
-        // Comienza el escaneo cuando el Fragment se muestre
+
+//      COMIENZA EL ESCANEO CUANDO SE MUESTRE EL FRAGMENT
         barcodeView.decodeContinuous(this)
     }
 
     private var lastScanTime = 0L
     override fun barcodeResult(result: BarcodeResult?) {
-        // Aquí puedes obtener el resultado del escaneo del código de barras
+//      SE OBTIENE EL RESULTADO DEL ESCANEO DEL CODIGO DE BARRAS
         if (result != null) {
             if (scanningEnabled) {
                 val currentTime = System.currentTimeMillis()
@@ -71,11 +73,10 @@ class QRScannerFragment : Fragment(), BarcodeCallback  {
                     mListener?.onValueReturned( result.text)
                 }
             }
-            // Maneja el resultado del escaneo como desees
         }
     }
     override fun possibleResultPoints(resultPoints: List<ResultPoint>?) {
-        // Método opcional para manejar posibles puntos de resultado (no es necesario para el escaneo de códigos de barras)
+        // METODO PARA POSIBLES PUNTOS DE RESULTADOS
     }
     override fun onResume() {
         super.onResume()
@@ -86,6 +87,7 @@ class QRScannerFragment : Fragment(), BarcodeCallback  {
         barcodeView.pause()
     }
     interface OnFragmentInteractionListener {
-        fun onValueReturned(value: String) // Puedes cambiar el tipo de dato según lo que necesites devolver
+//      TIPO DE DATO
+        fun onValueReturned(value: String)
     }
 }

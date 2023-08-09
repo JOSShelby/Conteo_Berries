@@ -37,30 +37,42 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
     var seleccionCubetas = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
+//      ESTABLECE LA PANTALLA COMPLETA
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        setContentView(R.layout.activity_main)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pantalla_capturar)
+
+//      SI EL ESTADO DE GUARDADO ES NULLO ENTRA
         if (savedInstanceState == null) {
+//          INICIA LA TRANSACCION
             supportFragmentManager.beginTransaction()
+//              AGREGA UN FRAGMENTO A UNA ACTIVIDAD. SE INDICA DONDE SE COLOCARA EL FRAGMENTO
                 .add(R.id.container_frame_layout, QRScannerFragment())
+//              APLICA LOS CAMBIOS
                 .commit()
         }
+
+//      SE CREA UNA INSTANCIA, EVITA USAR EL findViewId
         binding = ActivityPantallaCapturarBinding.inflate(layoutInflater)
+//      ESTABLECE EL CONTENIDO DE LA ACTIVIDAD
         setContentView(binding.root)
 
+//      METEMOS LOS LAYOUTS EN VARIABLES USANDO LA INSTANCIA CREADA
         msgCorrecto = binding.mensajeCorrecto
         msgConfirmacion = binding.mensajeAlert
 
+//      INDICA QUE SE PUEDE REPRODUCIR UN SOLO EFECTO AL MISMO TIEMPO
         val maxStreams = 1
+//      SE CREA UN OBJETO CON ATRIBUTOS DEL SONIDO
         val audioAttributes = AudioAttributes.Builder()
-            .setUsage(AudioAttributes.USAGE_MEDIA)
-            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-            .build()
+            .setUsage(AudioAttributes.USAGE_MEDIA)  // INDICA QUE EL SONIDO SE UTILIZA COMO MUSICA O SONIDO EN SEGUNDO PLANO
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION) // INDICA QUE ES UN SONIDO DE NOTIFICACION O EFECTO DE SONIDO BREVE
+            .build() // FINALIZA LA CONSTRUCCION DE LOS ATRIBUTOS
         soundPool = SoundPool.Builder()
-            .setMaxStreams(maxStreams)
-            .setAudioAttributes(audioAttributes)
-            .build()
+            .setMaxStreams(maxStreams)// LE ASIGNA LA VARIABLE CREADA ANTERIORMENTE
+            .setAudioAttributes(audioAttributes) // LE ASIGNA LOS ATRIBUTOS CREADOS ANTERIORMENTE
+            .build() // FINALIZA LA CONSTRUCCION DEL OBJETO
 
 //      CARGA EL SONIDO DE PIDIDO PARA ESCANEAR
         beepSoundId = soundPool.load(this, R.raw.beep, 1)
@@ -103,11 +115,10 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
             arrEstacionTitulos!!.add(nombreEstacion)
         }
 
-//    SE CIERRAN
+//    SE CIERRAN LAS CONEXIONES
         cursorEstacion.close()
         cursorSector.close()
         cursorModulo.close()
-//    SE CIERRA LA BD
         db.close()
 
 //      ADAPTADOR PARA EL SPINNER DE MODULOS
@@ -200,7 +211,6 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                     seleccionCubetas = 4
                 }
             }
-
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
             }
@@ -255,13 +265,81 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
 //          EN ESPERA DE QUE SE LE DE CLICK AL BOTON DE CONFIRMAR CUBETAS
             btnConfirmar.setOnClickListener {
+
+//              CONSULTA PARA OBTENER LAS ULTIMAS 4 CUBETAS
+                val queryCubetas = "SELECT * FROM cubetascontadasberries WHERE numero_empleado = $num_empleado ORDER BY idcubeta DESC LIMIT 4"
+                val cursor = dbVer.rawQuery(queryCubetas, null)
+
+//              CONTADOR DE REGISTROS
+                val contadorCursor = cursor.count
+
+//              VARIABLE PARA SABER QUE LAS ULTIMAS 4 CUBETAS FUERON 0 (EL 0 INDICA QUE AUN NO SON LAS 4 CUBETAS)
+//              CUANDO YA SE CONTARON LAS 4 CUBETAS, EL 0 DE LAS ULTIMAS 4 CUBETAS SE VUELVE 1, INDICANDO QUE TIENE QUE PASAR 15 MINS PARA VOLVER A CONTAR
+                var puntero = true
+
+//              PUNTERO PARA SALIR DEL WHILE
+                var punt = 0
+
+//              BANDERA BOOLEAN PARA SABER CUANDO LA CUBETA ES PARTE DE OTRAS 4 ANTERIORES
+                var bandera = 0
+
+//              CICLO PARA OBTENER LOS RESULTADOS
+                while (cursor.moveToNext()) {
+                    val idcubeta = cursor.getInt(cursor.getColumnIndexOrThrow("idcubeta"))
+
+//                  SI EL PUNTERO PARA SALIR DEL WHILE ES 0 ENTRA
+                    if(punt == 0){
+//                      OBTIENE LA BANDERA DEL REGISTRO PARA VER SI ES 0
+                        bandera = cursor.getInt(cursor.getColumnIndexOrThrow("bandera"))
+                    }else{
+                        bandera = 1
+                    }
+                    val numempleado = cursor.getInt(cursor.getColumnIndexOrThrow("numero_empleado"))
+
+//                  IMPRIME LOS RESULTADOS
+                    println("EMPLEADO: $numempleado, IDCUB: $idcubeta, BANDERA: $bandera")
+
+//                  SI LA BANDERA DEL REGISTRO ES 0, ES PORQUE AUN NO SE HAN COMPLETADO LAS 4 CUBETAS
+                    if(bandera==0){
+//                      EL PUNTERO SIGUE SIENDO 0
+                        punt=0
+                    }else{
+//                      SI LA BANDERA YA TRAE UN 1, ES PORQUE AUN NO SE HAN CONTADO LAS 4
+                        punt=1
+                    }
+                }
+
+//              SI EL PUNTERO SE QUEDO EN 0 AL RECORRER PASAR EL WHILE, INDICA QUE SE PUEDEN ACTUALIZAR A 1 LOS REGISTROS
+//              PARA INDICAR QUE YA SE CONTARON LOS ULTIMOS 4 REGISTROS
+                if(punt==0){
+//                  SI TRAE LOS 4 RESULTADOS ES PORQUE YA SON LAS 4 CUBETAS, SI TRAE MENOS ES PORQUE SON LOS PRIMEROS REGISTROS
+                    if(contadorCursor==4){
+//                      SE ACTUALIZAN A ESTADO 1 PARA SABER QUE YA SE TOMARON EN CUENTA PARA JUNTAR LAS 4 CUBETAS
+                        val subconsulta = "(SELECT idcubeta FROM cubetascontadasberries WHERE numero_empleado = $num_empleado ORDER BY idcubeta DESC LIMIT 4)"
+                        val queryActualizar = "UPDATE cubetascontadasberries SET status = 1 WHERE idcubeta IN $subconsulta"
+                        dbVer.execSQL(queryActualizar)
+                    }else{
+//                      SI ENTRA AQUI ES PORQUE APENAS SON LOS PRIMEROS REGISTROS DEL COSECHADOR, EN RESUMEN, LLEVA MENOS DE 4 CUBETAS Y PUEDE INSERTAR OTRA
+                        for (i in 1..seleccionCubetas){
+                            val cadenaAgregarCubeta = "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,bandera) " +
+                                    "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$value',$seleccionFruto, 0)"
+                            dbVer.execSQL(cadenaAgregarCubeta)
+                        }
+                    }
+                }
+                if(punt==1){
+//                  ENTRA AQUI CUANDO LA CONSULTA SI TRAE LOS 4 ULTIMOS RESULTADOS PERO AUN SE PUEDE INSERTAR REGISTROS PARA COMPLETAS LAS 4 CUBETAS
+                    for (i in 1..seleccionCubetas){
+                        val cadenaAgregarCubeta = "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,bandera) " +
+                                "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$value',$seleccionFruto, 0)"
+                        dbVer.execSQL(cadenaAgregarCubeta)
+                    }
+                }
+
+
 //              OCULTA LA PANTALLA DE PREGUNTA
                 msgConfirmacion.isVisible = false
-                for (i in 1..seleccionCubetas){
-                    val cadenaAgregarCubeta = "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto) " +
-                            "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$value',$seleccionFruto)"
-                    dbVer.execSQL(cadenaAgregarCubeta)
-                }
+
 //              CIERRA LA BD AL TERMINAR EL CICLO FOR
                 dbVer.close()
                 db.close()

@@ -18,21 +18,9 @@ class subirDatosBD(db: SQLiteDatabase) {
             val fruto = cursor.getString(cursor.getColumnIndex("fruto"))
             val status = cursor.getInt(cursor.getColumnIndex("status"))
 
-            // Imprimir los datos en Logcat
+//          IMPRIMIR LOS DATOS EN LOGCAT
             Log.d("Datos", "ID: $id, Fecha: $fecha, Modulo ID: $moduloId, Estacion: $estacion, Sector: $sector, Empleado: $numeroEmpleado, Fruto: $fruto, Status: $status")
         }
         cursor.close()
     }
-//    fun subirDatosBD(db: SQLiteDatabase?) {
-//        val bd: SQLiteDatabase = getWritableDatabase()
-//        if (bd != null) {
-//            val columns = arrayOf("nombremodulo")
-//            val cursor = bd.query("modulosberries", columns, null, null, null, null, null)
-//            while (cursor.moveToNext()) {
-//                val nombremodulo = cursor.getString(cursor.getColumnIndexOrThrow("nombremodulo"))
-//                Log.d("TablaModulos", " Nombre: $nombremodulo")
-//            }
-//            bd.close()
-//        }
-//    }
 }
