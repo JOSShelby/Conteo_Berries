@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#DDDDDD"
+    android:background="@drawable/degradado_background"
     tools:context="com.agrizar.berriesconteo.MainActivity">
 
-
+    <!--    CONTENEDOR GENERAL DEL MENSAJE-->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -15,9 +15,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-
         >
-
+<!--        NOTIFICACION DE QUE LOS DATOS SE SUBIERON CORRECTAMENTE-->
         <LinearLayout
             android:id="@+id/imgSubido"
             android:layout_width="300dp"
@@ -28,7 +27,6 @@
             android:orientation="horizontal"
             android:weightSum="3"
             android:visibility="invisible"
-
             >
             <TextView
                 android:gravity="center"
@@ -38,60 +36,48 @@
                 android:layout_weight="1"
                 android:textColor="@color/white"
                 android:textStyle="bold"
-
                 />
-
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 android:src="@drawable/paloma"
                 android:background="@color/white"/>
-
         </LinearLayout>
-
-
     </RelativeLayout>
-
+<!--    CONTENEDOR GENERAL DE LA PANTALLA-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical">
-
+<!--        TITULO DE CONTEO BERRIES-->
         <TextView
             android:id="@+id/titulo1"
             android:textAlignment="center"
             android:layout_width="match_parent"
-            android:background="#45962f"
-            android:textColor="#ffffff"
+            android:background="@drawable/redondeo"
+            android:textColor="#FFFFFF"
             android:textSize="27dp"
             android:padding="15dp"
             android:layout_height="wrap_content"
             android:text="CONTEO BERRIES" />
-
-
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:orientation="horizontal"
-
-
+            android:orientation="vertical"
             >
-
+<!--            BOTON DE CAPTURAR-->
             <LinearLayout
                 android:id="@+id/btnCapturar"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_marginEnd="10dp"
+                android:layout_width="@dimen/width_botones"
+                android:layout_height="@dimen/height_botones"
+                android:layout_marginBottom="@dimen/margin_right"
                 android:background="@drawable/redondeo"
                 android:orientation="vertical"
                 android:weightSum="2"
                 >
-
-
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -101,30 +87,50 @@
                     android:textStyle="bold"
                     android:layout_weight="1"
                     />
-
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/capturar"
                     android:layout_weight="1"
                     />
-
-
             </LinearLayout>
-
-
+            <!--           BOTON DE CONSULTAR -->
             <LinearLayout
-                android:id="@+id/btnSubir"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_marginEnd="10dp"
+                android:id="@+id/btnConsultar"
+                android:layout_width="@dimen/width_botones"
+                android:layout_height="@dimen/height_botones"
+                android:layout_marginBottom="@dimen/margin_right"
                 android:background="@drawable/redondeo"
                 android:orientation="vertical"
                 android:weightSum="2"
                 >
-
-
-
+                <TextView
+                    android:id="@+id/txtConsultar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="CONSULTAR"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:layout_weight="1"
+                    />
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/buscar"
+                    android:layout_weight="1"
+                    />
+            </LinearLayout>
+<!--            BOTONO DE SUBIR-->
+            <LinearLayout
+                android:id="@+id/btnSubir"
+                android:layout_width="@dimen/width_botones"
+                android:layout_height="@dimen/height_botones"
+                android:layout_marginBottom="@dimen/margin_right"
+                android:background="@drawable/redondeo"
+                android:orientation="vertical"
+                android:weightSum="2"
+                >
                 <TextView
                     android:id="@+id/txtSubir"
                     android:layout_width="match_parent"
@@ -135,22 +141,13 @@
                     android:textStyle="bold"
                     android:layout_weight="1"
                     />
-
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/subir"
                     android:layout_weight="1"
                     />
-
-
             </LinearLayout>
-
-
-
-
-
         </LinearLayout>
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

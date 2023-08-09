@@ -12,14 +12,16 @@ import androidx.annotation.Nullable;
 import com.example.berriesconteo.R;
 
 public class SplashActivity extends Activity {
-    private final int DURACION_SPLASH = 1000;
+    private final int DURACION_SPLASH = 1000; // 1 SEGUNDO DURARA LA PANTALLA SPLASH
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+//      COLOCA LA PANTALLA COMPLETA EN EL DISPOSITIVO
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
 
         new Handler().postDelayed(new Runnable() {

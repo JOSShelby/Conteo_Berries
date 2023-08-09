@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--    MEDIDAS PARA UN DISPOSITIVO CHICO-->
+
+    <!--    MARGENES-->
+    <dimen name="margin_top">40dp</dimen>
+    <dimen name="margin_left">20dp</dimen>
+    <dimen name="margin_right">20dp</dimen>
+    <dimen name="margin">40dp</dimen>
+
+    <!--    BOTONES PRINCIPALES-->
+    <dimen name="height_botones">150dp</dimen>
+    <dimen name="width_botones">150dp</dimen>
+
+    <!--    BOTON BUSCAR-->
+    <dimen name="height_botonBuscar">50dp</dimen>
+    <dimen name="width_botonBuscar">50dp</dimen>
+    <dimen name="margin_topBoton">30dp</dimen>
+
+    <!--    SPINERS-->
+    <dimen name="height_spiners">50dp</dimen>
+
+    <!--    ESCANER CON CAMARA-->
+    <dimen name="height_scaner">100dp</dimen>
+    <dimen name="width_scaner">2000dp</dimen>
+
+    <!--    CAJA DONDE APARECE EL NUMERO DE EMPLEADO-->
+    <dimen name="heigth_num_empleado">100dp</dimen>
+
+</resources>
