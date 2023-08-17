@@ -1,9 +1,13 @@
 package com.agrizar.berriesconteo
 
 import QRScannerFragment
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.media.AudioAttributes
 import android.media.SoundPool
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
@@ -11,14 +15,22 @@ import android.view.animation.AlphaAnimation
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+
 import com.example.berriesconteo.R
 import com.example.berriesconteo.databinding.ActivityPantallaCapturarBinding
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.util.Calendar
 
 class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInteractionListener {
@@ -28,6 +40,8 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
     private lateinit var dbBerries: DBBerries
     private lateinit var msgCorrecto: RelativeLayout
     private lateinit var msgConfirmacion: RelativeLayout
+    private lateinit var imgCorrecto : ImageView
+    private lateinit var txtCorrecto : TextView
     private lateinit var soundPool: SoundPool
     private var beepSoundId = 0
     var seleccionEstacion = 0
@@ -36,7 +50,44 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
     var seleccionFruto = 0
     var seleccionCubetas = 1
 
+    var seleccionLote = 0
+
+    private val CAMERA_PERMISSION_CODE = 101
+
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == CAMERA_PERMISSION_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // El usuario concedió el permiso, puedes acceder a la cámara aquí
+                println("permiso concedido")
+            } else {
+                // El usuario denegó el permiso, toma medidas adecuadas (mostrar mensaje, deshabilitar funciones, etc.)
+                println("permiso no concedido")
+            }
+        }
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            // El permiso de la cámara ya está concedido, puedes acceder a la cámara aquí
+           println("funciona")
+        } else {
+            // Si el permiso no está concedido, solicitarlo al usuario
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_CODE)
+        }
+
+
+
+
+
+
+
+
+
 //      ESTABLECE LA PANTALLA COMPLETA
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
@@ -61,6 +112,9 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 //      METEMOS LOS LAYOUTS EN VARIABLES USANDO LA INSTANCIA CREADA
         msgCorrecto = binding.mensajeCorrecto
         msgConfirmacion = binding.mensajeAlert
+        txtCorrecto = binding.txtCorrecto
+        imgCorrecto = binding.imgCorrecto
+
 
 //      INDICA QUE SE PUEDE REPRODUCIR UN SOLO EFECTO AL MISMO TIEMPO
         val maxStreams = 1
@@ -77,88 +131,14 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 //      CARGA EL SONIDO DE PIDIDO PARA ESCANEAR
         beepSoundId = soundPool.load(this, R.raw.beep, 1)
 
-//      SPINNER DE MODULOS TRAIDO DE LA BD
-        var spinnermodulo = binding.inpModulo
-        var arrModuloTitulos : MutableList<String>? = mutableListOf()
-        var dbBerries = DBBerries(applicationContext," DBBerries", null, R.string.versionBD);
-        val db = dbBerries.readableDatabase
-        val columns = arrayOf("idmodulo","nombremodulo")
-        val cursorModulo: Cursor = db.query("modulosberries", columns, null, null, null, null, "idmodulo ASC")
-        arrModuloTitulos!!.add("MODULO...")
-        while (cursorModulo.moveToNext()) {
-            val nombremodulo = cursorModulo.getString(cursorModulo.getColumnIndexOrThrow("nombremodulo"))
-            println(nombremodulo)
-            arrModuloTitulos!!.add(nombremodulo)
-        }
 
-        //SPINNER DE SECTORES TRAIDO DE LA BD
-        var spinnerSector = binding.inpSector
-        var arrSectorTitulos : MutableList<String>? = mutableListOf()
-        val columnsSector = arrayOf("idsector","nombresector")
-        val cursorSector: Cursor = db.query("sectoresberries", columnsSector, null, null, null, null, "idsector ASC")
-        arrSectorTitulos!!.add("SECTOR...")
-        while (cursorSector.moveToNext()) {
-            val nombreSector = cursorSector.getString(cursorSector.getColumnIndexOrThrow("nombresector"))
-            println(nombreSector)
-            arrSectorTitulos!!.add(nombreSector)
-        }
+        //      SPINNER DE MODULOS TRAIDO DE LA BD
+        var spinnerLugar = binding.inpLugar
+        var arrLugar : MutableList<String>? = mutableListOf()
 
-//       SPINNER DE ESTACIONES TRAIDO DE LA BD
-        var spinnerEstacion = binding.inpEstacion
-        var arrEstacionTitulos : MutableList<String>? = mutableListOf()
-        val columnsEstacion = arrayOf("idestacion","nombreestacion")
-        val cursorEstacion: Cursor = db.query("estacionberries", columnsEstacion, null, null, null, null, "idestacion ASC")
-        arrEstacionTitulos!!.add("ESTACION...")
-        while (cursorEstacion.moveToNext()) {
-            val nombreEstacion = cursorEstacion.getString(cursorEstacion.getColumnIndexOrThrow("nombreestacion"))
-            println(nombreEstacion)
-            arrEstacionTitulos!!.add(nombreEstacion)
-        }
-
-//    SE CIERRAN LAS CONEXIONES
-        cursorEstacion.close()
-        cursorSector.close()
-        cursorModulo.close()
-        db.close()
-
-//      ADAPTADOR PARA EL SPINNER DE MODULOS
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, arrModuloTitulos!!)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnermodulo.adapter = adapter
-        spinnermodulo.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                seleccionModulo = position
-            }
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
-            }
-        }
-
-//      ADAPTADOR PARA EL SPINNER DE SECTORES
-        val adapterSector = ArrayAdapter(this, android.R.layout.simple_spinner_item, arrSectorTitulos!!)
-        adapterSector.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerSector.adapter = adapterSector
-        spinnerSector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                seleccionSector = position
-            }
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
-            }
-        }
-
-//      ADAPTADOR PARA EL SPINNER DE ESTACIONES
-        val adapterEstacion = ArrayAdapter(this, android.R.layout.simple_spinner_item, arrEstacionTitulos!!)
-        adapterSector.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerEstacion.adapter = adapterEstacion
-        spinnerEstacion.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                seleccionEstacion = position
-            }
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
-            }
-        }
+        arrLugar!!.add("LUGAR...")
+        arrLugar!!.add("San Francisco")
+        arrLugar!!.add("AGZ")
 
 //      ADAPTADOR PARA EL SPINNER DE FRUTO
         val spinnerFruto = binding.inpFruto
@@ -167,7 +147,6 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
         arrFrutoTitulos!!.add("FRAMBUESA")
         arrFrutoTitulos!!.add("ZARZAMORA")
         val adapterFruto = ArrayAdapter(this, android.R.layout.simple_spinner_item, arrFrutoTitulos!!)
-        adapterSector.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerFruto.adapter = adapterFruto
         spinnerFruto.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -194,7 +173,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
         arrCubetas!!.add(3)
         arrCubetas!!.add(4)
         val adapterCubeta = ArrayAdapter(this, android.R.layout.simple_spinner_item, arrCubetas!!)
-        adapterSector.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
         spinnerCubetas.adapter = adapterCubeta
         spinnerCubetas.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -211,15 +190,157 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                     seleccionCubetas = 4
                 }
             }
+
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
             }
         }
-    }
+
+
+
+        val adapterLugar = ArrayAdapter(this, android.R.layout.simple_spinner_item, arrLugar!!)
+        adapterLugar.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerLugar.adapter = adapterLugar
+        spinnerLugar.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
+                var aparecerSpinners = false;
+
+                if(position == 0 ){
+                    aparecerSpinners = false;
+                }
+                if(position == 1 || position == 2 ){
+                    aparecerSpinners = true;
+
+                    if(position==1){
+                        seleccionLote=1
+                    }else{
+                        seleccionLote=2
+                    }
+
+                }
+
+
+                //SPINNER DE MODULOS TRAIDO DE LA BD
+                var spinnermodulo = binding.inpModulo
+                var arrModuloTitulos : MutableList<String>? = mutableListOf()
+                var dbBerries = DBBerries(applicationContext," DBBerries", null, R.string.versionBD);
+                val db = dbBerries.readableDatabase
+
+                val queryModulo = "SELECT idmodulo,nombremodulo FROM modulosberries WHERE idmodulo in (SELECT idmodulo FROM relacionmodulolote WHERE idlote = $seleccionLote )  ORDER BY idmodulo ASC"
+                val cursorModulo = db.rawQuery(queryModulo, null)
+
+                arrModuloTitulos!!.add("MODULO...")
+                while (cursorModulo.moveToNext()) {
+                    val nombremodulo = cursorModulo.getString(cursorModulo.getColumnIndexOrThrow("nombremodulo"))
+                    println(nombremodulo)
+                    arrModuloTitulos!!.add(nombremodulo)
+                }
+
+                //SPINNER DE SECTORES TRAIDO DE LA BD
+                var spinnerSector = binding.inpSector
+                var arrSectorTitulos : MutableList<String>? = mutableListOf()
+
+                val querySector = "SELECT idsector,nombresector FROM sectoresberries WHERE idsector in (SELECT idsector FROM relacionsectorlote WHERE idlote = $seleccionLote )  ORDER BY idsector ASC"
+                val cursorSector = db.rawQuery(querySector, null)
+
+                arrSectorTitulos!!.add("SECTOR...")
+                while (cursorSector.moveToNext()) {
+                    val nombreSector = cursorSector.getString(cursorSector.getColumnIndexOrThrow("nombresector"))
+                    println(nombreSector)
+                    arrSectorTitulos!!.add(nombreSector)
+                }
+
+//       SPINNER DE ESTACIONES TRAIDO DE LA BD
+                var spinnerEstacion = binding.inpEstacion
+                var arrEstacionTitulos : MutableList<String>? = mutableListOf()
+
+                val queryEstacion = "SELECT idestacion,nombreestacion FROM estacionberries WHERE idestacion in (SELECT idestacion FROM relacionestacionlote WHERE idlote = $seleccionLote )  ORDER BY idestacion ASC"
+                val cursorEstacion = db.rawQuery(queryEstacion, null)
+
+
+                arrEstacionTitulos!!.add("ESTACION...")
+                while (cursorEstacion.moveToNext()) {
+                    val nombreEstacion = cursorEstacion.getString(cursorEstacion.getColumnIndexOrThrow("nombreestacion"))
+                    println(nombreEstacion)
+                    arrEstacionTitulos!!.add(nombreEstacion)
+                }
+
+//    SE CIERRAN LAS CONEXIONES
+                cursorEstacion.close()
+                cursorSector.close()
+                cursorModulo.close()
+                db.close()
+
+//      ADAPTADOR PARA EL SPINNER DE MODULOS
+                val adapter = ArrayAdapter(this@pantalla_capturar, android.R.layout.simple_spinner_item, arrModuloTitulos!!)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinnermodulo.adapter = adapter
+                spinnermodulo.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                        seleccionModulo = position
+                    }
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                        // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
+                    }
+                }
+
+//      ADAPTADOR PARA EL SPINNER DE SECTORES
+                val adapterSector = ArrayAdapter(this@pantalla_capturar, android.R.layout.simple_spinner_item, arrSectorTitulos!!)
+                adapterSector.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinnerSector.adapter = adapterSector
+                spinnerSector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                        seleccionSector = position
+                    }
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                        // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
+                    }
+                }
+
+//      ADAPTADOR PARA EL SPINNER DE ESTACIONES
+                val adapterEstacion = ArrayAdapter(this@pantalla_capturar, android.R.layout.simple_spinner_item, arrEstacionTitulos!!)
+                adapterSector.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinnerEstacion.adapter = adapterEstacion
+                spinnerEstacion.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                        seleccionEstacion = position
+                    }
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                        // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
+                    }
+                }
+
+
+                spinnerCubetas.isVisible = aparecerSpinners
+                spinnerFruto.isVisible = aparecerSpinners
+                spinnerEstacion.isVisible = aparecerSpinners
+                spinnerSector.isVisible = aparecerSpinners
+                spinnermodulo.isVisible = aparecerSpinners
+
+
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
+            }
+        }
+
+
+
+
+
+
+        }
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onValueReturned(value: String) {
 //      MUESTRA EL NUMERO DE EMPLEADO EN EL LABEL
         val num_empleadoMostrar = findViewById<TextView>(R.id.inpNumEmpleado)
         num_empleadoMostrar.text = "Número de empleado: $value"
+
+
+
+
 
 //      TRAE EL CONTENIDO DEL XML ACTIVITY_PANTALLA_CAPTURAR
         val btnConfirmar = findViewById<Button>(R.id.botonConfirmacion)
@@ -267,74 +388,144 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
             btnConfirmar.setOnClickListener {
 
 //              CONSULTA PARA OBTENER LAS ULTIMAS 4 CUBETAS
-                val queryCubetas = "SELECT * FROM cubetascontadasberries WHERE numero_empleado = $num_empleado ORDER BY idcubeta DESC LIMIT 4"
+                val queryCubetas = "SELECT * FROM cubetascontadasberries WHERE numero_empleado = '$num_empleado' AND bandera = 0 "
                 val cursor = dbVer.rawQuery(queryCubetas, null)
 
 //              CONTADOR DE REGISTROS
                 val contadorCursor = cursor.count
 
+                val sumaTotalCubetas = cursor.count + seleccionCubetas
+
 //              VARIABLE PARA SABER QUE LAS ULTIMAS 4 CUBETAS FUERON 0 (EL 0 INDICA QUE AUN NO SON LAS 4 CUBETAS)
 //              CUANDO YA SE CONTARON LAS 4 CUBETAS, EL 0 DE LAS ULTIMAS 4 CUBETAS SE VUELVE 1, INDICANDO QUE TIENE QUE PASAR 15 MINS PARA VOLVER A CONTAR
-                var puntero = true
+
 
 //              PUNTERO PARA SALIR DEL WHILE
                 var punt = 0
 
 //              BANDERA BOOLEAN PARA SABER CUANDO LA CUBETA ES PARTE DE OTRAS 4 ANTERIORES
                 var bandera = 0
+                var contCuatroMas = 0
+
+                if(contadorCursor==4){
+
+                    bandera = 1;// la cuenta de cubetas esta en el limite
+
+                }
+
+                if(sumaTotalCubetas>4){
+
+                    contCuatroMas = 1 // la seccion y el conteo son mas de 4
+                }
 
 //              CICLO PARA OBTENER LOS RESULTADOS
                 while (cursor.moveToNext()) {
                     val idcubeta = cursor.getInt(cursor.getColumnIndexOrThrow("idcubeta"))
-
-//                  SI EL PUNTERO PARA SALIR DEL WHILE ES 0 ENTRA
-                    if(punt == 0){
-//                      OBTIENE LA BANDERA DEL REGISTRO PARA VER SI ES 0
-                        bandera = cursor.getInt(cursor.getColumnIndexOrThrow("bandera"))
-                    }else{
-                        bandera = 1
-                    }
                     val numempleado = cursor.getInt(cursor.getColumnIndexOrThrow("numero_empleado"))
+                    val fecha = cursor.getString(cursor.getColumnIndexOrThrow("fecha"))
 
 //                  IMPRIME LOS RESULTADOS
-                    println("EMPLEADO: $numempleado, IDCUB: $idcubeta, BANDERA: $bandera")
+                    println("EMPLEADO: $numempleado, IDCUB: $idcubeta, BANDERA: $bandera FECHA: $fecha")
 
-//                  SI LA BANDERA DEL REGISTRO ES 0, ES PORQUE AUN NO SE HAN COMPLETADO LAS 4 CUBETAS
-                    if(bandera==0){
-//                      EL PUNTERO SIGUE SIENDO 0
-                        punt=0
-                    }else{
-//                      SI LA BANDERA YA TRAE UN 1, ES PORQUE AUN NO SE HAN CONTADO LAS 4
-                        punt=1
-                    }
+//
                 }
 
-//              SI EL PUNTERO SE QUEDO EN 0 AL RECORRER PASAR EL WHILE, INDICA QUE SE PUEDEN ACTUALIZAR A 1 LOS REGISTROS
-//              PARA INDICAR QUE YA SE CONTARON LOS ULTIMOS 4 REGISTROS
-                if(punt==0){
-//                  SI TRAE LOS 4 RESULTADOS ES PORQUE YA SON LAS 4 CUBETAS, SI TRAE MENOS ES PORQUE SON LOS PRIMEROS REGISTROS
-                    if(contadorCursor==4){
-//                      SE ACTUALIZAN A ESTADO 1 PARA SABER QUE YA SE TOMARON EN CUENTA PARA JUNTAR LAS 4 CUBETAS
-                        val subconsulta = "(SELECT idcubeta FROM cubetascontadasberries WHERE numero_empleado = $num_empleado ORDER BY idcubeta DESC LIMIT 4)"
-                        val queryActualizar = "UPDATE cubetascontadasberries SET status = 1 WHERE idcubeta IN $subconsulta"
-                        dbVer.execSQL(queryActualizar)
-                    }else{
-//                      SI ENTRA AQUI ES PORQUE APENAS SON LOS PRIMEROS REGISTROS DEL COSECHADOR, EN RESUMEN, LLEVA MENOS DE 4 CUBETAS Y PUEDE INSERTAR OTRA
-                        for (i in 1..seleccionCubetas){
-                            val cadenaAgregarCubeta = "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,bandera) " +
-                                    "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$value',$seleccionFruto, 0)"
-                            dbVer.execSQL(cadenaAgregarCubeta)
+
+
+                    if(bandera == 1){
+                        println("tiene 4 registros")
+
+                        //CONSULTA PARA OBTENER LAS ULTIMA hora de su ultimo registro
+                        val queryCubetas = "SELECT idcubeta,fecha FROM cubetascontadasberries WHERE numero_empleado = '$num_empleado' AND bandera = 0 ORDER BY idcubeta DESC LIMIT 1"
+                        val cursor = dbVer.rawQuery(queryCubetas, null)
+
+
+                        while (cursor.moveToNext()) {
+                            val fecha = cursor.getString(cursor.getColumnIndexOrThrow("fecha"))
+
+                            val inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                            val outputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+
+                            // Convertir la cadena de fecha en LocalDateTime
+                            val inputDateTime = LocalDateTime.parse(fecha, inputFormat)
+
+                            // Sumar 15 minutos
+                            val newDateTime = inputDateTime.plus(15, ChronoUnit.MINUTES)
+
+                            // Formatear la nueva fecha y hora como cadena
+                            val outputDateStr = newDateTime.format(outputFormat)
+
+                            println("Fecha y hora original: $fecha")
+                            println("Nueva fecha y hora: $outputDateStr")
+
+
+                            val currentDateTime = LocalDateTime.now()
+
+                            // Comparar la hora actual con la nueva hora
+
+
+                            println("Hora actual: $currentDateTime")
+                            println("Nueva hora después de sumar 15 minutos: $newDateTime")
+
+                            if(currentDateTime>newDateTime){
+
+                                println("es mayor $currentDateTime")
+
+                                val subconsulta = "(SELECT idcubeta FROM cubetascontadasberries WHERE numero_empleado = '$num_empleado' AND bandera = 0 )"
+                                val queryActualizar = "UPDATE cubetascontadasberries SET status = 1 , bandera = 1 WHERE idcubeta IN $subconsulta"
+                                dbVer.execSQL(queryActualizar)
+
+
+                                for (i in 1..seleccionCubetas){
+                                    val cadenaAgregarCubeta = "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,bandera) " +
+                                            "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$value',$seleccionFruto, 0)"
+                                    dbVer.execSQL(cadenaAgregarCubeta)
+                                }
+
+                                pantallaMensaje(1)
+
+
+                            }else{
+                                println("es mayor $newDateTime")
+
+                                txtCorrecto.text = "Error ya fueron pitadas 4 cubetas al empleado $num_empleado \n la ultima cubeta fue pitada a las $fecha \n podra volver a pitar el empleado dentro de 15 min. "
+
+                                pantallaMensaje(3)
+
+
+                            }
+
                         }
+
+
+
+                    }else{
+                        println("aun no llena 4 registros")
+
+                        println("contador de cubetas $contCuatroMas")
+
+                        println("suma cubetas $sumaTotalCubetas")
+                        if(contCuatroMas==1){
+                            println("la suma del contador y las cubetas registradas da mas de 4")
+                            //funcion para traer el mensaje
+                            pantallaMensaje(2)
+                        }else{
+
+                            for (i in 1..seleccionCubetas){
+                                val cadenaAgregarCubeta = "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,bandera) " +
+                                        "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$value',$seleccionFruto, 0)"
+                                dbVer.execSQL(cadenaAgregarCubeta)
+                            }
+
+                            //funcion para traer el mensaje
+                            pantallaMensaje(1)
+
+
+                        }
+
+
                     }
-                }
-                if(punt==1){
-//                  ENTRA AQUI CUANDO LA CONSULTA SI TRAE LOS 4 ULTIMOS RESULTADOS PERO AUN SE PUEDE INSERTAR REGISTROS PARA COMPLETAS LAS 4 CUBETAS
-                    for (i in 1..seleccionCubetas){
-                        val cadenaAgregarCubeta = "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,bandera) " +
-                                "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$value',$seleccionFruto, 0)"
-                        dbVer.execSQL(cadenaAgregarCubeta)
-                    }
-                }
+
 
 
 //              OCULTA LA PANTALLA DE PREGUNTA
@@ -344,23 +535,8 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                 dbVer.close()
                 db.close()
 
-//              ANIMACION PARA APARECER EL MENSAJE DE EXITO DE INSERSION
-                val fadeInAnimation = AlphaAnimation(5f, 1f)
-                fadeInAnimation.duration = 1500 // DURACION EN MILISEGUNDOS
 
-//              ANIMACION PARA ESPERAR
-                val waitAnimation = AlphaAnimation(1f, 1f)
-                fadeInAnimation.duration = 1000 // DURACION EN MILISEGUNDOS
-
-//              ANIMACION PARA DESAPARECER EL MENSAJE DE EXITO DE INSERSION
-                val fadeOutAnimation = AlphaAnimation(1f, 0f)
-                fadeOutAnimation.duration = 500 // DURACION EN MILISEGUNDOS
-
-//              SE PINTA EL MENSAJE DE EXITO DE INSERSION CON SU ANIMACION DE ENTRADA Y SALIDA
-                msgCorrecto.startAnimation(fadeInAnimation)
-                msgCorrecto.postDelayed({
-                    msgCorrecto.startAnimation(fadeOutAnimation)
-                },1000)
+//
             }
 
 //          EN ESPERA DE QUE SE LE DE CLICK AL BOTON DE RECHAZAR CUBETAS
@@ -370,5 +546,56 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
         }else{
             Toast.makeText(this ,"Ponga los Datos Minimos",Toast.LENGTH_SHORT).show()
         }
+    }
+
+
+    fun pantallaMensaje(tipo:Int){
+
+        var delay:Long = 0;
+
+        //mensaje de correcto
+        if(tipo==1){
+            txtCorrecto.text = "Registrado Correctamente"
+            imgCorrecto.setImageResource(R.drawable.correcto)
+            delay=1;
+
+        }
+        //mensaje de mas de 4 cubetas que fueron intentadas meter
+        if(tipo==2){
+            txtCorrecto.text = "Error se trato de meter mas de 4 cubetas "
+            imgCorrecto.setImageResource(R.drawable.error)
+            delay=3;
+
+        }
+        //mensaje de mas de 4 cubetas que fueron intentadas meter
+        if(tipo==3){
+
+            imgCorrecto.setImageResource(R.drawable.error)
+            delay=3;
+
+        }
+        //animaciones
+
+
+//              ANIMACION PARA APARECER EL MENSAJE DE EXITO DE INSERSION
+        val fadeInAnimation = AlphaAnimation(5f, 1f)
+        fadeInAnimation.duration = 1500 * delay // DURACION EN MILISEGUNDOS
+
+//              ANIMACION PARA ESPERAR
+        val waitAnimation = AlphaAnimation(1f, 1f)
+        fadeInAnimation.duration = 1000 * delay// DURACION EN MILISEGUNDOS
+
+//              ANIMACION PARA DESAPARECER EL MENSAJE DE EXITO DE INSERSION
+        val fadeOutAnimation = AlphaAnimation(1f, 0f)
+        fadeOutAnimation.duration = 500* delay // DURACION EN MILISEGUNDOS
+
+
+
+        //SE PINTA EL MENSAJE DE EXITO DE INSERSION CON SU ANIMACION DE ENTRADA Y SALIDA
+        msgCorrecto.startAnimation(fadeInAnimation)
+        msgCorrecto.postDelayed({
+            msgCorrecto.startAnimation(fadeOutAnimation)
+        },1000)
+
     }
 }

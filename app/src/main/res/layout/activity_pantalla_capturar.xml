@@ -38,8 +38,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:weightSum="5"
+                android:weightSum="6"
                 >
+                <!--                SPINNER DE MODULO-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/height_spiners"
+                    android:background="@drawable/spinners"
+                    android:layout_weight="1"
+                    android:weightSum="3"
+                    android:layout_margin="5dp"
+                    android:elevation="2dp"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/height_spiners"
+                        android:gravity="center"
+                        android:layout_weight="2"
+                        android:text="Lugar : "
+                        android:textStyle="bold"
+                        />
+                    <Spinner
+                        android:id="@+id/inpLugar"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/height_spiners"
+                        android:textAlignment="center"
+                        android:layout_weight="1"
+                        android:hint="Modulo"
+                        />
+                </LinearLayout>
+
 <!--                SPINNER DE MODULO-->
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -65,6 +93,7 @@
                         android:textAlignment="center"
                         android:layout_weight="1"
                         android:hint="Modulo"
+                        android:visibility="invisible"
                         />
                 </LinearLayout>
 <!--                SPINNER DE SECTOR-->
@@ -93,6 +122,7 @@
                     android:hint="Sector"
                     android:textAlignment="center"
                     android:layout_weight="1"
+                    android:visibility="invisible"
                     />
                 </LinearLayout>
 <!--                SPINNER DE ESTACION-->
@@ -121,6 +151,7 @@
                     android:hint="Modulo"
                     android:textAlignment="center"
                     android:layout_weight="1"
+                    android:visibility="invisible"
                     />
                 </LinearLayout>
 <!--            SPINNER DE FRUTO-->
@@ -149,6 +180,7 @@
                         android:hint="Fruto"
                         android:textAlignment="center"
                         android:layout_weight="1"
+                        android:visibility="invisible"
                         />
                 </LinearLayout>
 <!--            SPINNER DE CUBETAS-->
@@ -177,6 +209,7 @@
                         android:hint="Cubetas"
                         android:textAlignment="center"
                         android:layout_weight="1"
+                        android:visibility="invisible"
                         />
                 </LinearLayout>
             </LinearLayout>
@@ -300,12 +333,14 @@
         android:visibility="invisible"
         >
         <ImageView
+            android:id="@+id/imgCorrecto"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:src="@drawable/correcto" />
         <TextView
+            android:id="@+id/txtCorrecto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Registrado Correctamente"

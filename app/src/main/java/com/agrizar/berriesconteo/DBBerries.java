@@ -20,7 +20,7 @@ public class DBBerries extends SQLiteOpenHelper {
             "moduloid integer references modulosberries(idmodulo)," +
             "estacion integer references estacionberries(idestacion)," +
             "sector integer references sectoresberries(idsector)," +
-            "numero_empleado integer," +
+            "numero_empleado TEXT," +
             "fruto TEXT," +
             "status integer," +
             "bandera integer);";
@@ -30,6 +30,12 @@ public class DBBerries extends SQLiteOpenHelper {
             "nombremodulo TEXT," +
             "status INTEGER" +
             ");";
+
+    //    ESTRUCTURA DE LA TABLA RELACIOMODULOLOTE
+    private static final String TABLA_RELACIONMODULOLOTE = "CREATE TABLE relacionmodulolote(" +
+            "idmodulo INTEGER,  " +
+            "idlote INTEGER" +
+            ");";
 //    ESTRUCTURA DE LA TABLA SECTORESBERRIES
     private static final String TABLA_SECTORES = "CREATE TABLE sectoresberries(" +
             "idsector INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -37,12 +43,26 @@ public class DBBerries extends SQLiteOpenHelper {
             "idmodulo integer references modulosberries(idmodulo)," +
             "status integer" +
             ");";
+
+    //    ESTRUCTURA DE LA TABLA RELACIOMODULOLOTE
+    private static final String TABLA_RELACIONSECTORESLOTE = "CREATE TABLE relacionsectorlote(" +
+            "idsector INTEGER,  " +
+            "idlote INTEGER" +
+            ");";
 //    ESTRUCTURA DE LA TABLA ESTACIONBERRIES
     private static final String TABLA_ESTACIONES = "create table estacionberries(" +
             "idestacion INTEGER PRIMARY KEY AUTOINCREMENT," +
             "nombreestacion TEXT," +
             "status integer" +
             ");";
+
+    //    ESTRUCTURA DE LA TABLA RELACIOMODULOLOTE
+    private static final String TABLA_RELACIONESTACIONLOTE = "CREATE TABLE relacionestacionlote(" +
+            "idestacion INTEGER,  " +
+            "idlote INTEGER" +
+            ");";
+
+
 //    NOMBRE DE LA BASE DE DATOS Y VERSION
     public DBBerries(Context context, String name, SQLiteDatabase.CursorFactory factory, int version){
         super(context, NOMBRE_BD, null, version);
@@ -53,6 +73,9 @@ public class DBBerries extends SQLiteOpenHelper {
         db.execSQL(TABLA_MODULOS);      //EJECUTA LA ESTRUCTURA PARA CREAR LA TABLA MODULOS
         db.execSQL(TABLA_SECTORES);     //EJECUTA LA ESTRUCTURA PARA CREAR LA TABLA SECTORES
         db.execSQL(TABLA_ESTACIONES);   //EJECUTA LA ESTRUCTURA PARA CREAR LA TABLA ESTACIONES
+        db.execSQL(TABLA_RELACIONMODULOLOTE);   //EJECUTA LA ESTRUCTURA PARA CREAR LA TABLA TABLA_RELACIONMODULOLOTE
+        db.execSQL(TABLA_RELACIONSECTORESLOTE);   //EJECUTA LA ESTRUCTURA PARA CREAR LA TABLA TABLA_RELACIONSECTORESLOTE
+        db.execSQL(TABLA_RELACIONESTACIONLOTE);   //EJECUTA LA ESTRUCTURA PARA CREAR LA TABLA TABLA_RELACIONESTACIONLOTE
 
 //      INSERT DE LA TABLA MODULOS
         try {
@@ -82,6 +105,31 @@ public class DBBerries extends SQLiteOpenHelper {
                     ",('ESTACIÓN 10.5',1),('ESTACIÓN 11',1),('ESTACIÓN 12',1),('ESTACIÓN 13',1),('ESTACIÓN 14',1),('ESTACIÓN 15',1),('ESTACIÓN 16',1),('ESTACIÓN 17',1)" +
                     ",('ESTACIÓN 18',1),('ESTACIÓN 19',1);";
             db.execSQL(cadenaEstacion);
+        }catch (SQLException e){
+
+        }
+
+        //      INSERT DE LA TABLA ESTACION
+        try{
+            String cadenaEModulo = "INSERT INTO relacionmodulolote (idmodulo, idlote) " +
+                    "VALUES (1,1), (2,1),(3,1),(1,2);";
+            db.execSQL(cadenaEModulo);
+        }catch (SQLException e){
+
+        }
+
+        try{
+            String cadenaRSector = "INSERT INTO relacionsectorlote (idsector, idlote) " +
+                    "VALUES (1,1), (2,1),(3,1),(4,1),(5,1), (6,1),(7,1),(8,1),(9,1), (10,1),(11,1),(12,1),(13,1),(14,1),(15,1),(16,1),(17,1),(18,1),(19,1),(20,1),(21,1), (22,1),(23,1),(24,1),(25,1), (26,1),(27,1),(28,1),(29,1), (30,1),(31,1),(32,1),(33,1), (34,1),(35,1),(36,1),(37,1),(38,1),(1,2), (2,2),(3,2),(4,2),(5,2), (6,2),(7,2),(8,2);";
+            db.execSQL(cadenaRSector);
+        }catch (SQLException e){
+
+        }
+
+        try{
+            String cadenaREstacion = "INSERT INTO relacionestacionlote (idestacion, idlote) " +
+                    "VALUES (1,1),(2,1),(3,1),(4,1),(5,1), (6,1),(7,1),(8,1),(9,1), (10,1),(11,1),(12,1),(13,1),(14,1),(15,1),(16,1),(17,1),(18,1),(19,1),(20,1),(1,2),(2,2),(3,2),(4,2),(5,2) ;";
+            db.execSQL(cadenaREstacion);
         }catch (SQLException e){
 
         }
@@ -134,5 +182,33 @@ public class DBBerries extends SQLiteOpenHelper {
         }catch (SQLException e){
 
         }
+
+        //      INSERT DE LA TABLA ESTACION
+        try{
+            String cadenaEModulo = "INSERT INTO relacionmodulolote (idmodulo, idlote) " +
+                    "VALUES (1,1), (2,1),(3,1),(1,2);";
+            sqLiteDatabase.execSQL(cadenaEModulo);
+        }catch (SQLException e){
+
+        }
+
+        try{
+            String cadenaRSector = "INSERT INTO relacionsectorlote (idsector, idlote) " +
+                    "VALUES (1,1), (2,1),(3,1),(4,1),(5,1), (6,1),(7,1),(8,1),(9,1), (10,1),(11,1),(12,1),(13,1),(14,1),(15,1),(16,1),(17,1),(18,1),(19,1),(20,1),(21,1), (22,1),(23,1),(24,1),(25,1), (26,1),(27,1),(28,1),(29,1), (30,1),(31,1),(32,1),(33,1), (34,1),(35,1),(36,1),(37,1),(38,1),(1,2), (2,2),(3,2),(4,2),(5,2), (6,2),(7,2),(8,2);";
+            sqLiteDatabase.execSQL(cadenaRSector);
+        }catch (SQLException e){
+
+        }
+
+        try{
+            String cadenaREstacion = "INSERT INTO relacionestacionlote (idestacion, idlote) " +
+                    "VALUES (1,1),(2,1),(3,1),(4,1),(5,1), (6,1),(7,1),(8,1),(9,1), (10,1),(11,1),(12,1),(13,1),(14,1),(15,1),(16,1),(17,1),(18,1),(19,1),(20,1),(1,2),(2,2),(3,2),(4,2),(5,2) ;";
+            sqLiteDatabase.execSQL(cadenaREstacion);
+        }catch (SQLException e){
+
+        }
+
+
+
     }
 }
