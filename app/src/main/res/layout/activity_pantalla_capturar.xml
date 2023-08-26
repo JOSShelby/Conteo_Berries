@@ -16,7 +16,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-<!--        TITULO CAPTURAR-->
+
+<!--    TITULO CAPTURAR-->
         <TextView
             android:id="@+id/titulo2"
             android:layout_width="match_parent"
@@ -25,14 +26,49 @@
             android:padding="15dp"
             android:text="CAPTURAR"
             android:textAlignment="center"
+            android:gravity="center"
             android:textColor="#FFFFFF"
-            android:textSize="27sp" />
-<!--        CONTENEDOR CON SCROLL-->
+            android:fontFamily="sans-serif-medium"
+            android:textSize="@dimen/texto_titulo" />
+
+<!--    LABEL DONDE SE MOSTRARA EL NUMERO DE EMPLEADO-->
+        <TextView
+            android:id="@+id/inpNumEmpleado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/num_empleado_top"
+            android:gravity="center"
+            android:fontFamily="sans-serif-medium"
+            android:text="Número de empleado: "
+            android:textSize="@dimen/num_empleado_texto"
+            android:textStyle="bold"/>
+
+<!--    CAJA DE TEXTO DONDE SE COLOCARA EL NUMERO DE EMPLEADO-->
+
+        <!--    CONTENEDOR CON SCROLL-->
+        <EditText
+            android:id="@+id/CajaEscribeEscaner"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/caja_num_empleado_height"
+            android:layout_marginLeft="@dimen/caja_num_empleado_left"
+            android:layout_marginTop="@dimen/caja_num_empleado_top"
+            android:layout_marginRight="@dimen/caja_num_empleado_right"
+            android:background="@color/white"
+            android:inputType="none"
+            android:fontFamily="sans-serif-medium"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:elevation="10dp"
+            android:textSize="@dimen/caja_num_empleado_texto" />
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            >
+            android:layout_marginLeft="@dimen/cont_scroll_spinners_left"
+            android:layout_marginRight="@dimen/cont_scroll_spinners_right"
+            android:layout_marginTop="@dimen/cont_scroll_spinners_top">
+
 <!--        CONTENEDOR DE LOS SPINNERS-->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -43,25 +79,27 @@
                 <!--                SPINNER DE MODULO-->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/height_spiners"
+                    android:layout_height="@dimen/cont_spinner_height"
                     android:background="@drawable/spinners"
+                    android:layout_marginBottom="@dimen/cont_spinner_bottom"
                     android:layout_weight="1"
                     android:weightSum="3"
-                    android:layout_margin="5dp"
-                    android:elevation="2dp"
+                    android:elevation="10dp"
                     android:orientation="horizontal">
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/height_spiners"
+                        android:layout_height="match_parent"
                         android:gravity="center"
                         android:layout_weight="2"
-                        android:text="Lugar : "
+                        android:text="Lugar: "
+                        android:fontFamily="sans-serif-medium"
                         android:textStyle="bold"
+                        android:textSize="@dimen/textview_spinner_text"
                         />
                     <Spinner
                         android:id="@+id/inpLugar"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/height_spiners"
+                        android:layout_height="match_parent"
                         android:textAlignment="center"
                         android:layout_weight="1"
                         android:hint="Modulo"
@@ -71,25 +109,27 @@
 <!--                SPINNER DE MODULO-->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/height_spiners"
+                    android:layout_height="@dimen/cont_spinner_height"
+                    android:layout_marginBottom="@dimen/cont_spinner_bottom"
                     android:background="@drawable/spinners"
                     android:layout_weight="1"
                     android:weightSum="3"
-                    android:layout_margin="5dp"
-                    android:elevation="2dp"
+                    android:elevation="10dp"
                     android:orientation="horizontal">
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/height_spiners"
+                        android:layout_height="match_parent"
                         android:gravity="center"
                         android:layout_weight="2"
-                        android:text="Modulo : "
+                        android:text="Modulo: "
+                        android:fontFamily="sans-serif-medium"
                         android:textStyle="bold"
+                        android:textSize="@dimen/textview_spinner_text"
                         />
                     <Spinner
                         android:id="@+id/inpModulo"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/height_spiners"
+                        android:layout_height="match_parent"
                         android:textAlignment="center"
                         android:layout_weight="1"
                         android:hint="Modulo"
@@ -99,26 +139,28 @@
 <!--                SPINNER DE SECTOR-->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/height_spiners"
+                    android:layout_height="@dimen/cont_spinner_height"
+                    android:layout_marginBottom="@dimen/cont_spinner_bottom"
                     android:background="@drawable/spinners"
                     android:layout_weight="1"
                     android:weightSum="3"
-                    android:layout_margin="5dp"
                     android:orientation="horizontal"
-                    android:elevation="2dp"
+                    android:elevation="10dp"
                 >
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/height_spiners"
+                    android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:text="Sector : "
+                    android:fontFamily="sans-serif-medium"
                     android:gravity="center"
                     android:textStyle="bold"
+                    android:textSize="@dimen/textview_spinner_text"
                     />
                 <Spinner
                     android:id="@+id/inpSector"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/height_spiners"
+                    android:layout_height="match_parent"
                     android:hint="Sector"
                     android:textAlignment="center"
                     android:layout_weight="1"
@@ -128,26 +170,28 @@
 <!--                SPINNER DE ESTACION-->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/height_spiners"
+                    android:layout_height="@dimen/cont_spinner_height"
                     android:background="@drawable/spinners"
                     android:layout_weight="1"
                     android:weightSum="3"
-                    android:layout_margin="5dp"
                     android:orientation="horizontal"
-                    android:elevation="2dp"
+                    android:layout_marginBottom="@dimen/cont_spinner_bottom"
+                    android:elevation="10dp"
                     >
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/height_spiners"
+                    android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:text="Estacion : "
+                    android:fontFamily="sans-serif-medium"
                     android:gravity="center"
                     android:textStyle="bold"
+                    android:textSize="@dimen/textview_spinner_text"
                     />
                 <Spinner
                     android:id="@+id/inpEstacion"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/height_spiners"
+                    android:layout_height="match_parent"
                     android:hint="Modulo"
                     android:textAlignment="center"
                     android:layout_weight="1"
@@ -156,27 +200,29 @@
                 </LinearLayout>
 <!--            SPINNER DE FRUTO-->
                 <LinearLayout
-                    android:layout_margin="5dp"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/height_spiners"
+                    android:layout_height="@dimen/cont_spinner_height"
+                    android:layout_marginBottom="@dimen/cont_spinner_bottom"
                     android:background="@drawable/spinners"
                     android:layout_weight="1"
                     android:weightSum="3"
                     android:orientation="horizontal"
-                    android:elevation="2dp"
+                    android:elevation="10dp"
                     >
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/height_spiners"
+                        android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:text="Fruto : "
+                        android:fontFamily="sans-serif-medium"
                         android:gravity="center"
                         android:textStyle="bold"
+                        android:textSize="@dimen/textview_spinner_text"
                         />
                     <Spinner
                         android:id="@+id/inpFruto"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/height_spiners"
+                        android:layout_height="match_parent"
                         android:hint="Fruto"
                         android:textAlignment="center"
                         android:layout_weight="1"
@@ -185,27 +231,29 @@
                 </LinearLayout>
 <!--            SPINNER DE CUBETAS-->
                 <LinearLayout
-                    android:layout_margin="5dp"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/height_spiners"
+                    android:layout_height="@dimen/cont_spinner_height"
+                    android:layout_marginBottom="@dimen/cont_spinner_bottom"
                     android:background="@drawable/spinners"
                     android:layout_weight="1"
                     android:weightSum="3"
                     android:orientation="horizontal"
-                    android:elevation="2dp"
+                    android:elevation="10dp"
                     >
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/height_spiners"
+                        android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:text="Cubetas : "
+                        android:fontFamily="sans-serif-medium"
                         android:gravity="center"
                         android:textStyle="bold"
+                        android:textSize="@dimen/textview_spinner_text"
                         />
                     <Spinner
                         android:id="@+id/inpCubetas"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/height_spiners"
+                        android:layout_height="match_parent"
                         android:hint="Cubetas"
                         android:textAlignment="center"
                         android:layout_weight="1"
@@ -214,55 +262,27 @@
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
-<!--    FRAME DEL SCANNER-->
-        <FrameLayout
-            android:id="@+id/container_frame_layout"
-            android:layout_marginTop="@dimen/margin_top"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/height_scaner"
-            android:layout_gravity="center"/>
-<!--        CONTENEDOR PARA EL INPUT CON NUMERO DE EMPLEADO-->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/margin_top"
-            android:layout_weight="1"
-            android:gravity="start"
-            android:layout_margin="5dp"
-            android:elevation="2dp"
-            >
-<!--        LABEL DONDE APARECE EL NUMERO DE EMPLEADO-->
-            <TextView
-                android:layout_marginTop="40dp"
-                android:id="@+id/inpNumEmpleado"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Número de empleado: "
-                android:background="@drawable/alert"
-                android:gravity="center"
-                android:textStyle="bold"
-                android:textSize="20dp"
-                />
-        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
+
     <!--MENSAJE QUE PREGUNTA LA ACEPTACION DE LAS CUBETAS-->
     <RelativeLayout
         android:id="@+id/mensajeAlert"
-        android:layout_width="360dp"
-        android:layout_height="400dp"
+        android:layout_width="@dimen/msj_confirmacion_width"
+        android:layout_height="@dimen/msj_confirmacion_height"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:background="@drawable/alert"
         android:visibility="invisible"
+        android:elevation="10dp"
         >
         <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="@dimen/msj_img_width"
+            android:layout_height="@dimen/msj_img_height"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:src="@drawable/pregunta" />
+            android:layout_marginTop="@dimen/msj_img_top"
+            android:src="@drawable/pregunta"/>
         <TextView
             android:id="@+id/mensajeConteoEmpleado"
             android:layout_width="match_parent"
@@ -270,9 +290,9 @@
             android:text="El empleado ha contado: "
             android:gravity="center"
             android:textStyle="bold"
-            android:textSize="18dp"
+            android:textSize="@dimen/msj_label1_texto"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="210dp"
+            android:layout_marginBottom="@dimen/msj_label1_bottom"
             />
         <TextView
             android:id="@+id/mensajeCubetasAgregar"
@@ -281,9 +301,9 @@
             android:text="Se le agregarán: "
             android:gravity="center"
             android:textStyle="bold"
-            android:textSize="18dp"
+            android:textSize="@dimen/msj_label2_texto"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="180dp"
+            android:layout_marginBottom="@dimen/msj_label2_bottom"
             />
         <TextView
             android:layout_width="match_parent"
@@ -291,53 +311,57 @@
             android:text="¿La cantidad de cubetas es correcta?"
             android:gravity="center"
             android:textStyle="bold"
-            android:textSize="20dp"
+            android:textSize="@dimen/msj_label3_texto"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="120dp"
+            android:layout_marginBottom="@dimen/msj_label3_bottom"
             />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:gravity="bottom">
+            android:gravity="bottom"
+            android:weightSum="2">
             <Button
                 android:id="@+id/botonConfirmacion"
-                android:layout_width="wrap_content"
-                android:layout_height="60dp"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/msj_btnsino_height"
+                android:textSize="@dimen/msj_btnsino_text"
                 android:backgroundTint="#449CDF"
                 android:layout_marginBottom="10dp"
-                android:layout_marginLeft="70dp"
-                android:layout_marginRight="20dp"
-                android:text="SI" />
+                android:text="SI"
+                android:elevation="10dp"
+                android:layout_weight="1"/>
             <Button
                 android:id="@+id/botonCancelacion"
-                android:layout_width="wrap_content"
-                android:layout_height="60dp"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/msj_btnsino_height"
                 android:backgroundTint="#D35A5A"
                 android:layout_marginBottom="10dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:text="NO" />
+                android:textSize="@dimen/msj_btnsino_text"
+                android:elevation="10dp"
+                android:text="NO"
+                android:layout_weight="1"/>
         </LinearLayout>
     </RelativeLayout>
 <!--MENSAJE QUE INDICA QUE SE REGISTRO CON EXITO-->
     <RelativeLayout
         android:id="@+id/mensajeCorrecto"
-        android:layout_width="300dp"
-        android:layout_height="350dp"
+        android:layout_width="@dimen/msj_exito_width"
+        android:layout_height="@dimen/msj_exito_height"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:background="@drawable/alert"
+        android:elevation="10dp"
         android:visibility="invisible"
         >
         <ImageView
             android:id="@+id/imgCorrecto"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="@dimen/msj_exito_img_width"
+            android:layout_height="@dimen/msj_exito_img_height"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/msj_exito_img_top"
             android:src="@drawable/correcto" />
         <TextView
             android:id="@+id/txtCorrecto"
@@ -346,9 +370,9 @@
             android:text="Registrado Correctamente"
             android:gravity="center"
             android:textStyle="bold"
-            android:textSize="20dp"
+            android:textSize="@dimen/msj_exito_texto"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="100dp"
+            android:layout_marginBottom="@dimen/msj_exito_texto_bottom"
             />
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

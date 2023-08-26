@@ -5,15 +5,16 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="300dp"
-        android:layout_height="400dp"
+        android:layout_width="@dimen/modal_permisos_width"
+        android:layout_height="@dimen/modal_permisos_height"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:weightSum="4"
+        android:elevation="10dp"
         android:orientation="vertical"
-        android:background="@drawable/transparente"
+        android:background="@drawable/alert"
         >
         <ProgressBar
             android:id="@+id/cargaPermiso"
@@ -34,9 +35,10 @@
             android:layout_height="match_parent"
             android:text="Permiso Subida"
             android:gravity="center"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/modal_permisos_label1_top"
+            android:fontFamily="sans-serif-medium"
             android:textStyle="bold"
-            android:textSize="30dp"
+            android:textSize="@dimen/modal_permisos_label1"
             android:layout_weight="1"
             />
 
@@ -45,18 +47,19 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:layout_margin="5dp"
-            android:elevation="2dp"
             >
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtnombre"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="match_parent"
                 android:background="#ffffff"
                 android:gravity="center"
-                android:textSize="18dp"
-                android:layout_margin="20dp"
+                android:textSize="@dimen/modal_permisos_texto_edittext"
+                android:layout_marginLeft="@dimen/modal_permisos_edittext_left"
+                android:layout_marginTop="@dimen/modal_permisos_edittext_top"
+                android:layout_marginBottom="@dimen/modal_permisos_edittext_bottom"
+                android:layout_marginRight="@dimen/modal_permisos_edittext_right"
                 android:hint="Usuario"
                 android:textStyle="bold"
                 />
@@ -67,19 +70,21 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:layout_margin="5dp"
             android:elevation="2dp"
             >
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtcontraseña"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="match_parent"
                 android:background="#ffffff"
                 android:gravity="center"
-                android:textSize="18dp"
-                android:layout_margin="20dp"
+                android:layout_marginLeft="@dimen/modal_permisos_edittext_left"
+                android:layout_marginTop="@dimen/modal_permisos_edittext_top"
+                android:layout_marginBottom="@dimen/modal_permisos_edittext_bottom"
+                android:layout_marginRight="@dimen/modal_permisos_edittext_right"
                 android:hint="Contraseña"
+                android:textSize="@dimen/modal_permisos_texto_edittext"
                 android:textStyle="bold"
                 android:inputType="textPassword"
                 />
@@ -90,19 +95,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:textSize="30dp"
+            android:textSize="@dimen/modal_permisos_bton_texto"
             android:text="subir"
             android:textStyle="bold"
-            android:backgroundTint="#45962f"
+            android:layout_marginRight="@dimen/modal_permisos_bton_right"
+            android:layout_marginLeft="@dimen/modal_permisos_bton_left"
+            android:layout_marginBottom="@dimen/modal_permisos_bton_bottom"
+            android:layout_marginTop="@dimen/modal_permisos_bton_top"
+            android:backgroundTint="#449CDF"
             />
 
      </LinearLayout>
-
-
-
-
     </LinearLayout>
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

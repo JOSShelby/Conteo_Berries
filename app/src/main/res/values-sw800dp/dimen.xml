@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--    MEDIDAS PARA UNA TABLET-->
+<!--=================================================DIMENS PARA PANTALLA DE CAPTURA=================================================-->
+<!--    TITULO-->
+    <dimen name="texto_titulo">50sp</dimen>
+
+<!--    TEXTVIEW NUMERO EMPLEADO-->
+    <dimen name="num_empleado_top">60dp</dimen>
+    <dimen name="num_empleado_texto">30sp</dimen>
+
+<!--    EDITTEXT DE NUMERO DE EMPLEADO-->
+    <dimen name="caja_num_empleado_left">100dp</dimen>
+    <dimen name="caja_num_empleado_right">100dp</dimen>
+    <dimen name="caja_num_empleado_height">100dp</dimen>
+    <dimen name="caja_num_empleado_texto">40sp</dimen>
+    <dimen name="caja_num_empleado_top">60dp</dimen>
+
+<!--    CONTENEDOR CON SCROLL DE SPINNERS-->
+    <dimen name="cont_scroll_spinners_top">60dp</dimen>
+    <dimen name="cont_scroll_spinners_left">100dp</dimen>
+    <dimen name="cont_scroll_spinners_right">100dp</dimen>
+
+<!--   CONTENEDOR DE SPINNER-->
+    <dimen name="cont_spinner_height">60dp</dimen>
+    <dimen name="cont_spinner_bottom">20dp</dimen>
+
+<!--    TEXTVIEW DEL SPINNER-->
+    <dimen name="textview_spinner_text">20sp</dimen>
+
+<!--    MENSAJE DE ALERTA-->
+    <dimen name="msj_confirmacion_height">800dp</dimen>
+    <dimen name="msj_confirmacion_width">600dp</dimen>
+
+    <dimen name="msj_img_top">50dp</dimen>
+    <dimen name="msj_img_height">200dp</dimen>
+    <dimen name="msj_img_width">200dp</dimen>
+
+    <dimen name="msj_label1_texto">35sp</dimen>
+    <dimen name="msj_label1_bottom">400dp</dimen>
+
+    <dimen name="msj_label2_texto">35sp</dimen>
+    <dimen name="msj_label2_bottom">300dp</dimen>
+
+    <dimen name="msj_label3_texto">35sp</dimen>
+    <dimen name="msj_label3_bottom">200dp</dimen>
+
+    <dimen name="msj_btnsino_height">100dp</dimen>
+    <dimen name="msj_btnsino_text">35sp</dimen>
+
+<!--    MENSAJE DE EXITO-->
+    <dimen name="msj_exito_width">600dp</dimen>
+    <dimen name="msj_exito_height">800dp</dimen>
+
+    <dimen name="msj_exito_img_top">300dp</dimen>
+    <dimen name="msj_exito_img_height">200dp</dimen>
+    <dimen name="msj_exito_img_width">200dp</dimen>
+
+    <dimen name="msj_exito_texto">35sp</dimen>
+    <dimen name="msj_exito_texto_bottom">200dp</dimen>
+
+
+<!--=================================================DIMENS PARA PANTALLA DE CONSULTA=================================================-->
+<!--    BOTON BUSCAR-->
+    <dimen name="btn_buscar_height">80dp</dimen>
+    <dimen name="btn_buscar_width">200dp</dimen>
+    <dimen name="btn_buscar_top">50dp</dimen>
+
+<!--    TABLA DE RESULTADOS-->
+    <dimen name="tabla_res_left">30dp</dimen>
+    <dimen name="tabla_res_right">30dp</dimen>
+    <dimen name="tabla_res_top">50dp</dimen>
+    <dimen name="tabla_encabezado_text">25sp</dimen>
+
+
+<!--=================================================DIMENS PARA PANTALLA DE CONSULTA=================================================-->
+<!--    BOTONES PRINCIPALES-->
+    <dimen name="btnes_principales_height">150dp</dimen>
+    <dimen name="btnes_principales_width">300dp</dimen>
+    <dimen name="btnes_principales_bottom">50dp</dimen>
+    <dimen name="btnes_principales_texto">25sp</dimen>
+
+<!--=================================================DIMENS PARA PANTALLA DE CONSULTA=================================================-->
+<!--    MODAL DE PERMISOS-->
+    <dimen name="modal_permisos_height">800dp</dimen>
+    <dimen name="modal_permisos_width">600dp</dimen>
+
+    <dimen name="modal_permisos_label1">35sp</dimen>
+    <dimen name="modal_permisos_label1_top">50dp</dimen>
+
+    <dimen name="modal_permisos_edittext_left">20dp</dimen>
+    <dimen name="modal_permisos_edittext_right">20dp</dimen>
+    <dimen name="modal_permisos_edittext_bottom">40dp</dimen>
+    <dimen name="modal_permisos_edittext_top">40dp</dimen>
+    <dimen name="modal_permisos_texto_edittext">25sp</dimen>
+
+    <dimen name="modal_permisos_bton_left">30dp</dimen>
+    <dimen name="modal_permisos_bton_right">30dp</dimen>
+    <dimen name="modal_permisos_bton_texto">35sp</dimen>
+    <dimen name="modal_permisos_bton_top">30dp</dimen>
+    <dimen name="modal_permisos_bton_bottom">30dp</dimen>
+</resources>
