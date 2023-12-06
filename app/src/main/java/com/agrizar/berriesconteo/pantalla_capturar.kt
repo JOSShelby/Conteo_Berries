@@ -20,6 +20,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.Spinner
@@ -49,6 +50,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
     private lateinit var imgCorrecto : ImageView
     private lateinit var txtCorrecto : TextView
     private lateinit var soundPool: SoundPool
+    private lateinit var  cajaEscribeEscaner: EditText
     private var beepSoundId = 0
     var seleccionEstacion = 0
     var seleccionModulo = 0
@@ -85,11 +87,17 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 //      ESTABLECE EL CONTENIDO DE LA ACTIVIDAD
         setContentView(binding.root)
 
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .add(R.id.container_frame_layout, QRScannerFragment())
+                .commit()
+        }
+
 //      ESTABLECE LA PANTALLA COMPLETA
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
 //      BUSCA EL EDITTEXT DONDE SE COLOCARA EL NUMERO DE EMPLEADO CON EL ESCANER EXTERNO
-        val cajaEscribeEscaner = binding.CajaEscribeEscaner
+        cajaEscribeEscaner = binding.CajaEscribeEscaner
 
 //      DETECTARA CUANDO SE DE UN ENTER EN EL EDITTEXT
         cajaEscribeEscaner.addTextChangedListener(object : TextWatcher {
@@ -99,231 +107,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                 // VERIFICA SI EL CARACTER DE NUEVA LINEA ('\n') ESTA PRESENTE EN EL TEXTO
                 if (s?.toString()?.contains('\n') == true) {
 
-                    //REALIZA LA ACCION AL DETECTAR EL SALTO DE LINEA
-                    val scannedText = s.toString().trim() // OBTIENE EL TEXTO SIN ESPACIOS
-
-                    Log.d("Scanner", "Texto escaneado: $scannedText")
-
-//                  BORRA EL CONTENIDO ESCANEADO DEL EDITTEXT PARA QUE SE MANTENGA VACIO
-                    cajaEscribeEscaner.setText("")
-
-
-
-
-
-
-
-
-
-                    //      MUESTRA EL NUMERO DE EMPLEADO EN EL LABEL
-                    val num_empleadoMostrar = findViewById<TextView>(R.id.inpNumEmpleado)
-                    num_empleadoMostrar.text = "Número de empleado: $scannedText"
-
-//      TRAE EL CONTENIDO DEL XML ACTIVITY_PANTALLA_CAPTURAR
-                    val btnConfirmar = findViewById<Button>(R.id.botonConfirmacion)
-                    val btnRechazar = findViewById<Button>(R.id.botonCancelacion)
-
-                    println("$seleccionModulo,$seleccionEstacion,$seleccionSector,$seleccionFruto");
-
-//      REPRODUCE EL SONIDO DE PITADO
-                    soundPool.play(beepSoundId, 1.0f, 1.0f, 0, 0, 1.0f)
-
-//      VALIDA QUE LOS SPINNERS NO ESTEN VACIOS
-                    if(seleccionModulo!=0 && seleccionEstacion!=0 && seleccionSector!=0 && seleccionFruto!=0 ){
-
-//          HACE VISIBLE EL ALERT PARA QUE SE ACEPTEN O NO LAS CUBETAS
-                        msgConfirmacion.isVisible=true
-
-//          GUARDA EL NUMERO DE EMPLEADO EN UNA VARIABLE
-                        val num_empleado = scannedText
-
-//          OBTIENE LA FECHA Y HORA ACTUAL
-                        val calendar = Calendar.getInstance()
-                        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-
-//          SE DECLARAN VARIABLES PARA VER O INSERTAR EN LA BASE DE DATOS
-                        var dbBerries = DBBerries(applicationContext," DBBerries", null, R.string.versionBD);
-                        val db = dbBerries.writableDatabase
-                        val dbVer = dbBerries.readableDatabase
-
-//          CONSULTA PARA OBTENER LAS CUBETAS QUE LLEVA EL COSECHADOR
-                        val conlumnsCubetas = arrayOf("fecha", "moduloid", "estacion", "sector", "numero_empleado", "fruto", "status")
-                        val seleccion = "numero_empleado = ?" //CONDICION WHERE
-                        val seleccionArgum = arrayOf(scannedText) //VALOR DEL NUMERO DE EMPLEADO
-                        val cursorCubetas: Cursor = db.query("cubetascontadasberries", conlumnsCubetas, seleccion, seleccionArgum, null, null, "idcubeta ASC")
-                        val count = cursorCubetas.count
-
-//          MUESTRA EL NUMERO DE CUBETAS CONTADAS POR ESE EMPLEADO
-                        val resultadoCount = findViewById<TextView>(R.id.mensajeConteoEmpleado)
-                        resultadoCount.text = "El empleado ha contado: $count cubetas"
-
-//          MUESTRA EL NUMERO DE CUBETAS QUE SE LE VAN A AGREGAR
-                        val resultadoCubetasAgregadas = findViewById<TextView>(R.id.mensajeCubetasAgregar)
-                        resultadoCubetasAgregadas.text = "Se le agregarán: $seleccionCubetas cubetas"
-
-//          EN ESPERA DE QUE SE LE DE CLICK AL BOTON DE CONFIRMAR CUBETAS
-                        btnConfirmar.setOnClickListener {
-
-//              CONSULTA PARA OBTENER LAS ULTIMAS 4 CUBETAS
-                            val queryCubetas = "SELECT * FROM cubetascontadasberries WHERE numero_empleado = '$num_empleado' AND bandera = 0 "
-                            val cursor = dbVer.rawQuery(queryCubetas, null)
-
-//              CONTADOR DE REGISTROS
-                            val contadorCursor = cursor.count
-
-                            val sumaTotalCubetas = cursor.count + seleccionCubetas
-
-//              VARIABLE PARA SABER QUE LAS ULTIMAS 4 CUBETAS FUERON 0 (EL 0 INDICA QUE AUN NO SON LAS 4 CUBETAS)
-//              CUANDO YA SE CONTARON LAS 4 CUBETAS, EL 0 DE LAS ULTIMAS 4 CUBETAS SE VUELVE 1, INDICANDO QUE TIENE QUE PASAR 15 MINS PARA VOLVER A CONTAR
-
-
-//              PUNTERO PARA SALIR DEL WHILE
-                            var punt = 0
-
-//              BANDERA BOOLEAN PARA SABER CUANDO LA CUBETA ES PARTE DE OTRAS 4 ANTERIORES
-                            var bandera = 0
-                            var contCuatroMas = 0
-
-                            if(contadorCursor==4){
-
-                                bandera = 1;// la cuenta de cubetas esta en el limite
-
-                            }
-
-                            if(sumaTotalCubetas>4){
-
-                                contCuatroMas = 1 // la seccion y el conteo son mas de 4
-                            }
-
-//              CICLO PARA OBTENER LOS RESULTADOS
-                            while (cursor.moveToNext()) {
-                                val idcubeta = cursor.getInt(cursor.getColumnIndexOrThrow("idcubeta"))
-                                val numempleado = cursor.getInt(cursor.getColumnIndexOrThrow("numero_empleado"))
-                                val fecha = cursor.getString(cursor.getColumnIndexOrThrow("fecha"))
-
-//                  IMPRIME LOS RESULTADOS
-                                println("EMPLEADO: $numempleado, IDCUB: $idcubeta, BANDERA: $bandera FECHA: $fecha")
-
-//
-                            }
-
-
-
-                            if(bandera == 1){
-                                println("tiene 4 registros")
-
-                                //CONSULTA PARA OBTENER LAS ULTIMA hora de su ultimo registro
-                                val queryCubetas = "SELECT idcubeta,fecha FROM cubetascontadasberries WHERE numero_empleado = '$num_empleado' AND bandera = 0 ORDER BY idcubeta DESC LIMIT 1"
-                                val cursor = dbVer.rawQuery(queryCubetas, null)
-
-
-                                while (cursor.moveToNext()) {
-                                    val fecha = cursor.getString(cursor.getColumnIndexOrThrow("fecha"))
-
-                                    val inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-                                    val outputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-
-                                    // Convertir la cadena de fecha en LocalDateTime
-                                    val inputDateTime = LocalDateTime.parse(fecha, inputFormat)
-
-                                    // Sumar 15 minutos
-                                    val newDateTime = inputDateTime.plus(15, ChronoUnit.MINUTES)
-
-                                    // Formatear la nueva fecha y hora como cadena
-                                    val outputDateStr = newDateTime.format(outputFormat)
-
-                                    println("Fecha y hora original: $fecha")
-                                    println("Nueva fecha y hora: $outputDateStr")
-
-
-                                    val currentDateTime = LocalDateTime.now()
-
-                                    // Comparar la hora actual con la nueva hora
-
-
-                                    println("Hora actual: $currentDateTime")
-                                    println("Nueva hora después de sumar 15 minutos: $newDateTime")
-
-                                    if(currentDateTime>newDateTime){
-
-                                        println("es mayor $currentDateTime")
-
-                                        val subconsulta = "(SELECT idcubeta FROM cubetascontadasberries WHERE numero_empleado = '$num_empleado' AND bandera = 0 )"
-                                        val queryActualizar = "UPDATE cubetascontadasberries SET status = 1 , bandera = 1 WHERE idcubeta IN $subconsulta"
-                                        dbVer.execSQL(queryActualizar)
-
-
-                                        for (i in 1..seleccionCubetas){
-                                            val cadenaAgregarCubeta = "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,bandera) " +
-                                                    "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$scannedText',$seleccionFruto, 0)"
-                                            dbVer.execSQL(cadenaAgregarCubeta)
-                                        }
-
-                                        pantallaMensaje(1)
-
-
-                                    }else{
-                                        println("es mayor $newDateTime")
-
-                                        txtCorrecto.text = "Error ya fueron pitadas 4 cubetas al empleado $num_empleado \n la ultima cubeta fue pitada a las $fecha \n podra volver a pitar el empleado dentro de 15 min. "
-
-                                        pantallaMensaje(3)
-
-
-                                    }
-
-                                }
-
-
-
-                            }else{
-                                println("aun no llena 4 registros")
-
-                                println("contador de cubetas $contCuatroMas")
-
-                                println("suma cubetas $sumaTotalCubetas")
-                                if(contCuatroMas==1){
-                                    println("la suma del contador y las cubetas registradas da mas de 4")
-                                    //funcion para traer el mensaje
-                                    pantallaMensaje(2)
-                                }else{
-
-                                    for (i in 1..seleccionCubetas){
-                                        val cadenaAgregarCubeta = "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,bandera) " +
-                                                "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$scannedText',$seleccionFruto, 0)"
-                                        dbVer.execSQL(cadenaAgregarCubeta)
-                                    }
-
-                                    //funcion para traer el mensaje
-                                    pantallaMensaje(1)
-
-
-                                }
-
-
-                            }
-
-
-
-//              OCULTA LA PANTALLA DE PREGUNTA
-                            msgConfirmacion.isVisible = false
-
-//              CIERRA LA BD AL TERMINAR EL CICLO FOR
-                            dbVer.close()
-                            db.close()
-
-
-//
-                        }
-
-//          EN ESPERA DE QUE SE LE DE CLICK AL BOTON DE RECHAZAR CUBETAS
-                        btnRechazar.setOnClickListener {
-                            msgConfirmacion.isVisible = false
-                        }
-                    }else{
-                        Toast.makeText(applicationContext ,"Ponga los Datos Minimos",Toast.LENGTH_SHORT).show()
-                        num_empleadoMostrar.setText("Número de empleado: ")
-                    }
+                    addNewBuckets(s.toString())
                 }
             }
 
@@ -335,8 +119,6 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                 // NO SE UTILIZA EN ESTE EJEMPLO
             }
         })
-
-
 
 
 //      METEMOS 1S LAYOUTS EN VARIABLES USANDO LA INSTANCIA CREADA
@@ -450,7 +232,6 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
                 }
 
-
                 //SPINNER DE MODULOS TRAIDO DE LA BD
                 var spinnermodulo = binding.inpModulo
                 var arrModuloTitulos : MutableList<String>? = mutableListOf()
@@ -559,10 +340,201 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+
+    fun addNewBuckets(Nempleado:String){
+        //REALIZA LA ACCION AL DETECTAR EL SALTO DE LINEA
+        val scannedText = Nempleado.toString().trim() // OBTIENE EL TEXTO SIN ESPACIOS
+
+//                  BORRA EL CONTENIDO ESCANEADO DEL EDITTEXT PARA QUE SE MANTENGA VACIO
+        cajaEscribeEscaner.setText("")
+
+        //      MUESTRA EL NUMERO DE EMPLEADO EN EL LABEL
+        val num_empleadoMostrar = findViewById<TextView>(R.id.inpNumEmpleado)
+        num_empleadoMostrar.text = "Número de empleado: $scannedText"
+
+//      TRAE EL CONTENIDO DEL XML ACTIVITY_PANTALLA_CAPTURAR
+        val btnConfirmar = findViewById<Button>(R.id.botonConfirmacion)
+        val btnRechazar = findViewById<Button>(R.id.botonCancelacion)
+
+        println("$seleccionModulo,$seleccionEstacion,$seleccionSector,$seleccionFruto");
+
+//      REPRODUCE EL SONIDO DE PITADO
+        soundPool.play(beepSoundId, 1.0f, 1.0f, 0, 0, 1.0f)
+
+//      VALIDA QUE LOS SPINNERS NO ESTEN VACIOS
+        if(seleccionModulo!=0 && seleccionEstacion!=0 && seleccionSector!=0 && seleccionFruto!=0 ){
+
+//          HACE VISIBLE EL ALERT PARA QUE SE ACEPTEN O NO LAS CUBETAS
+            msgConfirmacion.isVisible=true
+
+//          GUARDA EL NUMERO DE EMPLEADO EN UNA VARIABLE
+            val num_empleado = scannedText
+
+//          OBTIENE LA FECHA Y HORA ACTUAL
+            val calendar = Calendar.getInstance()
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+
+//          SE DECLARAN VARIABLES PARA VER O INSERTAR EN LA BASE DE DATOS
+            var dbBerries = DBBerries(applicationContext," DBBerries", null, R.string.versionBD);
+            val db = dbBerries.writableDatabase
+            val dbVer = dbBerries.readableDatabase
+
+//          CONSULTA PARA OBTENER LAS CUBETAS QUE LLEVA EL COSECHADOR
+            val conlumnsCubetas = arrayOf("fecha", "moduloid", "estacion", "sector", "numero_empleado", "fruto", "status")
+            val seleccion = "numero_empleado = ?" //CONDICION WHERE
+            val seleccionArgum = arrayOf(scannedText) //VALOR DEL NUMERO DE EMPLEADO
+            val cursorCubetas: Cursor = db.query("cubetascontadasberries", conlumnsCubetas, seleccion, seleccionArgum, null, null, "idcubeta ASC")
+            val count = cursorCubetas.count
+
+//          MUESTRA EL NUMERO DE CUBETAS CONTADAS POR ESE EMPLEADO
+            val resultadoCount = findViewById<TextView>(R.id.mensajeConteoEmpleado)
+            resultadoCount.text = "El empleado ha contado: $count cubetas"
+
+//          MUESTRA EL NUMERO DE CUBETAS QUE SE LE VAN A AGREGAR
+            val resultadoCubetasAgregadas = findViewById<TextView>(R.id.mensajeCubetasAgregar)
+            resultadoCubetasAgregadas.text = "Se le agregarán: $seleccionCubetas cubetas"
+
+//          EN ESPERA DE QUE SE LE DE CLICK AL BOTON DE CONFIRMAR CUBETAS
+            btnConfirmar.setOnClickListener {
+
+//              CONSULTA PARA OBTENER LAS ULTIMAS 4 CUBETAS
+                val queryCubetas = "SELECT * FROM cubetascontadasberries WHERE numero_empleado = '$num_empleado' AND bandera = 0 "
+                val cursor = dbVer.rawQuery(queryCubetas, null)
+
+//              CONTADOR DE REGISTROS
+                val contadorCursor = cursor.count
+
+                val sumaTotalCubetas = cursor.count + seleccionCubetas
+
+//              VARIABLE PARA SABER QUE LAS ULTIMAS 4 CUBETAS FUERON 0 (EL 0 INDICA QUE AUN NO SON LAS 4 CUBETAS)
+//              CUANDO YA SE CONTARON LAS 4 CUBETAS, EL 0 DE LAS ULTIMAS 4 CUBETAS SE VUELVE 1, INDICANDO QUE TIENE QUE PASAR 15 MINS PARA VOLVER A CONTAR
+
+
+//              PUNTERO PARA SALIR DEL WHILE
+                var punt = 0
+
+//              BANDERA BOOLEAN PARA SABER CUANDO LA CUBETA ES PARTE DE OTRAS 4 ANTERIORES
+                var bandera = 0
+                var contCuatroMas = 0
+
+                if(contadorCursor==4){
+
+                    bandera = 1;// la cuenta de cubetas esta en el limite
+
+                }
+
+                if(sumaTotalCubetas>4){
+
+                    contCuatroMas = 1 // la seccion y el conteo son mas de 4
+                }
+
+//              CICLO PARA OBTENER LOS RESULTADOS
+                while (cursor.moveToNext()) {
+                    val idcubeta = cursor.getInt(cursor.getColumnIndexOrThrow("idcubeta"))
+                    val numempleado = cursor.getInt(cursor.getColumnIndexOrThrow("numero_empleado"))
+                    val fecha = cursor.getString(cursor.getColumnIndexOrThrow("fecha"))
+
+//                  IMPRIME LOS RESULTADOS
+                    println("EMPLEADO: $numempleado, IDCUB: $idcubeta, BANDERA: $bandera FECHA: $fecha")
+                }
+
+                if(bandera == 1){
+                    println("tiene 4 registros")
+
+                    //CONSULTA PARA OBTENER LAS ULTIMA hora de su ultimo registro
+                    val queryCubetas = "SELECT idcubeta,fecha FROM cubetascontadasberries WHERE numero_empleado = '$num_empleado' AND bandera = 0 ORDER BY idcubeta DESC LIMIT 1"
+                    val cursor = dbVer.rawQuery(queryCubetas, null)
+
+
+                    while (cursor.moveToNext()) {
+                        val fecha = cursor.getString(cursor.getColumnIndexOrThrow("fecha"))
+
+                        val inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                        val outputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+
+                        // Convertir la cadena de fecha en LocalDateTime
+                        val inputDateTime = LocalDateTime.parse(fecha, inputFormat)
+
+                        // Sumar 15 minutos
+                        val newDateTime = inputDateTime.plus(15, ChronoUnit.MINUTES)
+
+                        // Formatear la nueva fecha y hora como cadena
+                        val outputDateStr = newDateTime.format(outputFormat)
+
+                        println("Fecha y hora original: $fecha")
+                        println("Nueva fecha y hora: $outputDateStr")
+
+
+                        val currentDateTime = LocalDateTime.now()
+
+                        // Comparar la hora actual con la nueva hora
+
+
+                        println("Hora actual: $currentDateTime")
+                        println("Nueva hora después de sumar 15 minutos: $newDateTime")
+
+                        if(currentDateTime>newDateTime){
+
+                            val subconsulta = "(SELECT idcubeta FROM cubetascontadasberries WHERE numero_empleado = '$num_empleado' AND bandera = 0 )"
+                            val queryActualizar = "UPDATE cubetascontadasberries SET status = 1 , bandera = 1 WHERE idcubeta IN $subconsulta"
+                            dbVer.execSQL(queryActualizar)
+
+
+                            for (i in 1..seleccionCubetas){
+                                val cadenaAgregarCubeta = "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,bandera) " +
+                                        "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$scannedText',$seleccionFruto, 0)"
+                                dbVer.execSQL(cadenaAgregarCubeta)
+                            }
+
+                            pantallaMensaje(1)
+
+
+                        }else{
+                            println("es mayor $newDateTime")
+
+                            txtCorrecto.text = "Error ya fueron pitadas 4 cubetas al empleado $num_empleado \n la ultima cubeta fue pitada a las $fecha \n podra volver a pitar el empleado dentro de 15 min. "
+
+                            pantallaMensaje(3)
+                        }
+                    }
+                }else{
+                    if(contCuatroMas==1){
+                        println("la suma del contador y las cubetas registradas da mas de 4")
+                        //funcion para traer el mensaje
+                        pantallaMensaje(2)
+                    }else{
+
+                        for (i in 1..seleccionCubetas){
+                            val cadenaAgregarCubeta = "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,bandera) " +
+                                    "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$scannedText',$seleccionFruto, 0)"
+                            dbVer.execSQL(cadenaAgregarCubeta)
+                        }
+                        //funcion para traer el mensaje
+                        pantallaMensaje(1)
+                    }
+                }
+//              OCULTA LA PANTALLA DE PREGUNTA
+                msgConfirmacion.isVisible = false
+
+//              CIERRA LA BD AL TERMINAR EL CICLO FOR
+                dbVer.close()
+                db.close()
+            }
+
+//          EN ESPERA DE QUE SE LE DE CLICK AL BOTON DE RECHAZAR CUBETAS
+            btnRechazar.setOnClickListener {
+                msgConfirmacion.isVisible = false
+            }
+        }else{
+            Toast.makeText(applicationContext ,"Ponga los Datos Minimos",Toast.LENGTH_SHORT).show()
+            num_empleadoMostrar.setText("Número de empleado: ")
+        }
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onValueReturned(value: String) {
-
-
-
+        addNewBuckets(value)
     }
 
 
