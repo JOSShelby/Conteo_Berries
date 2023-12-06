@@ -7,6 +7,20 @@
     android:background="@drawable/degradado_background"
     tools:context="com.agrizar.berriesconteo.pantalla_capturar">
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnCheckBuckets"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_margin="1dp"
+        app:backgroundTint="#8CE873"
+        app:elevation="6dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/buscar"
+        app:maxImageSize="60dp"
+        />
+
 <!--    CONTENEDOR GENERAL-->
     <LinearLayout
         android:layout_width="match_parent"
@@ -57,6 +71,7 @@
             android:inputType="none"
             android:fontFamily="sans-serif-medium"
             android:focusable="true"
+            android:visibility="gone"
             android:focusableInTouchMode="true"
             android:gravity="center"
             android:elevation="10dp"

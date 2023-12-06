@@ -3,6 +3,7 @@ package com.agrizar.berriesconteo
 import QRScannerFragment
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.media.AudioAttributes
@@ -31,6 +32,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import com.example.berriesconteo.Consultar
 
 import com.example.berriesconteo.R
 import com.example.berriesconteo.databinding.ActivityPantallaCapturarBinding
@@ -62,7 +64,6 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
     private val CAMERA_PERMISSION_CODE = 101
 
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == CAMERA_PERMISSION_CODE) {
@@ -75,8 +76,6 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
             }
         }
     }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pantalla_capturar)
@@ -87,17 +86,32 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 //      ESTABLECE EL CONTENIDO DE LA ACTIVIDAD
         setContentView(binding.root)
 
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
+            // Si el permiso no está concedido, solicítalo
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.CAMERA), CAMERA_PERMISSION_CODE)
+        } else {
+            // Si ya se concedió el permiso, accede a la cámara aquí
+            println("Permiso de la cámara ya concedido")
+        }
+
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .add(R.id.container_frame_layout, QRScannerFragment())
                 .commit()
         }
 
+        val btnCheckBuckets = binding.btnCheckBuckets
+
+        btnCheckBuckets.setOnClickListener {
+            val intent = Intent(this , Consultar::class.java)
+            startActivity(intent)
+        }
+
 //      ESTABLECE LA PANTALLA COMPLETA
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
 //      BUSCA EL EDITTEXT DONDE SE COLOCARA EL NUMERO DE EMPLEADO CON EL ESCANER EXTERNO
-        cajaEscribeEscaner = binding.CajaEscribeEscaner
+        this.cajaEscribeEscaner = binding.CajaEscribeEscaner
 
 //      DETECTARA CUANDO SE DE UN ENTER EN EL EDITTEXT
         cajaEscribeEscaner.addTextChangedListener(object : TextWatcher {
@@ -110,23 +124,19 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                     addNewBuckets(s.toString())
                 }
             }
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // NO SE UTILIZA EN ESTE EJEMPLO
             }
-
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 // NO SE UTILIZA EN ESTE EJEMPLO
             }
         })
-
 
 //      METEMOS 1S LAYOUTS EN VARIABLES USANDO LA INSTANCIA CREADA
         msgCorrecto = binding.mensajeCorrecto
         msgConfirmacion = binding.mensajeAlert
         txtCorrecto = binding.txtCorrecto
         imgCorrecto = binding.imgCorrecto
-
 
 //      INDICA QUE SE PUEDE REPRODUCIR UN SOLO EFECTO AL MISMO TIEMPO
         val maxStreams = 1
@@ -142,7 +152,6 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
 //      CARGA EL SONIDO DE PIDIDO PARA ESCANEAR
         beepSoundId = soundPool.load(this, R.raw.beep, 1)
-
 
         //      SPINNER DE MODULOS TRAIDO DE LA BD
         var spinnerLugar = binding.inpLugar
@@ -202,13 +211,10 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                     seleccionCubetas = 4
                 }
             }
-
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
             }
         }
-
-
 
         val adapterLugar = ArrayAdapter(this, android.R.layout.simple_spinner_item, arrLugar!!)
         adapterLugar.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -322,13 +328,11 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                     }
                 }
 
-
                 spinnerCubetas.isVisible = aparecerSpinners
                 spinnerFruto.isVisible = aparecerSpinners
                 spinnerEstacion.isVisible = aparecerSpinners
                 spinnerSector.isVisible = aparecerSpinners
                 spinnermodulo.isVisible = aparecerSpinners
-
 
             }
 
@@ -428,18 +432,8 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                     contCuatroMas = 1 // la seccion y el conteo son mas de 4
                 }
 
-//              CICLO PARA OBTENER LOS RESULTADOS
-                while (cursor.moveToNext()) {
-                    val idcubeta = cursor.getInt(cursor.getColumnIndexOrThrow("idcubeta"))
-                    val numempleado = cursor.getInt(cursor.getColumnIndexOrThrow("numero_empleado"))
-                    val fecha = cursor.getString(cursor.getColumnIndexOrThrow("fecha"))
-
-//                  IMPRIME LOS RESULTADOS
-                    println("EMPLEADO: $numempleado, IDCUB: $idcubeta, BANDERA: $bandera FECHA: $fecha")
-                }
 
                 if(bandera == 1){
-                    println("tiene 4 registros")
 
                     //CONSULTA PARA OBTENER LAS ULTIMA hora de su ultimo registro
                     val queryCubetas = "SELECT idcubeta,fecha FROM cubetascontadasberries WHERE numero_empleado = '$num_empleado' AND bandera = 0 ORDER BY idcubeta DESC LIMIT 1"
@@ -461,17 +455,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                         // Formatear la nueva fecha y hora como cadena
                         val outputDateStr = newDateTime.format(outputFormat)
 
-                        println("Fecha y hora original: $fecha")
-                        println("Nueva fecha y hora: $outputDateStr")
-
-
                         val currentDateTime = LocalDateTime.now()
-
-                        // Comparar la hora actual con la nueva hora
-
-
-                        println("Hora actual: $currentDateTime")
-                        println("Nueva hora después de sumar 15 minutos: $newDateTime")
 
                         if(currentDateTime>newDateTime){
 
@@ -490,10 +474,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
 
                         }else{
-                            println("es mayor $newDateTime")
-
                             txtCorrecto.text = "Error ya fueron pitadas 4 cubetas al empleado $num_empleado \n la ultima cubeta fue pitada a las $fecha \n podra volver a pitar el empleado dentro de 15 min. "
-
                             pantallaMensaje(3)
                         }
                     }
@@ -536,8 +517,6 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
     override fun onValueReturned(value: String) {
         addNewBuckets(value)
     }
-
-
     fun pantallaMensaje(tipo:Int){
 
         var delay:Long = 0;
@@ -563,8 +542,6 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
             delay=3;
 
         }
-        //animaciones
-
 
 //              ANIMACION PARA APARECER EL MENSAJE DE EXITO DE INSERSION
         val fadeInAnimation = AlphaAnimation(5f, 1f)
@@ -577,8 +554,6 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 //              ANIMACION PARA DESAPARECER EL MENSAJE DE EXITO DE INSERSION
         val fadeOutAnimation = AlphaAnimation(1f, 0f)
         fadeOutAnimation.duration = 500* delay // DURACION EN MILISEGUNDOS
-
-
 
         //SE PINTA EL MENSAJE DE EXITO DE INSERSION CON SU ANIMACION DE ENTRADA Y SALIDA
         msgCorrecto.startAnimation(fadeInAnimation)
