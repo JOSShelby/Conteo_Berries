@@ -28,13 +28,14 @@ import java.util.Timer
 import java.util.TimerTask
 
 
-class QRScannerFragment : Fragment(), BarcodeCallback  {
+class QRScannerFragment : Fragment(), BarcodeCallback {
 
     private lateinit var barcodeView: DecoratedBarcodeView
     private lateinit var resultTextView: TextView
     private var mListener: OnFragmentInteractionListener? = null
     private var scanningEnabled = true
-//  SE ESTABLECEN DOS SEGUNDOS DE INTERVALO PARA ESCANEAR
+
+    //  SE ESTABLECEN DOS SEGUNDOS DE INTERVALO PARA ESCANEAR
     private val scannerInterval = 2000L
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -44,9 +45,15 @@ class QRScannerFragment : Fragment(), BarcodeCallback  {
             throw ClassCastException("$context debe implementar OnFragmentInteractionListener")
         }
     }
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_q_r_scanner, container, false)
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -70,24 +77,28 @@ class QRScannerFragment : Fragment(), BarcodeCallback  {
                 if (currentTime - lastScanTime >= scannerInterval) {
                     lastScanTime = currentTime
 
-                    mListener?.onValueReturned( result.text)
+                    mListener?.onValueReturned(result.text)
                 }
             }
         }
     }
+
     override fun possibleResultPoints(resultPoints: List<ResultPoint>?) {
         // METODO PARA POSIBLES PUNTOS DE RESULTADOS
     }
+
     override fun onResume() {
         super.onResume()
         barcodeView.resume()
     }
+
     override fun onPause() {
         super.onPause()
         barcodeView.pause()
     }
+
     interface OnFragmentInteractionListener {
-//      TIPO DE DATO
+        //      TIPO DE DATO
         fun onValueReturned(value: String)
     }
 }

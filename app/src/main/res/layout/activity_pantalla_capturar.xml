@@ -17,11 +17,10 @@
         app:elevation="6dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/buscar"
         app:maxImageSize="60dp"
-        />
+        app:srcCompat="@drawable/buscar" />
 
-<!--    CONTENEDOR GENERAL-->
+    <!--    CONTENEDOR GENERAL-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -31,33 +30,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-<!--    TITULO CAPTURAR-->
+        <!--    TITULO CAPTURAR-->
         <TextView
             android:id="@+id/titulo2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/redondeo"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
             android:padding="15dp"
             android:text="CAPTURAR"
             android:textAlignment="center"
-            android:gravity="center"
             android:textColor="#FFFFFF"
-            android:fontFamily="sans-serif-medium"
             android:textSize="@dimen/texto_titulo" />
 
-<!--    LABEL DONDE SE MOSTRARA EL NUMERO DE EMPLEADO-->
+        <!--    LABEL DONDE SE MOSTRARA EL NUMERO DE EMPLEADO-->
         <TextView
             android:id="@+id/inpNumEmpleado"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/num_empleado_top"
-            android:gravity="center"
             android:fontFamily="sans-serif-medium"
+            android:gravity="center"
             android:text="Número de empleado: "
             android:textSize="@dimen/num_empleado_texto"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
-<!--    CAJA DE TEXTO DONDE SE COLOCARA EL NUMERO DE EMPLEADO-->
+        <!--    CAJA DE TEXTO DONDE SE COLOCARA EL NUMERO DE EMPLEADO-->
 
         <!--    CONTENEDOR CON SCROLL-->
         <EditText
@@ -68,219 +67,213 @@
             android:layout_marginTop="@dimen/caja_num_empleado_top"
             android:layout_marginRight="@dimen/caja_num_empleado_right"
             android:background="@color/white"
-            android:inputType="none"
-            android:fontFamily="sans-serif-medium"
-            android:focusable="true"
-            android:visibility="gone"
-            android:focusableInTouchMode="true"
-            android:gravity="center"
             android:elevation="10dp"
-            android:textSize="@dimen/caja_num_empleado_texto" />
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:inputType="none"
+            android:textSize="@dimen/caja_num_empleado_texto"
+            android:visibility="gone" />
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/cont_scroll_spinners_left"
-            android:layout_marginRight="@dimen/cont_scroll_spinners_right"
-            android:layout_marginTop="@dimen/cont_scroll_spinners_top">
+            android:layout_marginTop="@dimen/cont_scroll_spinners_top"
+            android:layout_marginRight="@dimen/cont_scroll_spinners_right">
 
-<!--        CONTENEDOR DE LOS SPINNERS-->
+            <!--        CONTENEDOR DE LOS SPINNERS-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:weightSum="6"
-                >
+                android:weightSum="6">
 
                 <FrameLayout
                     android:id="@+id/container_frame_layout"
                     android:layout_width="300dp"
                     android:layout_height="300dp"
-                    android:layout_gravity="center"
-                    />
+                    android:layout_gravity="center" />
                 <!--                SPINNER DE MODULO-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/cont_spinner_height"
-                    android:background="@drawable/spinners"
                     android:layout_marginBottom="@dimen/cont_spinner_bottom"
                     android:layout_weight="1"
-                    android:weightSum="3"
+                    android:background="@drawable/spinners"
                     android:elevation="10dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:gravity="center"
                         android:layout_weight="2"
-                        android:text="Lugar: "
                         android:fontFamily="sans-serif-medium"
-                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:text="Lugar: "
                         android:textSize="@dimen/textview_spinner_text"
-                        />
+                        android:textStyle="bold" />
+
                     <Spinner
                         android:id="@+id/inpLugar"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:textAlignment="center"
                         android:layout_weight="1"
                         android:hint="Modulo"
-                        />
+                        android:textAlignment="center" />
                 </LinearLayout>
 
-<!--                SPINNER DE MODULO-->
+                <!--                SPINNER DE MODULO-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/cont_spinner_height"
                     android:layout_marginBottom="@dimen/cont_spinner_bottom"
-                    android:background="@drawable/spinners"
                     android:layout_weight="1"
-                    android:weightSum="3"
+                    android:background="@drawable/spinners"
                     android:elevation="10dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:gravity="center"
                         android:layout_weight="2"
-                        android:text="Modulo: "
                         android:fontFamily="sans-serif-medium"
-                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:text="Modulo: "
                         android:textSize="@dimen/textview_spinner_text"
-                        />
+                        android:textStyle="bold" />
+
                     <Spinner
                         android:id="@+id/inpModulo"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:textAlignment="center"
                         android:layout_weight="1"
                         android:hint="Modulo"
-                        android:visibility="invisible"
-                        />
+                        android:textAlignment="center"
+                        android:visibility="invisible" />
                 </LinearLayout>
-<!--                SPINNER DE SECTOR-->
+                <!--                SPINNER DE SECTOR-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/cont_spinner_height"
                     android:layout_marginBottom="@dimen/cont_spinner_bottom"
+                    android:layout_weight="1"
                     android:background="@drawable/spinners"
-                    android:layout_weight="1"
-                    android:weightSum="3"
-                    android:orientation="horizontal"
                     android:elevation="10dp"
-                >
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:text="Sector : "
-                    android:fontFamily="sans-serif-medium"
-                    android:gravity="center"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/textview_spinner_text"
-                    />
-                <Spinner
-                    android:id="@+id/inpSector"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:hint="Sector"
-                    android:textAlignment="center"
-                    android:layout_weight="1"
-                    android:visibility="invisible"
-                    />
-                </LinearLayout>
-<!--                SPINNER DE ESTACION-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/cont_spinner_height"
-                    android:background="@drawable/spinners"
-                    android:layout_weight="1"
-                    android:weightSum="3"
                     android:orientation="horizontal"
-                    android:layout_marginBottom="@dimen/cont_spinner_bottom"
-                    android:elevation="10dp"
-                    >
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:text="Estacion : "
-                    android:fontFamily="sans-serif-medium"
-                    android:gravity="center"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/textview_spinner_text"
-                    />
-                <Spinner
-                    android:id="@+id/inpEstacion"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:hint="Modulo"
-                    android:textAlignment="center"
-                    android:layout_weight="1"
-                    android:visibility="invisible"
-                    />
-                </LinearLayout>
-<!--            SPINNER DE FRUTO-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/cont_spinner_height"
-                    android:layout_marginBottom="@dimen/cont_spinner_bottom"
-                    android:background="@drawable/spinners"
-                    android:layout_weight="1"
-                    android:weightSum="3"
-                    android:orientation="horizontal"
-                    android:elevation="10dp"
-                    >
+                    android:weightSum="3">
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="2"
-                        android:text="Fruto : "
                         android:fontFamily="sans-serif-medium"
                         android:gravity="center"
-                        android:textStyle="bold"
+                        android:text="Sector : "
                         android:textSize="@dimen/textview_spinner_text"
-                        />
+                        android:textStyle="bold" />
+
+                    <Spinner
+                        android:id="@+id/inpSector"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:hint="Sector"
+                        android:textAlignment="center"
+                        android:visibility="invisible" />
+                </LinearLayout>
+                <!--                SPINNER DE ESTACION-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/cont_spinner_height"
+                    android:layout_marginBottom="@dimen/cont_spinner_bottom"
+                    android:layout_weight="1"
+                    android:background="@drawable/spinners"
+                    android:elevation="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:fontFamily="sans-serif-medium"
+                        android:gravity="center"
+                        android:text="Estacion : "
+                        android:textSize="@dimen/textview_spinner_text"
+                        android:textStyle="bold" />
+
+                    <Spinner
+                        android:id="@+id/inpEstacion"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:hint="Modulo"
+                        android:textAlignment="center"
+                        android:visibility="invisible" />
+                </LinearLayout>
+                <!--            SPINNER DE FRUTO-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/cont_spinner_height"
+                    android:layout_marginBottom="@dimen/cont_spinner_bottom"
+                    android:layout_weight="1"
+                    android:background="@drawable/spinners"
+                    android:elevation="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:fontFamily="sans-serif-medium"
+                        android:gravity="center"
+                        android:text="Fruto : "
+                        android:textSize="@dimen/textview_spinner_text"
+                        android:textStyle="bold" />
+
                     <Spinner
                         android:id="@+id/inpFruto"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_weight="1"
                         android:hint="Fruto"
                         android:textAlignment="center"
-                        android:layout_weight="1"
-                        android:visibility="invisible"
-                        />
+                        android:visibility="invisible" />
                 </LinearLayout>
-<!--            SPINNER DE CUBETAS-->
+                <!--            SPINNER DE CUBETAS-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/cont_spinner_height"
                     android:layout_marginBottom="@dimen/cont_spinner_bottom"
-                    android:background="@drawable/spinners"
                     android:layout_weight="1"
-                    android:weightSum="3"
-                    android:orientation="horizontal"
+                    android:background="@drawable/spinners"
                     android:elevation="10dp"
-                    >
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="2"
-                        android:text="Cubetas : "
                         android:fontFamily="sans-serif-medium"
                         android:gravity="center"
-                        android:textStyle="bold"
+                        android:text="Cubetas : "
                         android:textSize="@dimen/textview_spinner_text"
-                        />
+                        android:textStyle="bold" />
+
                     <Spinner
                         android:id="@+id/inpCubetas"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_weight="1"
                         android:hint="Cubetas"
                         android:textAlignment="center"
-                        android:layout_weight="1"
-                        android:visibility="invisible"
-                        />
+                        android:visibility="invisible" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
@@ -291,93 +284,96 @@
         android:id="@+id/mensajeAlert"
         android:layout_width="@dimen/msj_confirmacion_width"
         android:layout_height="@dimen/msj_confirmacion_height"
+        android:background="@drawable/alert"
+        android:elevation="10dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/alert"
-        android:visibility="invisible"
-        android:elevation="10dp"
-        >
+        app:layout_constraintTop_toTopOf="parent">
+
         <ImageView
             android:layout_width="@dimen/msj_img_width"
             android:layout_height="@dimen/msj_img_height"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/msj_img_top"
-            android:src="@drawable/pregunta"/>
+            android:src="@drawable/pregunta" />
+
         <TextView
             android:id="@+id/mensajeConteoEmpleado"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="El empleado ha contado: "
-            android:gravity="center"
-            android:textStyle="bold"
-            android:textSize="@dimen/msj_label1_texto"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="@dimen/msj_label1_bottom"
-            />
+            android:gravity="center"
+            android:text="El empleado ha contado: "
+            android:textSize="@dimen/msj_label1_texto"
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/mensajeCubetasAgregar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Se le agregarán: "
-            android:gravity="center"
-            android:textStyle="bold"
-            android:textSize="@dimen/msj_label2_texto"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="@dimen/msj_label2_bottom"
-            />
+            android:gravity="center"
+            android:text="Se le agregarán: "
+            android:textSize="@dimen/msj_label2_texto"
+            android:textStyle="bold" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="¿La cantidad de cubetas es correcta?"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:textSize="@dimen/msj_label3_texto"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="@dimen/msj_label3_bottom"
-            />
+            android:gravity="center"
+            android:text="¿La cantidad de cubetas es correcta?"
+            android:textSize="@dimen/msj_label3_texto"
+            android:textStyle="bold" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
             android:gravity="bottom"
+            android:orientation="horizontal"
             android:weightSum="2">
+
             <Button
                 android:id="@+id/botonConfirmacion"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/msj_btnsino_height"
-                android:textSize="@dimen/msj_btnsino_text"
-                android:backgroundTint="#449CDF"
                 android:layout_marginBottom="10dp"
-                android:text="SI"
+                android:layout_weight="1"
+                android:backgroundTint="#449CDF"
                 android:elevation="10dp"
-                android:layout_weight="1"/>
+                android:text="SI"
+                android:textSize="@dimen/msj_btnsino_text" />
+
             <Button
                 android:id="@+id/botonCancelacion"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/msj_btnsino_height"
-                android:backgroundTint="#D35A5A"
                 android:layout_marginBottom="10dp"
-                android:textSize="@dimen/msj_btnsino_text"
+                android:layout_weight="1"
+                android:backgroundTint="#D35A5A"
                 android:elevation="10dp"
                 android:text="NO"
-                android:layout_weight="1"/>
+                android:textSize="@dimen/msj_btnsino_text" />
         </LinearLayout>
     </RelativeLayout>
-<!--MENSAJE QUE INDICA QUE SE REGISTRO CON EXITO-->
+    <!--MENSAJE QUE INDICA QUE SE REGISTRO CON EXITO-->
     <RelativeLayout
         android:id="@+id/mensajeCorrecto"
         android:layout_width="@dimen/msj_exito_width"
         android:layout_height="@dimen/msj_exito_height"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:background="@drawable/alert"
         android:elevation="10dp"
         android:visibility="invisible"
-        >
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <ImageView
             android:id="@+id/imgCorrecto"
             android:layout_width="@dimen/msj_exito_img_width"
@@ -385,16 +381,16 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/msj_exito_img_top"
             android:src="@drawable/correcto" />
+
         <TextView
             android:id="@+id/txtCorrecto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Registrado Correctamente"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:textSize="@dimen/msj_exito_texto"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="@dimen/msj_exito_texto_bottom"
-            />
+            android:gravity="center"
+            android:text="Registrado Correctamente"
+            android:textSize="@dimen/msj_exito_texto"
+            android:textStyle="bold" />
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

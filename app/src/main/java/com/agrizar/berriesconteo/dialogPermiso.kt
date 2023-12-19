@@ -17,8 +17,9 @@ import com.android.volley.toolbox.Volley
 import com.example.berriesconteo.R
 import org.json.JSONObject
 
-class dialogPermiso: DialogFragment() {
+class dialogPermiso : DialogFragment() {
     private lateinit var cargaPermiso: ProgressBar
+
     interface Resultado {
         fun Resultado(resultado: Boolean)
     }
@@ -37,6 +38,7 @@ class dialogPermiso: DialogFragment() {
         super.onDetach()
         activityMain = null
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -54,13 +56,20 @@ class dialogPermiso: DialogFragment() {
 //      BOTON QUE MANDA EL USER Y PASSWORD A PHP PARA QUE INSERTE EL REGISTRO SI SON CORRECTOS LOS DATOS
         btnSubir.setOnClickListener {
             cargaPermiso.isGone = false
-            insertarRegistros(jsonArreglo!!,rootView.context,txtContraseña.text.toString(),txtNombre.text.toString())
+            insertarRegistros(
+                jsonArreglo!!,
+                rootView.context,
+                txtContraseña.text.toString(),
+                txtNombre.text.toString()
+            )
         }
         return rootView;
     }
-    fun insertarRegistros(json: String,context: Context,contraseña:String ,usuario:String ){
+
+    fun insertarRegistros(json: String, context: Context, contraseña: String, usuario: String) {
 //        RUTA PARA MANDAR EL ARREGLO, USER Y PASSWORD - EN PRUEBAS
-        val urlRegistros = "http://" + getString(R.string.servidor) + "/kudePOO/aplicacion/apps/berries/insertarRegistros.php?array=$json&usuario=$usuario&password=$contraseña";
+        val urlRegistros =
+            "http://" + getString(R.string.servidor) + "/kudePOO/aplicacion/apps/berries/insertarRegistros.php?array=$json&usuario=$usuario&password=$contraseña";
 
         val queueResponsivas = Volley.newRequestQueue(context)
 
@@ -72,27 +81,31 @@ class dialogPermiso: DialogFragment() {
             statusCode = jsonRespuesta.getInt("statusCode")
 
 //          SI LA RESPUESTA DEL PHP INSERTO LOS DATOS A LA BD DEL KUDE, NOS REGRESA EL ESTADO 1
-            if(statusCode==1){
-                var dbBerries = DBBerries(context," DBBerries", null, R.string.versionBD);
+            if (statusCode == 1) {
+                var dbBerries = DBBerries(context, " DBBerries", null, R.string.versionBD);
                 val db = dbBerries.writableDatabase
                 db.execSQL("DELETE FROM cubetascontadasberries")
-                Toast.makeText(context,"Se subieron los registros Exitosamente",Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    "Se subieron los registros Exitosamente",
+                    Toast.LENGTH_SHORT
+                ).show()
                 activityMain?.Resultado(true)
                 dismiss()
-            }else{
+            } else {
 
 //              SI LA RESPUESTA DE PHP NO FUE 1, PUEDE HABER UN ERROR INESPERADO O EL USUARIO ES INCORRECTO
-                if(statusCode==0){
-                    Toast.makeText(context,"ocurrio un error",Toast.LENGTH_SHORT).show()
+                if (statusCode == 0) {
+                    Toast.makeText(context, "ocurrio un error", Toast.LENGTH_SHORT).show()
                 }
-                if(statusCode==2){
-                    Toast.makeText(context,"Usuario incorrecto",Toast.LENGTH_SHORT).show()
+                if (statusCode == 2) {
+                    Toast.makeText(context, "Usuario incorrecto", Toast.LENGTH_SHORT).show()
                 }
             }
             cargaPermiso.isGone = true
-        },{
+        }, {
 //          SI NO HAY CONEXION SALTA EL SIGUIENTE MENSAJE
-            Toast.makeText(context,"Ocurrio un error en la conexion",Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Ocurrio un error en la conexion", Toast.LENGTH_SHORT).show()
             cargaPermiso.isGone = true
         })
         queueResponsivas.add(stringRequestResponsivas)

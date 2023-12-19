@@ -19,32 +19,43 @@ import com.example.berriesconteo.R
 import com.google.gson.Gson
 
 class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
-//  VARIABLES
+    //  VARIABLES
     private lateinit var db: SQLiteDatabase
-    private lateinit var btnSubirDatos:LinearLayout
-    private lateinit var txtSubir:TextView
-    private lateinit var imgSubido:LinearLayout
+    private lateinit var btnSubirDatos: LinearLayout
+    private lateinit var txtSubir: TextView
+    private lateinit var imgSubido: LinearLayout
 
     override fun onResume() {
         super.onResume()
 //      LEE LA BASE DE DATOS
-        val dbBerries = DBBerries(applicationContext," DBBerries", null, R.string.versionBD);
+        val dbBerries = DBBerries(applicationContext, " DBBerries", null, R.string.versionBD);
         val db = dbBerries.readableDatabase
         val columnsCubetas = arrayOf("idcubeta")
-        val cursorCubetas: Cursor = db.query("cubetascontadasberries", columnsCubetas, null, null, null, null, "idcubeta ASC")
+        val cursorCubetas: Cursor = db.query(
+            "cubetascontadasberries",
+            columnsCubetas,
+            null,
+            null,
+            null,
+            null,
+            "idcubeta ASC"
+        )
 
 //      MUESTRA EN EL BOTON DE SUBIR UN CONTEO DE LOS REGISTROS GENERALES
         txtSubir.text = "SUBIR : ${cursorCubetas.count}"
     }
+
     private fun isNetworkAvailable(): Boolean {
-        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager =
+            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
 //      COMPRUEBA LA VERSION DEL SISTEMA OPERATIVO DEL ANDROID
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 //          SI LA VERSION ES 6.0 O SUPERIOR, SE UTILIZA NETWORKCAPABILITIES PARA CONOCER LA CONEXION ACTIVA
             val networkCapabilities = connectivityManager.activeNetwork ?: return false
 //          PROPORCIONA INFORMACION SOBRE LOS ATRIBUTOS DE LA RED (WIFI, DATOS)
-            val actNetwork = connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+            val actNetwork =
+                connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
 
 //          RETORNA SI ES DATOS MOVILES O WIFI SI ES TRUE
             return actNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
@@ -64,7 +75,10 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
     override fun onCreate(savedInstanceState: Bundle?) {
 
 //      ESTABLECE LA PANTALLA COMPLETA
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -76,57 +90,72 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
 //      NOS MANDA A LA PANTALLA DE CAPTURAR CUANDO PRESIONEMOS EL BOTON
         val btn: LinearLayout = findViewById(R.id.btnCapturar)
         btn.setOnClickListener {
-            val intent = Intent(this, pantalla_capturar:: class.java)
+            val intent = Intent(this, pantalla_capturar::class.java)
             startActivity(intent)
         }
 
 //      LEE LA BASE DE DATOS
-        val dbBerries = DBBerries(applicationContext," DBBerries", null, R.string.versionBD);
+        val dbBerries = DBBerries(applicationContext, " DBBerries", null, R.string.versionBD);
         val db = dbBerries.readableDatabase
 
 //      NOS MANDA A LA PANTALLA DE CONSULTA CUANDO PRESIONEMOS EL BOTON
         val btn2: LinearLayout = findViewById(R.id.btnConsultar)
         btn2.setOnClickListener {
-            val intent = Intent(this, Consultar:: class.java)
+            val intent = Intent(this, Consultar::class.java)
             startActivity(intent)
         }
 
 //      MANDA LOS DATOS DE SQLITE A PHP AL PRESIONAR EL BOTON DE SUBIR
-        btnSubirDatos.setOnClickListener{
+        btnSubirDatos.setOnClickListener {
 //          TRAE LAS CUBETAS
-            val arrEstacionTitulos : MutableList<String>? = mutableListOf()
-            val arrCont : MutableList<MutableList<String>>? = mutableListOf()
-            val columnsCubetas = arrayOf("fecha","moduloid","estacion","sector","numero_empleado","fruto")
-            val cursorCubetas: Cursor = db.query("cubetascontadasberries", columnsCubetas, null, null, null, null, "idcubeta ASC")
+            val arrEstacionTitulos: MutableList<String>? = mutableListOf()
+            val arrCont: MutableList<MutableList<String>>? = mutableListOf()
+            val columnsCubetas =
+                arrayOf("fecha", "moduloid", "estacion", "sector", "numero_empleado", "fruto")
+            val cursorCubetas: Cursor = db.query(
+                "cubetascontadasberries",
+                columnsCubetas,
+                null,
+                null,
+                null,
+                null,
+                "idcubeta ASC"
+            )
 
 //          RECORRE LA BD SI HAY REGISTROS EN LA BASE DE DATOS
-            if(cursorCubetas.count!=0){
+            if (cursorCubetas.count != 0) {
                 while (cursorCubetas.moveToNext()) {
 //                  SE DECLARA LA MUTABLELIST
-                    var arrayDatos:MutableList<String>? =  mutableListOf()
+                    var arrayDatos: MutableList<String>? = mutableListOf()
 
 //                  TRAE LOS REGISTROS DE LA COLUMNA FECHA
-                    val fecha = cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("fecha"))
+                    val fecha =
+                        cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("fecha"))
                     arrayDatos!!.add(fecha)
 
 //                  TRAE LOS REGISTROS DE LA COLUMNA MODULO
-                    val moduloid = cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("moduloid"))
+                    val moduloid =
+                        cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("moduloid"))
                     arrayDatos!!.add(moduloid)
 
 //                  TRAE LOS REGISTROS DE LA COLUMNA ESTACION
-                    val estacion = cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("estacion"))
+                    val estacion =
+                        cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("estacion"))
                     arrayDatos!!.add(estacion)
 
 //                  TRAE LOS REGISTROS DE LA COLUMNA SECTOR
-                    val sector = cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("sector"))
+                    val sector =
+                        cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("sector"))
                     arrayDatos!!.add(sector)
 
 //                  TRAE LOS REGISTROS DE LA COLUMNA NUMERO DE EMPLEADO
-                    val numero_empleado = cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("numero_empleado"))
+                    val numero_empleado =
+                        cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("numero_empleado"))
                     arrayDatos!!.add(numero_empleado)
 
 //                  TRAE LOS REGISTROS DE LA COLUMNA FRUTO
-                    val fruto = cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("fruto"))
+                    val fruto =
+                        cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("fruto"))
                     arrayDatos!!.add(fruto)
 
 //                  METE LOS ARREGLOS QUE SE FORMARON DE LAS COLUMNAS, DENTRO DE UN ARREGLO
@@ -143,16 +172,17 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
                     args.putString("jsonArreglo", jsonArreglo)
                     dialogopermiso.setArguments(args)
                     dialogopermiso.show(supportFragmentManager, "titulo")
-                }else{
+                } else {
 //                  SE EJECUTA SI NO HAY CONEXION A INTERNET
-                    Toast.makeText(this,"No hay internet disponible",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "No hay internet disponible", Toast.LENGTH_SHORT).show()
                 }
-            }else{
+            } else {
 //              SE EJECUTA SI NO HAY REGISTROS EN LA BASE DE DATOS
-                Toast.makeText(this,"No se encuentra ningun registro",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "No se encuentra ningun registro", Toast.LENGTH_SHORT).show()
             }
         }
     }
+
     override fun Resultado(resultado: Boolean) {
         txtSubir.text = "SUBIR: 0"
 //      ANIMACION DE APARICION
@@ -170,7 +200,7 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
         imgSubido.startAnimation(fadeInAnimation)
         imgSubido.postDelayed({
             imgSubido.startAnimation(fadeOutAnimation)
-        },1000)
+        }, 1000)
     }
 }
 

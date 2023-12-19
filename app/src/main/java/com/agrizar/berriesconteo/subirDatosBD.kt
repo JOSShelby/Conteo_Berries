@@ -19,7 +19,10 @@ class subirDatosBD(db: SQLiteDatabase) {
             val status = cursor.getInt(cursor.getColumnIndex("status"))
 
 //          IMPRIMIR LOS DATOS EN LOGCAT
-            Log.d("Datos", "ID: $id, Fecha: $fecha, Modulo ID: $moduloId, Estacion: $estacion, Sector: $sector, Empleado: $numeroEmpleado, Fruto: $fruto, Status: $status")
+            Log.d(
+                "Datos",
+                "ID: $id, Fecha: $fecha, Modulo ID: $moduloId, Estacion: $estacion, Sector: $sector, Empleado: $numeroEmpleado, Fruto: $fruto, Status: $status"
+            )
         }
         cursor.close()
     }

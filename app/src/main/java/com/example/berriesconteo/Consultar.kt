@@ -8,16 +8,24 @@ import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.agrizar.berriesconteo.DBBerries
+import com.google.android.material.textfield.TextInputEditText
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanIntentResult
+import com.journeyapps.barcodescanner.ScanOptions
 
 class Consultar : AppCompatActivity() {
     private lateinit var imageButton: ImageButton
     override fun onCreate(savedInstanceState: Bundle?) {
 
 //      COLOCA LA PANTALLA COMPLETA EN EL DISPOSITIVO
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
 
 //      EVITA QUE SE ROTE LA PANTALLA
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -25,41 +33,52 @@ class Consultar : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_consultar)
 
+
 //      TRAE EL LINEARLAYOUT
         val linearlistaCosechadores: LinearLayout = findViewById(R.id.linearlistaCosechadores)
-
 //      TRAE EL LINEARLAYOUT DE LOS TITULOS
         val linearTituloTabla: LinearLayout = findViewById(R.id.linearTituloTabla)
+        val nEmpleado: TextInputEditText = findViewById(R.id.txtEmpleado)
 
 //      VARIABLE QUE SE LE ASIGNA EL BOTON
         imageButton = findViewById(R.id.botonBuscarCosechadores)
+        val btnLector: ImageButton = findViewById(R.id.btnCodeBar)
 
-//      ACCION QUE REALIZARA EL BOTON AL DARLE CLICK
-        imageButton.setOnClickListener{
+        fun getEmployee(nEmpleado: String) {
             linearlistaCosechadores.removeAllViewsInLayout()
             linearTituloTabla.isVisible = true
 
 //          SE DECLARAN VARIABLES PARA VER O INSERTAR EN LA BASE DE DATOS
-            val dbBerries = DBBerries(applicationContext," DBBerries", null, R.string.versionBD);
+            val dbBerries = DBBerries(applicationContext, " DBBerries", null, R.string.versionBD);
             val db = dbBerries.writableDatabase
             val dbVer = dbBerries.readableDatabase
 
 //          CONSULTA PARA OBTENER TODOS LOS COSECHADORES EXISTENTES EN LA BASE DE DATOS
             val conlumnsCubetas = arrayOf("numero_empleado", "COUNT(*) AS num_registros")
-            val cursorCubetas: Cursor = db.query("cubetascontadasberries", conlumnsCubetas, null, null, "numero_empleado", null, null)
+            val cursorCubetas: Cursor = db.query(
+                "cubetascontadasberries",
+                conlumnsCubetas,
+                "numero_empleado = ?",
+                arrayOf(nEmpleado),
+                "numero_empleado",
+                null,
+                null
+            )
 
 //          RECORREMOS LOS RESULTADOS DE LA BUSQUEDA DE LA BD
             while (cursorCubetas.moveToNext()) {
-                val numEmp = cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("numero_empleado"))
-                val numCub = cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("num_registros"))
+                val numEmp =
+                    cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("numero_empleado"))
+                val numCub =
+                    cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("num_registros"))
 
 //              SE CREA UN LAYOUT PARA METER LOS RESULTADOS
                 val linearLayoutRegistro = LinearLayout(this);
                 linearLayoutRegistro.layoutParams =
-                LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                )
+                    LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                    )
                 linearLayoutRegistro.setPadding(0, 10, 0, 0)
                 linearLayoutRegistro.weightSum = 2f
                 linearLayoutRegistro.orientation = LinearLayout.HORIZONTAL
@@ -104,6 +123,29 @@ class Consultar : AppCompatActivity() {
             cursorCubetas.close()
             db.close()
             dbVer.close()
+        }
+
+        val lectorcodigo = registerForActivityResult(ScanContract()) { result: ScanIntentResult ->
+            if (result.contents == null) {
+                Toast.makeText(this, "Se cancelo el escaneo", Toast.LENGTH_LONG).show()
+            } else {
+                getEmployee(result.contents)
+            }
+        }
+
+        btnLector.setOnClickListener {
+            val options = ScanOptions()
+            options.setDesiredBarcodeFormats(ScanOptions.ALL_CODE_TYPES)
+            options.setPrompt("escanne el codigo");
+            options.setCameraId(0)
+            options.setOrientationLocked(true);
+            options.setBarcodeImageEnabled(true);
+            lectorcodigo.launch(options);
+        }
+
+//      ACCION QUE REALIZARA EL BOTON AL DARLE CLICK
+        imageButton.setOnClickListener {
+            getEmployee(nEmpleado.text.toString())
         }
     }
 }
