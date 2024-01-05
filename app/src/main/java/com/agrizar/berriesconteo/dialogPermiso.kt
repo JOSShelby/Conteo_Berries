@@ -70,13 +70,15 @@ class dialogPermiso : DialogFragment() {
 //        RUTA PARA MANDAR EL ARREGLO, USER Y PASSWORD - EN PRUEBAS
         val urlRegistros =
             "http://" + getString(R.string.servidor) + "/kudePOO/aplicacion/apps/berries/insertarRegistros.php?array=$json&usuario=$usuario&password=$contraseña";
-
+        println(urlRegistros)
+        println(urlRegistros)
+        println(urlRegistros)
         val queueResponsivas = Volley.newRequestQueue(context)
 
 //      DECLARAMOS EL ESTADO EN -1 PARA SABER DESPUES SI HUBO UN ERROR
         var statusCode = -1
         val stringRequestResponsivas = StringRequest(Request.Method.GET, urlRegistros, { response ->
-            println(response)
+
             val jsonRespuesta = JSONObject(response)
             statusCode = jsonRespuesta.getInt("statusCode")
 

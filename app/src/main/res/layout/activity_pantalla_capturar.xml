@@ -245,6 +245,36 @@
                         android:textAlignment="center"
                         android:visibility="invisible" />
                 </LinearLayout>
+                <!--            SPINNER DE FRUTO-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/cont_spinner_height"
+                    android:layout_marginBottom="@dimen/cont_spinner_bottom"
+                    android:layout_weight="1"
+                    android:background="@drawable/spinners"
+                    android:elevation="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:fontFamily="sans-serif-medium"
+                        android:gravity="center"
+                        android:text="Variedades : "
+                        android:textSize="@dimen/textview_spinner_text"
+                        android:textStyle="bold" />
+
+                    <Spinner
+                        android:id="@+id/inpVariedades"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:hint="Fruto"
+                        android:textAlignment="center"
+                        android:visibility="invisible" />
+                </LinearLayout>
                 <!--            SPINNER DE CUBETAS-->
                 <LinearLayout
                     android:layout_width="match_parent"

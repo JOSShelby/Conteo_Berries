@@ -111,7 +111,7 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
             val arrEstacionTitulos: MutableList<String>? = mutableListOf()
             val arrCont: MutableList<MutableList<String>>? = mutableListOf()
             val columnsCubetas =
-                arrayOf("fecha", "moduloid", "estacion", "sector", "numero_empleado", "fruto")
+                arrayOf("fecha", "moduloid", "estacion", "sector", "numero_empleado", "fruto", "variedad")
             val cursorCubetas: Cursor = db.query(
                 "cubetascontadasberries",
                 columnsCubetas,
@@ -157,6 +157,11 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
                     val fruto =
                         cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("fruto"))
                     arrayDatos!!.add(fruto)
+
+                    //                  TRAE LOS REGISTROS DE LA COLUMNA VARIEDAD
+                    val variedad =
+                        cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("variedad"))
+                    arrayDatos!!.add(variedad)
 
 //                  METE LOS ARREGLOS QUE SE FORMARON DE LAS COLUMNAS, DENTRO DE UN ARREGLO
                     arrCont!!.add(arrayDatos)

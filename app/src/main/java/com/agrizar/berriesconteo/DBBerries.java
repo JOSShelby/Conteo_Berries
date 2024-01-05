@@ -22,6 +22,7 @@ public class DBBerries extends SQLiteOpenHelper {
             "sector integer references sectoresberries(idsector)," +
             "numero_empleado TEXT," +
             "fruto TEXT," +
+            "variedad integer," +
             "status integer," +
             "bandera integer);";
     //    ESTRUCTURA DE LA TABLA MODULOSBERRIES
@@ -77,6 +78,7 @@ public class DBBerries extends SQLiteOpenHelper {
         db.execSQL(TABLA_RELACIONMODULOLOTE);   //EJECUTA LA ESTRUCTURA PARA CREAR LA TABLA TABLA_RELACIONMODULOLOTE
         db.execSQL(TABLA_RELACIONSECTORESLOTE);   //EJECUTA LA ESTRUCTURA PARA CREAR LA TABLA TABLA_RELACIONSECTORESLOTE
         db.execSQL(TABLA_RELACIONESTACIONLOTE);   //EJECUTA LA ESTRUCTURA PARA CREAR LA TABLA TABLA_RELACIONESTACIONLOTE
+
 
 //      INSERT DE LA TABLA MODULOS
         try {
@@ -134,6 +136,7 @@ public class DBBerries extends SQLiteOpenHelper {
         } catch (SQLException e) {
 
         }
+
     }
 
     @Override
@@ -153,6 +156,7 @@ public class DBBerries extends SQLiteOpenHelper {
 //      BORRAR Y CREAR LA TABLA ESTACIONES SI YA EXISTE
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS estacionberries");
         sqLiteDatabase.execSQL(TABLA_ESTACIONES);
+
 
 //      INSERT DE LA TABLA MODULOS
         try {
@@ -208,5 +212,7 @@ public class DBBerries extends SQLiteOpenHelper {
         } catch (SQLException e) {
 
         }
+
+
     }
 }

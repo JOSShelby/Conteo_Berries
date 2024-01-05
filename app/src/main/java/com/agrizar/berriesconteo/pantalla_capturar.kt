@@ -46,11 +46,12 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
     private lateinit var soundPool: SoundPool
     private lateinit var cajaEscribeEscaner: EditText
     private var beepSoundId = 0
-    var seleccionEstacion = 0
-    var seleccionModulo = 0
-    var seleccionSector = 0
-    var seleccionFruto = 0
-    var seleccionCubetas = 1
+    private var seleccionEstacion = 0
+    private var seleccionModulo = 0
+    private var seleccionSector = 0
+    private var seleccionFruto = 0
+    private var seleccionCubetas = 1
+    private var seleccionVariedad = 0
 
     var seleccionLote = 0
 
@@ -167,8 +168,8 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
         val arrLugar: MutableList<String> = mutableListOf()
 
         arrLugar.add("LUGAR...")
-        arrLugar.add("San Francisco")
-        arrLugar.add("AGZ")
+        arrLugar.add("AGZ3")
+        arrLugar.add("AGZ1")
 
 //      ADAPTADOR PARA EL SPINNER DE FRUTO
         val spinnerFruto = binding.inpFruto
@@ -179,6 +180,13 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
         val adapterFruto =
             ArrayAdapter(this, android.R.layout.simple_spinner_item, arrFrutoTitulos)
         spinnerFruto.adapter = adapterFruto
+
+        //      ADAPTADOR PARA EL SPINNER DE FRUTO
+        val spinnerVariedades = binding.inpVariedades
+
+
+
+
         spinnerFruto.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -186,14 +194,90 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                 position: Int,
                 id: Long
             ) {
+                val arrVariedadesTitulos: MutableList<String> = mutableListOf()
                 if (position == 0) {
                     seleccionFruto = 0
                 }
                 if (position == 1) {
+                    println("entre aqui 1")
                     seleccionFruto = 13
+
+                    arrVariedadesTitulos.add("VARIEDADES.....")
+                    arrVariedadesTitulos.add("SAPPHIRE")
+                    arrVariedadesTitulos.add("DJ")
+                    val adapterVariedades =
+                        ArrayAdapter(
+                            this@pantalla_capturar,
+                            android.R.layout.simple_spinner_item,
+                            arrVariedadesTitulos
+                        )
+                    spinnerVariedades.adapter = adapterVariedades
+
+                    spinnerVariedades.onItemSelectedListener =
+                        object : AdapterView.OnItemSelectedListener {
+                            override fun onItemSelected(
+                                parent: AdapterView<*>?,
+                                view: View?,
+                                position: Int,
+                                id: Long
+                            ) {
+                                if (position == 0) {
+                                    seleccionVariedad = 0
+                                }
+                                if (position == 1) {
+                                    seleccionVariedad = 1
+                                }
+                                if (position == 2) {
+                                    seleccionVariedad = 2
+                                }
+
+                            }
+
+                            override fun onNothingSelected(parent: AdapterView<*>?) {
+                                // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
+                            }
+                        }
+
                 }
                 if (position == 2) {
                     seleccionFruto = 14
+                    arrVariedadesTitulos.add("VARIEDADES.....")
+                    arrVariedadesTitulos.add("TP04")
+                    val adapterVariedades =
+                        ArrayAdapter(
+                            this@pantalla_capturar,
+                            android.R.layout.simple_spinner_item,
+                            arrVariedadesTitulos
+                        )
+                    spinnerVariedades.adapter = adapterVariedades
+                    spinnerVariedades.onItemSelectedListener =
+                        object : AdapterView.OnItemSelectedListener {
+                            override fun onItemSelected(
+                                parent: AdapterView<*>?,
+                                view: View?,
+                                position: Int,
+                                id: Long
+                            ) {
+                                if (position == 0) {
+                                    seleccionVariedad = 0
+                                }
+
+                                if (position == 1) {
+                                    seleccionVariedad = 3
+                                }
+
+                            }
+
+                            override fun onNothingSelected(parent: AdapterView<*>?) {
+                                // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
+                            }
+                        }
+                }
+
+                if (position == 1 || position == 2) {
+                    spinnerVariedades.visibility = View.VISIBLE
+                } else {
+                    spinnerVariedades.visibility = View.INVISIBLE
                 }
             }
 
@@ -512,7 +596,6 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                     contCuatroMas = 1 // la seccion y el conteo son mas de 4
                 }
 
-
                 if (bandera == 1) {
 
                     //CONSULTA PARA OBTENER LAS ULTIMA hora de su ultimo registro
@@ -546,8 +629,8 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
                             for (i in 1..seleccionCubetas) {
                                 val cadenaAgregarCubeta =
-                                    "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,bandera) " +
-                                            "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$scannedText',$seleccionFruto, 0)"
+                                    "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,variedad,bandera) " +
+                                            "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$scannedText',$seleccionFruto,$seleccionVariedad, 0)"
                                 dbVer.execSQL(cadenaAgregarCubeta)
                             }
                             pantallaMensaje(1)
@@ -566,8 +649,8 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
                         for (i in 1..seleccionCubetas) {
                             val cadenaAgregarCubeta =
-                                "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,bandera) " +
-                                        "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$scannedText',$seleccionFruto, 0)"
+                                "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,variedad,bandera) " +
+                                        "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$scannedText',$seleccionFruto,$seleccionVariedad, 0)"
                             dbVer.execSQL(cadenaAgregarCubeta)
                         }
                         //funcion para traer el mensaje
@@ -613,7 +696,6 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
             txtCorrecto.text = "Error se trato de meter mas de 4 cubetas "
             imgCorrecto.setImageResource(R.drawable.error)
             delay = 3;
-
         }
         //mensaje de mas de 4 cubetas que fueron intentadas meter
         if (tipo == 3) {

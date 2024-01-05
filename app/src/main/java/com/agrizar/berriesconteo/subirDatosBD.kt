@@ -16,6 +16,7 @@ class subirDatosBD(db: SQLiteDatabase) {
             val sector = cursor.getInt(cursor.getColumnIndex("sector"))
             val numeroEmpleado = cursor.getInt(cursor.getColumnIndex("numero_empleado"))
             val fruto = cursor.getString(cursor.getColumnIndex("fruto"))
+            val variedad = cursor.getString(cursor.getColumnIndex("variedad"))
             val status = cursor.getInt(cursor.getColumnIndex("status"))
 
 //          IMPRIMIR LOS DATOS EN LOGCAT
