@@ -50,6 +50,14 @@ public class DBBerries extends SQLiteOpenHelper {
             "idsector INTEGER,  " +
             "idlote INTEGER" +
             ");";
+
+    //    ESTRUCTURA DE LA TABLA RELACIOMODULOLOTE
+    private static final String TABLA_RELACIONESTACIONLOTE = "CREATE TABLE relacionestacionlote(" +
+            "idestacion INTEGER,  " +
+            "idlote INTEGER" +
+            ");";
+
+
     //    ESTRUCTURA DE LA TABLA ESTACIONBERRIES
     private static final String TABLA_ESTACIONES = "create table estacionberries(" +
             "idestacion INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -57,10 +65,23 @@ public class DBBerries extends SQLiteOpenHelper {
             "status integer" +
             ");";
 
-    //    ESTRUCTURA DE LA TABLA RELACIOMODULOLOTE
-    private static final String TABLA_RELACIONESTACIONLOTE = "CREATE TABLE relacionestacionlote(" +
+    //    ESTRUCTURA DE LA TABLA RELACIOMODULOSECTOR
+    private static final String TABLA_RELACIONMODULOESTACION = "CREATE TABLE relacionmoduloestacion(" +
+            "idsector INTEGER, " +
+            "idestacion INTEGER  " +
+            ");";
+
+    //    ESTRUCTURA DE LA TABLA RELACIOMODULOSECTOR
+    private static final String TABLA_RELACIONESTACIONSECTORES = "CREATE TABLE relacionestacionsectores(" +
             "idestacion INTEGER,  " +
-            "idlote INTEGER" +
+            "idsector INTEGER" +
+            ");";
+
+    private static final String TABLA_RELACIONLOTEMODULOESTACIONSECTOR = "CREATE TABLE relacionlotemoduloestacionsector("+
+            "idlote INTEGER,  " +
+            "idmodulo INTEGER,  " +
+            "idestacion INTEGER,  " +
+            "idsector INTEGER" +
             ");";
 
 
@@ -75,9 +96,13 @@ public class DBBerries extends SQLiteOpenHelper {
         db.execSQL(TABLA_MODULOS);      //EJECUTA LA ESTRUCTURA PARA CREAR LA TABLA MODULOS
         db.execSQL(TABLA_SECTORES);     //EJECUTA LA ESTRUCTURA PARA CREAR LA TABLA SECTORES
         db.execSQL(TABLA_ESTACIONES);   //EJECUTA LA ESTRUCTURA PARA CREAR LA TABLA ESTACIONES
-        db.execSQL(TABLA_RELACIONMODULOLOTE);   //EJECUTA LA ESTRUCTURA PARA CREAR LA TABLA TABLA_RELACIONMODULOLOTE
-        db.execSQL(TABLA_RELACIONSECTORESLOTE);   //EJECUTA LA ESTRUCTURA PARA CREAR LA TABLA TABLA_RELACIONSECTORESLOTE
-        db.execSQL(TABLA_RELACIONESTACIONLOTE);   //EJECUTA LA ESTRUCTURA PARA CREAR LA TABLA TABLA_RELACIONESTACIONLOTE
+        db.execSQL(TABLA_RELACIONMODULOLOTE);   //EJECUTA LA ESTRUCTURA PARA CREAR LA TABLA ESTACIONES
+        db.execSQL(TABLA_RELACIONSECTORESLOTE);   //EJECUTA LA ESTRUCTURA PARA CREAR LA TABLA ESTACIONES
+        db.execSQL(TABLA_RELACIONESTACIONLOTE);   //EJECUTA LA ESTRUCTURA PARA CREAR LA TABLA ESTACIONES
+
+        db.execSQL(TABLA_RELACIONLOTEMODULOESTACIONSECTOR);   //EJECUTA LA ESTRUCTURA PARA CREAR LA TABLA PARA LAS RELACIONES
+
+
 
 
 //      INSERT DE LA TABLA MODULOS
@@ -100,7 +125,6 @@ public class DBBerries extends SQLiteOpenHelper {
         } catch (SQLException e) {
 
         }
-
 //      INSERT DE LA TABLA ESTACION
         try {
             String cadenaEstacion = "INSERT INTO estacionberries (nombreestacion, status) " +
@@ -121,21 +145,54 @@ public class DBBerries extends SQLiteOpenHelper {
 
         }
 
-        try {
+        //      INSERT DE LA TABLA ESTACION
+        try{
+            String cadenaEModulo = "INSERT INTO relacionmodulolote (idmodulo, idlote) " +
+                    "VALUES (1,1), (2,1),(3,1),(1,2);";
+            db.execSQL(cadenaEModulo);
+        }catch (SQLException e){
+
+        }
+
+        try{
             String cadenaRSector = "INSERT INTO relacionsectorlote (idsector, idlote) " +
                     "VALUES (1,1), (2,1),(3,1),(4,1),(5,1), (6,1),(7,1),(8,1),(9,1), (10,1),(11,1),(12,1),(13,1),(14,1),(15,1),(16,1),(17,1),(18,1),(19,1),(20,1),(21,1), (22,1),(23,1),(24,1),(25,1), (26,1),(27,1),(28,1),(29,1), (30,1),(31,1),(32,1),(33,1), (34,1),(35,1),(36,1),(37,1),(38,1),(1,2), (2,2),(3,2),(4,2),(5,2), (6,2),(7,2),(8,2);";
             db.execSQL(cadenaRSector);
-        } catch (SQLException e) {
+        }catch (SQLException e){
 
         }
 
-        try {
+        try{
             String cadenaREstacion = "INSERT INTO relacionestacionlote (idestacion, idlote) " +
                     "VALUES (1,1),(2,1),(3,1),(4,1),(5,1), (6,1),(7,1),(8,1),(9,1), (10,1),(11,1),(12,1),(13,1),(14,1),(15,1),(16,1),(17,1),(18,1),(19,1),(20,1),(1,2),(2,2),(3,2),(4,2),(5,2) ;";
             db.execSQL(cadenaREstacion);
+        }catch (SQLException e){
+
+        }
+
+        //      INSERT DE LA TABLA ESTACION
+        try {
+            String cadenaEModulo = "INSERT INTO relacionmodulolote (idmodulo, idlote) " +
+                    "VALUES (1,1), (2,1),(3,1),(1,2);";
+            db.execSQL(cadenaEModulo);
         } catch (SQLException e) {
 
         }
+
+
+        //      INSERT DE LA TABLA ESTACION
+        try {
+            String cadenaRelacionCompleta = "INSERT INTO relacionlotemoduloestacionsector (idlote,idmodulo, idestacion,idsector) " +
+                    "VALUES (1,1,1,1),(1,1,2,2),(1,1,1,3),(1,1,2,4),(1,1,3,5),(1,1,4,6),(1,1,3,7),(1,1,4,8),(1,1,5,9),(1,1,6,10),(1,1,5,11),(1,1,6,12),(1,1,7,13),(1,1,8,14),(1,1,7,15),(1,1,8,16)"+
+                    ",(1,2,9,17),(1,2,9,18),(1,2,10,19),(1,2,10,20),(1,2,10,21),(1,2,12,22),(1,2,12,23),(1,2,12,24),(1,2,13,25),(1,2,14,25),(1,2,13,26),(1,2,14,26),(1,2,15,27),(1,2,15,28)"+
+                    ",(1,3,16,29),(1,3,16,30),(1,3,17,31),(1,3,17,32),(1,3,18,33),(1,3,18,34),(1,3,19,35),(1,3,19,36),(1,3,20,37),(1,3,20,38)"+
+                    ",(2,1,1,1),(2,1,2,2),(2,1,3,3),(2,1,4,1),(2,1,5,2),(2,1,6,3),(2,1,7,4),(2,1,8,5)"+
+                    ";";
+            db.execSQL(cadenaRelacionCompleta);
+        } catch (SQLException e) {
+
+        }
+
 
     }
 
@@ -156,6 +213,26 @@ public class DBBerries extends SQLiteOpenHelper {
 //      BORRAR Y CREAR LA TABLA ESTACIONES SI YA EXISTE
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS estacionberries");
         sqLiteDatabase.execSQL(TABLA_ESTACIONES);
+
+        //BORRAR Y CREAR LA TABLA ESTACIONES SI YA EXISTE
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS relacionmodulolote");
+        sqLiteDatabase.execSQL(TABLA_RELACIONMODULOLOTE);
+
+        //BORRAR Y CREAR LA TABLA ESTACIONES SI YA EXISTE
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS relacionsectorlote");
+        sqLiteDatabase.execSQL(TABLA_RELACIONSECTORESLOTE);
+
+        //BORRAR Y CREAR LA TABLA ESTACIONES SI YA EXISTE
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS relacionestacionlote");
+        sqLiteDatabase.execSQL(TABLA_RELACIONESTACIONLOTE);
+
+        //BORRAR Y CREAR LA TABLA relacion completa SI YA EXISTE
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS relacionlotemoduloestacionsector");
+        sqLiteDatabase.execSQL(TABLA_RELACIONLOTEMODULOESTACIONSECTOR);
+
+
+
+
 
 
 //      INSERT DE LA TABLA MODULOS
@@ -188,6 +265,8 @@ public class DBBerries extends SQLiteOpenHelper {
 
         }
 
+
+
         //      INSERT DE LA TABLA ESTACION
         try {
             String cadenaEModulo = "INSERT INTO relacionmodulolote (idmodulo, idlote) " +
@@ -197,21 +276,20 @@ public class DBBerries extends SQLiteOpenHelper {
 
         }
 
+        //      INSERT DE LA TABLA ESTACION
         try {
-            String cadenaRSector = "INSERT INTO relacionsectorlote (idsector, idlote) " +
-                    "VALUES (1,1), (2,1),(3,1),(4,1),(5,1), (6,1),(7,1),(8,1),(9,1), (10,1),(11,1),(12,1),(13,1),(14,1),(15,1),(16,1),(17,1),(18,1),(19,1),(20,1),(21,1), (22,1),(23,1),(24,1),(25,1), (26,1),(27,1),(28,1),(29,1), (30,1),(31,1),(32,1),(33,1), (34,1),(35,1),(36,1),(37,1),(38,1),(1,2), (2,2),(3,2),(4,2),(5,2), (6,2),(7,2),(8,2);";
-            sqLiteDatabase.execSQL(cadenaRSector);
+            String cadenaRelacionCompleta = "INSERT INTO relacionlotemoduloestacionsector (idlote,idmodulo, idestacion,idsector) " +
+                    "VALUES (1,1,1,1),(1,1,2,2),(1,1,1,3),(1,1,2,4),(1,1,3,5),(1,1,4,6),(1,1,3,7),(1,1,4,8),(1,1,5,9),(1,1,6,10),(1,1,5,11),(1,1,6,12),(1,1,7,13),(1,1,8,14),(1,1,7,15),(1,1,8,16)"+
+                    ",(1,2,9,17),(1,2,9,18),(1,2,10,19),(1,2,10,20),(1,2,10,21),(1,2,12,22),(1,2,12,23),(1,2,12,24),(1,2,13,25),(1,2,14,25),(1,2,13,26),(1,2,14,26),(1,2,15,27),(1,2,15,28)"+
+                    ",(1,3,16,29),(1,3,16,30),(1,3,17,31),(1,3,17,32),(1,3,18,33),(1,3,18,34),(1,3,19,35),(1,3,19,36),(1,3,20,37),(1,3,20,38)"+
+                    ",(2,1,1,1),(2,1,2,2),(2,1,3,3),(2,1,4,1),(2,1,5,2),(2,1,6,3),(2,1,7,4),(2,1,8,5)"+
+                    ";";
+            sqLiteDatabase.execSQL(cadenaRelacionCompleta);
         } catch (SQLException e) {
 
         }
 
-        try {
-            String cadenaREstacion = "INSERT INTO relacionestacionlote (idestacion, idlote) " +
-                    "VALUES (1,1),(2,1),(3,1),(4,1),(5,1), (6,1),(7,1),(8,1),(9,1), (10,1),(11,1),(12,1),(13,1),(14,1),(15,1),(16,1),(17,1),(18,1),(19,1),(20,1),(1,2),(2,2),(3,2),(4,2),(5,2) ;";
-            sqLiteDatabase.execSQL(cadenaREstacion);
-        } catch (SQLException e) {
 
-        }
 
 
     }

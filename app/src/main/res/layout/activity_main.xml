@@ -126,6 +126,36 @@
                     android:layout_weight="1"
                     android:src="@drawable/buscar" />
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btnSelectSectors"
+                android:layout_width="@dimen/btnes_principales_width"
+                android:layout_height="@dimen/btnes_principales_height"
+                android:layout_marginBottom="@dimen/btnes_principales_bottom"
+                android:background="@drawable/redondeo"
+                android:elevation="10dp"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:weightSum="2">
+
+                <TextView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center"
+                    android:text="Seleccion de Sectores"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/btnes_principales_texto"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/sector" />
+            </LinearLayout>
             <!--            BOTONO DE SUBIR-->
             <LinearLayout
                 android:id="@+id/btnSubir"

@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
-    <uses-feature
-        android:name="android.hardware.camera"/>
+
+    <uses-feature android:name="android.hardware.camera" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -21,18 +21,18 @@
         android:theme="@style/Theme.BerriesConteo"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-
         <activity
-        android:name="com.journeyapps.barcodescanner.CaptureActivity"
-        android:hardwareAccelerated="true"
-        android:screenOrientation="fullSensor"
-        tools:replace="screenOrientation" />
-
+            android:name="com.agrizar.berriesconteo.selectionSectors"
+            android:exported="false" />
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="fullSensor"
+            tools:replace="screenOrientation" />
         <activity
             android:name=".Consultar"
             android:exported="false"
-            android:screenOrientation="portrait"
-            />
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.agrizar.berriesconteo.pantalla_capturar"
             android:exported="false"

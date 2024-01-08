@@ -86,6 +86,7 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
         btnSubirDatos = findViewById(R.id.btnSubir)
         txtSubir = findViewById(R.id.txtSubir)
         imgSubido = findViewById(R.id.imgSubido)
+        val btnSelectSectors: LinearLayout = findViewById(R.id.btnSelectSectors)
 
 //      NOS MANDA A LA PANTALLA DE CAPTURAR CUANDO PRESIONEMOS EL BOTON
         val btn: LinearLayout = findViewById(R.id.btnCapturar)
@@ -104,6 +105,14 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
             val intent = Intent(this, Consultar::class.java)
             startActivity(intent)
         }
+
+        btnSelectSectors.setOnClickListener {
+            val intent = Intent(this, selectionSectors::class.java)
+            startActivity(intent)
+        }
+
+
+
 
 //      MANDA LOS DATOS DE SQLITE A PHP AL PRESIONAR EL BOTON DE SUBIR
         btnSubirDatos.setOnClickListener {

@@ -77,11 +77,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pantalla_capturar)
-
-//        SE CREA UNA INSTANCIA, EVITA USAR EL findViewId
         binding = ActivityPantallaCapturarBinding.inflate(layoutInflater)
-
-//      ESTABLECE EL CONTENIDO DE LA ACTIVIDAD
         setContentView(binding.root)
 
         if (ContextCompat.checkSelfPermission(
