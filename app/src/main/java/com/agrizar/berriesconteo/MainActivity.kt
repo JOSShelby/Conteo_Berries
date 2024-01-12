@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
     private lateinit var btnSubirDatos: LinearLayout
     private lateinit var txtSubir: TextView
     private lateinit var imgSubido: LinearLayout
+    private lateinit var  txtReconexion: TextView
 
     override fun onResume() {
         super.onResume()
@@ -74,6 +75,20 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
+        val dbB = DBBerries(applicationContext, " DBBerries", null, R.string.versionBD);
+        val dbVer = dbB.readableDatabase
+
+        for (i in 0..100) {
+            val cadenaAgregarCubeta =
+                "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,variedad,bandera) " +
+                        "VALUES('2024-02-03',1,1,1,'49019',13,1, 0)"
+            dbVer.execSQL(cadenaAgregarCubeta)
+        }
+
+        dbVer.close()
+
+
+
 //      ESTABLECE LA PANTALLA COMPLETA
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -87,6 +102,7 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
         txtSubir = findViewById(R.id.txtSubir)
         imgSubido = findViewById(R.id.imgSubido)
         val btnSelectSectors: LinearLayout = findViewById(R.id.btnSelectSectors)
+
 
 //      NOS MANDA A LA PANTALLA DE CAPTURAR CUANDO PRESIONEMOS EL BOTON
         val btn: LinearLayout = findViewById(R.id.btnCapturar)
@@ -184,6 +200,7 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
                     var dialogopermiso = dialogPermiso();
                     val args = Bundle()
                     args.putString("jsonArreglo", jsonArreglo)
+                    args.putString("arrCont", arrCont?.count().toString())
                     dialogopermiso.setArguments(args)
                     dialogopermiso.show(supportFragmentManager, "titulo")
                 } else {
@@ -191,6 +208,7 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
                     Toast.makeText(this, "No hay internet disponible", Toast.LENGTH_SHORT).show()
                 }
             } else {
+
 //              SE EJECUTA SI NO HAY REGISTROS EN LA BASE DE DATOS
                 Toast.makeText(this, "No se encuentra ningun registro", Toast.LENGTH_SHORT).show()
             }

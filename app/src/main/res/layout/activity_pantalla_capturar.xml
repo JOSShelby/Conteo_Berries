@@ -7,18 +7,6 @@
     android:background="@drawable/degradado_background"
     tools:context="com.agrizar.berriesconteo.pantalla_capturar">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btnCheckBuckets"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|end"
-        android:layout_margin="1dp"
-        app:backgroundTint="#8CE873"
-        app:elevation="6dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:maxImageSize="60dp"
-        app:srcCompat="@drawable/buscar" />
 
     <!--    CONTENEDOR GENERAL-->
     <LinearLayout
@@ -31,18 +19,61 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <!--    TITULO CAPTURAR-->
-        <TextView
-            android:id="@+id/titulo2"
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="80dp"
             android:background="@drawable/redondeo"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="center"
-            android:padding="15dp"
-            android:text="CAPTURAR"
-            android:textAlignment="center"
-            android:textColor="#FFFFFF"
-            android:textSize="@dimen/texto_titulo" />
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/titulo2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="1"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="CAPTURAR"
+                    android:textAlignment="textStart"
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/texto_titulo" />
+
+                <Switch
+                    android:id="@+id/cubsSwitch"
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Tiempo Cubetas"
+                    android:textColor="@color/white"
+                    android:textSize="15dp"
+                    android:thumbTint="@color/white" />
+            </LinearLayout>
+
+
+            <ImageButton
+                android:id="@+id/btnCheckBuckets"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:layout_margin="1dp"
+                android:layout_weight="1"
+                android:scaleType="fitCenter"
+                app:backgroundTint="#8CE873"
+                app:elevation="6dp"
+                app:srcCompat="@drawable/buscar" />
+
+        </LinearLayout>
+
 
         <!--    LABEL DONDE SE MOSTRARA EL NUMERO DE EMPLEADO-->
         <TextView
@@ -326,6 +357,7 @@
             android:layout_width="@dimen/msj_img_width"
             android:layout_height="@dimen/msj_img_height"
             android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
             android:layout_marginTop="@dimen/msj_img_top"
             android:src="@drawable/pregunta" />
 
@@ -334,7 +366,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/msj_label1_bottom"
             android:gravity="center"
             android:text="El empleado ha contado: "
             android:textSize="@dimen/msj_label1_texto"
