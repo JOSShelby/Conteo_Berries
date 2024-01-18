@@ -4,15 +4,15 @@ plugins {
 }
 
 android {
-    namespace 'com.example.berriesconteo'
+    namespace 'com.agrizar.berriesconteo'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.berriesconteo"
-        minSdk 21
+        applicationId "com.agrizar.berriesconteo"
+        minSdk 27
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

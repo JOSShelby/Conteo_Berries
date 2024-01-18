@@ -27,9 +27,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import com.example.berriesconteo.Consultar
-import com.example.berriesconteo.R
-import com.example.berriesconteo.databinding.ActivityPantallaCapturarBinding
+import com.agrizar.berriesconteo.berries.berriesconteo.Consultar
+import com.agrizar.berriesconteo.R
+import com.agrizar.berriesconteo.databinding.ActivityPantallaCapturarBinding
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -37,7 +37,8 @@ import java.time.temporal.ChronoUnit
 import java.util.Calendar
 
 
-class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInteractionListener {
+class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInteractionListener,
+    dialogAutorizacion.checkAuthorization {
 
     //  VARIABLES
     private lateinit var binding: ActivityPantallaCapturarBinding
@@ -48,6 +49,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
     private lateinit var soundPool: SoundPool
     private lateinit var cajaEscribeEscaner: EditText
     private lateinit var cubsSwitch: Switch
+    private var cambio = 0;
     private var selectionTimeCubs = 1
     private var beepSoundId = 0
     private var seleccionEstacion = 0
@@ -369,42 +371,12 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
                 //SPINNER DE SECTORES TRAIDO DE LA BD
                 val spinnerSector = binding.inpSector
-                val arrSectorTitulos: MutableList<String> = mutableListOf()
-
-                val querySector =
-                    "SELECT idsector,nombresector FROM sectoresberries WHERE idsector in (SELECT idsector FROM relacionsectorlote WHERE idlote = $seleccionLote )  ORDER BY idsector ASC"
-                val cursorSector = db.rawQuery(querySector, null)
-
-                arrSectorTitulos.add("SECTOR...")
-                while (cursorSector.moveToNext()) {
-                    val nombreSector =
-                        cursorSector.getString(cursorSector.getColumnIndexOrThrow("nombresector"))
-                    println(nombreSector)
-                    arrSectorTitulos.add(nombreSector)
-                }
-
-//       SPINNER DE ESTACIONES TRAIDO DE LA BD
                 val spinnerEstacion = binding.inpEstacion
                 val arrEstacionTitulos: MutableList<String> = mutableListOf()
+                val arrEstacionId: MutableList<Int> = mutableListOf()
+                val arrSectorTitulos: MutableList<String> = mutableListOf()
+                val arrSectorId: MutableList<Int> = mutableListOf()
 
-                val queryEstacion =
-                    "SELECT idestacion,nombreestacion FROM estacionberries WHERE idestacion in (SELECT idestacion FROM relacionestacionlote WHERE idlote = $seleccionLote )  ORDER BY idestacion ASC"
-                val cursorEstacion = db.rawQuery(queryEstacion, null)
-
-
-                arrEstacionTitulos.add("ESTACION...")
-                while (cursorEstacion.moveToNext()) {
-                    val nombreEstacion =
-                        cursorEstacion.getString(cursorEstacion.getColumnIndexOrThrow("nombreestacion"))
-                    println(nombreEstacion)
-                    arrEstacionTitulos.add(nombreEstacion)
-                }
-
-//    SE CIERRAN LAS CONEXIONES
-                cursorEstacion.close()
-                cursorSector.close()
-                cursorModulo.close()
-                db.close()
 
 //      ADAPTADOR PARA EL SPINNER DE MODULOS
                 val adapter = ArrayAdapter(
@@ -421,66 +393,120 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                         position: Int,
                         id: Long
                     ) {
+
                         seleccionModulo = position
+
+                        if (seleccionModulo != 0) {
+
+                            val queryEstacion =
+                                "SELECT idestacion,nombreestacion FROM estacionberries WHERE idestacion in (SELECT idestacion FROM relacionlotemoduloestacionsector WHERE idlote = $seleccionLote AND idmodulo = $seleccionModulo )   ORDER BY idestacion ASC"
+                            val cursorEstacion = db.rawQuery(queryEstacion, null)
+
+                            arrEstacionTitulos.add("ESTACION...")
+                            arrEstacionId.add(0)
+                            while (cursorEstacion.moveToNext()) {
+                                val nombreestacion =
+                                    cursorEstacion.getString(cursorEstacion.getColumnIndexOrThrow("nombreestacion"))
+                                arrEstacionTitulos.add(nombreestacion)
+
+                                val idestacion =
+                                    cursorEstacion.getInt(cursorEstacion.getColumnIndexOrThrow("idestacion"))
+                                arrEstacionId.add(idestacion)
+                            }
+
+                            //      ADAPTADOR PARA EL SPINNER DE ESTACIONES
+                            val adapterEstacion = ArrayAdapter(
+                                this@pantalla_capturar,
+                                android.R.layout.simple_spinner_item,
+                                arrEstacionTitulos
+                            )
+
+                            spinnerEstacion.adapter = adapterEstacion
+                            spinnerEstacion.onItemSelectedListener =
+                                object : AdapterView.OnItemSelectedListener {
+                                    override fun onItemSelected(
+                                        parent: AdapterView<*>?,
+                                        view: View?,
+                                        position: Int,
+                                        id: Long
+                                    ) {
+                                        seleccionEstacion = arrEstacionId[position]
+
+                                        arrSectorTitulos.clear()
+                                        arrSectorId.clear()
+
+                                        if (seleccionEstacion != 0) {
+                                            val querySector =
+                                                "SELECT idsector,nombresector FROM sectoresberries WHERE idsector in (SELECT idsector FROM relacioncompletasector WHERE idrelacion in (SELECT id FROM relacionlotemoduloestacionsector WHERE idlote = $seleccionLote and idmodulo = $seleccionModulo and idestacion = $seleccionEstacion  ) )  ORDER BY idsector ASC"
+                                            val cursorSector = db.rawQuery(querySector, null)
+
+                                            arrSectorTitulos.add("SECTOR...")
+                                            arrSectorId.add(0)
+                                            while (cursorSector.moveToNext()) {
+                                                val nombresector =
+                                                    cursorSector.getString(
+                                                        cursorSector.getColumnIndexOrThrow(
+                                                            "nombresector"
+                                                        )
+                                                    )
+                                                arrSectorTitulos.add(nombresector)
+
+                                                val idsector =
+                                                    cursorSector.getInt(
+                                                        cursorSector.getColumnIndexOrThrow(
+                                                            "idsector"
+                                                        )
+                                                    )
+                                                arrSectorId.add(idsector)
+                                            }
+
+                                            val adapterSector = ArrayAdapter(
+                                                this@pantalla_capturar,
+                                                android.R.layout.simple_spinner_item,
+                                                arrSectorTitulos
+                                            )
+
+                                            spinnerSector.adapter = adapterSector
+                                            spinnerSector.onItemSelectedListener =
+                                                object : AdapterView.OnItemSelectedListener {
+                                                    override fun onItemSelected(
+                                                        parent: AdapterView<*>?,
+                                                        view: View?,
+                                                        position: Int,
+                                                        id: Long
+                                                    ) {
+                                                        seleccionSector = arrSectorId[position]
+                                                    }
+
+                                                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                                                        // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
+                                                    }
+                                                }
+
+                                        }
+
+                                    }
+
+                                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                                        // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
+                                    }
+                                }
+                        }
+
+
                     }
 
                     override fun onNothingSelected(parent: AdapterView<*>?) {
                         // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
                     }
                 }
-
-//      ADAPTADOR PARA EL SPINNER DE SECTORES
-                val adapterSector = ArrayAdapter(
-                    this@pantalla_capturar,
-                    android.R.layout.simple_spinner_item,
-                    arrSectorTitulos
-                )
-                adapterSector.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                spinnerSector.adapter = adapterSector
-                spinnerSector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(
-                        parent: AdapterView<*>?,
-                        view: View?,
-                        position: Int,
-                        id: Long
-                    ) {
-                        seleccionSector = position
-                    }
-
-                    override fun onNothingSelected(parent: AdapterView<*>?) {
-                        // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
-                    }
-                }
-
-//      ADAPTADOR PARA EL SPINNER DE ESTACIONES
-                val adapterEstacion = ArrayAdapter(
-                    this@pantalla_capturar,
-                    android.R.layout.simple_spinner_item,
-                    arrEstacionTitulos
-                )
-                adapterSector.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                spinnerEstacion.adapter = adapterEstacion
-                spinnerEstacion.onItemSelectedListener =
-                    object : AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(
-                            parent: AdapterView<*>?,
-                            view: View?,
-                            position: Int,
-                            id: Long
-                        ) {
-                            seleccionEstacion = position
-                        }
-
-                        override fun onNothingSelected(parent: AdapterView<*>?) {
-                            // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
-                        }
-                    }
 
                 spinnerCubetas.isVisible = aparecerSpinners
                 spinnerFruto.isVisible = aparecerSpinners
-                spinnerEstacion.isVisible = aparecerSpinners
                 spinnerSector.isVisible = aparecerSpinners
+                spinnerEstacion.isVisible = aparecerSpinners
                 spinnermodulo.isVisible = aparecerSpinners
+
 
             }
 
@@ -493,11 +519,12 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
     private fun checkSwitchTimeCubs() {
         cubsSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            // Aquí puedes realizar acciones basadas en el cambio del Switch
-            if (isChecked) {
-                selectionTimeCubs = 1
+            println("entre en el cambio boton : $cambio")
+            if (cambio == 0) {
+                var dialogopermiso = dialogAutorizacion();
+                dialogopermiso.show(supportFragmentManager, "titulo")
             } else {
-                selectionTimeCubs = 0
+                cambio = 0
             }
         }
     }
@@ -744,5 +771,27 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
         msgCorrecto.postDelayed({
             msgCorrecto.startAnimation(fadeOutAnimation)
         }, 1000)
+    }
+
+    override fun checkAuthorization(resultado: Boolean) {
+        if (resultado) {
+            selectionTimeCubs = if (cubsSwitch.isChecked) {
+                1
+            } else {
+                0
+            }
+        } else {
+            cambio = 1
+            if (cubsSwitch.isChecked) {
+                cubsSwitch.isChecked = false
+                selectionTimeCubs = 0
+            } else {
+                cubsSwitch.isChecked = true
+                selectionTimeCubs = 1
+            }
+
+
+        }
+
     }
 }

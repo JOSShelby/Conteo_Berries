@@ -186,36 +186,6 @@
                         android:textAlignment="center"
                         android:visibility="invisible" />
                 </LinearLayout>
-                <!--                SPINNER DE SECTOR-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/cont_spinner_height"
-                    android:layout_marginBottom="@dimen/cont_spinner_bottom"
-                    android:layout_weight="1"
-                    android:background="@drawable/spinners"
-                    android:elevation="10dp"
-                    android:orientation="horizontal"
-                    android:weightSum="3">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
-                        android:fontFamily="sans-serif-medium"
-                        android:gravity="center"
-                        android:text="Sector : "
-                        android:textSize="@dimen/textview_spinner_text"
-                        android:textStyle="bold" />
-
-                    <Spinner
-                        android:id="@+id/inpSector"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:hint="Sector"
-                        android:textAlignment="center"
-                        android:visibility="invisible" />
-                </LinearLayout>
                 <!--                SPINNER DE ESTACION-->
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -246,6 +216,37 @@
                         android:textAlignment="center"
                         android:visibility="invisible" />
                 </LinearLayout>
+                <!--                SPINNER DE SECTOR-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/cont_spinner_height"
+                    android:layout_marginBottom="@dimen/cont_spinner_bottom"
+                    android:layout_weight="1"
+                    android:background="@drawable/spinners"
+                    android:elevation="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:fontFamily="sans-serif-medium"
+                        android:gravity="center"
+                        android:text="Sector : "
+                        android:textSize="@dimen/textview_spinner_text"
+                        android:textStyle="bold" />
+
+                    <Spinner
+                        android:id="@+id/inpSector"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:hint="Sector"
+                        android:textAlignment="center"
+                        android:visibility="invisible" />
+                </LinearLayout>
+
                 <!--            SPINNER DE FRUTO-->
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -365,8 +366,9 @@
             android:id="@+id/mensajeConteoEmpleado"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:gravity="center"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="280dp"
             android:text="El empleado ha contado: "
             android:textSize="@dimen/msj_label1_texto"
             android:textStyle="bold" />

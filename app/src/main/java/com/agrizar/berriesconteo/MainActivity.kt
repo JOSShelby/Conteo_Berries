@@ -14,17 +14,16 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.berriesconteo.Consultar
-import com.example.berriesconteo.R
+import com.agrizar.berriesconteo.berries.berriesconteo.Consultar
+import com.agrizar.berriesconteo.R
 import com.google.gson.Gson
 
-class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
+class MainActivity : AppCompatActivity(), dialogPermiso.Resultado , dialogAutorizacion.checkAuthorization{
     //  VARIABLES
     private lateinit var db: SQLiteDatabase
     private lateinit var btnSubirDatos: LinearLayout
     private lateinit var txtSubir: TextView
     private lateinit var imgSubido: LinearLayout
-    private lateinit var  txtReconexion: TextView
 
     override fun onResume() {
         super.onResume()
@@ -73,12 +72,11 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-
+    fun pruebasInsert(numCont: Int){
         val dbB = DBBerries(applicationContext, " DBBerries", null, R.string.versionBD);
         val dbVer = dbB.readableDatabase
 
-        for (i in 0..100) {
+        for (i in 0..numCont) {
             val cadenaAgregarCubeta =
                 "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,variedad,bandera) " +
                         "VALUES('2024-02-03',1,1,1,'49019',13,1, 0)"
@@ -86,8 +84,11 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
         }
 
         dbVer.close()
+    }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
 
+        //pruebasInsert(200)
 
 //      ESTABLECE LA PANTALLA COMPLETA
         window.setFlags(
@@ -123,8 +124,10 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
         }
 
         btnSelectSectors.setOnClickListener {
-            val intent = Intent(this, selectionSectors::class.java)
-            startActivity(intent)
+
+            var dialogopermiso = dialogAutorizacion();
+            dialogopermiso.show(supportFragmentManager, "titulo")
+
         }
 
 
@@ -212,6 +215,13 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado {
 //              SE EJECUTA SI NO HAY REGISTROS EN LA BASE DE DATOS
                 Toast.makeText(this, "No se encuentra ningun registro", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    override fun checkAuthorization(resultado: Boolean){
+        if(resultado){
+            val intent = Intent(this, selectionSectors::class.java)
+            startActivity(intent)
         }
     }
 

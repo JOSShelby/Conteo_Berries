@@ -9,7 +9,8 @@ import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
 
-import com.example.berriesconteo.R;
+import com.agrizar.berriesconteo.R;
+
 
 public class SplashActivity extends Activity {
     private final int DURACION_SPLASH = 1000; // 1 SEGUNDO DURARA LA PANTALLA SPLASH
@@ -30,8 +31,6 @@ public class SplashActivity extends Activity {
                 startActivity(intent);
                 finish();
             }
-
-            ;
         }, DURACION_SPLASH);
     }
 }

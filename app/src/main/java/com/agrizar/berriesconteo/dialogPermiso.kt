@@ -4,39 +4,31 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.os.PowerManager
 import android.preference.PreferenceManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isGone
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.LifecycleObserver
 import com.android.volley.DefaultRetryPolicy
-import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.example.berriesconteo.R
+import com.agrizar.berriesconteo.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.concurrent.Flow
+
 
 class dialogPermiso : DialogFragment() {
     private lateinit var cargaPermiso: LinearLayout
@@ -44,11 +36,7 @@ class dialogPermiso : DialogFragment() {
     private lateinit var txtcontt: TextView
     private lateinit var  txtReconexion: TextView
 
-
-
-    private val handler = Handler(Looper.getMainLooper())
     private var tareaJob: Job? = null
-
     interface Resultado {
         fun Resultado(resultado: Boolean)
     }
@@ -62,12 +50,10 @@ class dialogPermiso : DialogFragment() {
             context.toString() + "DEBE IMPLEMENTAR COMUCADORFRAGMENT"
         )
     }
-
     override fun onDetach() {
         super.onDetach()
         activityMain = null
     }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -88,8 +74,6 @@ class dialogPermiso : DialogFragment() {
         val arrCont = mArgs!!.getString("arrCont");
 
         txtcontt.text = arrCont
-
-
 
 //      BOTON QUE MANDA EL USER Y PASSWORD A PHP PARA QUE INSERTE EL REGISTRO SI SON CORRECTOS LOS DATOS
         btnSubir.setOnClickListener {
@@ -255,9 +239,6 @@ class dialogPermiso : DialogFragment() {
             },
             Response.ErrorListener { error ->
 
-                // Manejar el error de la solicitud
-                //Toast.makeText(context, "Ocurrió un error en la conexión", Toast.LENGTH_SHORT)
-                  //  .show()
                 txtReconexion.visibility = View.VISIBLE
                 callback(false,0)
             }
@@ -288,7 +269,7 @@ class dialogPermiso : DialogFragment() {
 
         // Configurar una política de reintento con un tiempo de espera de 10 minutos
         val socketTimeout = 1200000 // 20 minutos en milisegundos
-
+        println(json)
         // Parámetros a enviar en la solicitud POST
         val params = HashMap<String, String>()
         params["array"] = json
