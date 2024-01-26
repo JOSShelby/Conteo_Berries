@@ -8,15 +8,24 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
+import android.preference.PreferenceManager
+import android.view.View
 import android.view.WindowManager
 import android.view.animation.AlphaAnimation
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.agrizar.berriesconteo.berries.berriesconteo.Consultar
 import com.agrizar.berriesconteo.R
+import com.android.volley.DefaultRetryPolicy
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
+import org.json.JSONException
+import org.json.JSONObject
 
 class MainActivity : AppCompatActivity(), dialogPermiso.Resultado , dialogAutorizacion.checkAuthorization{
     //  VARIABLES
@@ -24,6 +33,8 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado , dialogAutori
     private lateinit var btnSubirDatos: LinearLayout
     private lateinit var txtSubir: TextView
     private lateinit var imgSubido: LinearLayout
+    private lateinit var linearMenu: LinearLayout
+    private lateinit var progressMenu: ProgressBar
 
     override fun onResume() {
         super.onResume()
@@ -79,7 +90,7 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado , dialogAutori
         for (i in 0..numCont) {
             val cadenaAgregarCubeta =
                 "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,variedad,bandera) " +
-                        "VALUES('2024-02-03',1,1,1,'49019',13,1, 0)"
+                        "VALUES('2024-03-03',1,1,1,'49019',13,1, 0)"
             dbVer.execSQL(cadenaAgregarCubeta)
         }
 
@@ -87,8 +98,6 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado , dialogAutori
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        //pruebasInsert(200)
 
 //      ESTABLECE LA PANTALLA COMPLETA
         window.setFlags(
@@ -98,6 +107,20 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado , dialogAutori
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        linearMenu = findViewById(R.id.linearMenu)
+        progressMenu = findViewById(R.id.progressMenu)
+
+        //pruebasInsert(2000)
+
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val idCell = sharedPreferences.getInt("idCell", 0)
+
+        if (idCell == 0) {
+            addNewCell() { statusCode ->
+                println("registrado");
+            }
+        }
 
         btnSubirDatos = findViewById(R.id.btnSubir)
         txtSubir = findViewById(R.id.txtSubir)
@@ -129,9 +152,6 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado , dialogAutori
             dialogopermiso.show(supportFragmentManager, "titulo")
 
         }
-
-
-
 
 //      MANDA LOS DATOS DE SQLITE A PHP AL PRESIONAR EL BOTON DE SUBIR
         btnSubirDatos.setOnClickListener {
@@ -243,6 +263,61 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado , dialogAutori
         imgSubido.postDelayed({
             imgSubido.startAnimation(fadeOutAnimation)
         }, 1000)
+    }
+
+
+    private fun addNewCell(callback: (Boolean) -> Unit) {
+
+        val url =
+            "http://" + getString(R.string.servidor) + "/kudePOO/aplicacion/apps/berries/addNewCell.php";
+        val queue = Volley.newRequestQueue(this)
+        val socketTimeout = 1200000 // 20 minutos en milisegundos
+
+        var statusCode = -1
+
+        linearMenu.visibility = View.GONE
+        progressMenu.visibility = View.VISIBLE
+
+        val stringRequest = object : StringRequest(
+            Method.GET, url,
+            Response.Listener { response ->
+                try {
+                    val jsonRespuesta = JSONObject(response)
+                    statusCode = jsonRespuesta.getInt("statusCode")
+                    val idCell = jsonRespuesta.getInt("idCell")
+                    if (statusCode == 1) {
+                        val sharedPreferences =
+                            PreferenceManager.getDefaultSharedPreferences(this)
+                        val editor = sharedPreferences.edit()
+                        editor.putInt("idCell", idCell)
+                        editor.apply()
+                        linearMenu.visibility = View.VISIBLE
+                        progressMenu.visibility = View.GONE
+                        callback(true)
+
+                    }
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                    linearMenu.visibility = View.VISIBLE
+                    progressMenu.visibility = View.GONE
+                    callback(false)
+                }
+            },
+            Response.ErrorListener { error ->
+                // Manejar el error de la solicitud
+                Toast.makeText(this, "Ocurrió un error en la conexión", Toast.LENGTH_SHORT)
+                    .show()
+                callback(false)
+            }
+        ) {}
+
+        stringRequest.retryPolicy =
+            DefaultRetryPolicy(
+                socketTimeout,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            )
+        queue.add(stringRequest)
     }
 }
 

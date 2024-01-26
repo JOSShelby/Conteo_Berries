@@ -28,13 +28,13 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
-
-
 class dialogPermiso : DialogFragment() {
     private lateinit var cargaPermiso: LinearLayout
     private lateinit var txtcont: TextView
     private lateinit var txtcontt: TextView
     private lateinit var  txtReconexion: TextView
+
+    private var contTemporal = 0
 
     private var tareaJob: Job? = null
     interface Resultado {
@@ -82,7 +82,7 @@ class dialogPermiso : DialogFragment() {
             val idCell = sharedPreferences.getInt("idCell", 0)
 
 
-            val scope = CoroutineScope(Dispatchers.Default)
+            val scope = CoroutineScope(Dispatchers.IO)
 
 
             tareaJob = scope.launch {
@@ -90,18 +90,14 @@ class dialogPermiso : DialogFragment() {
                     checkStatusRequest(idCell,0){request,cont ->
                        txtcont.text = cont.toString()
                     }
-                    delay(1000)
+                    delay(10000)
                 }
             }
 
-
             cargaPermiso.isGone = false
             if (idCell == 0) {
-                addNewCell() { statusCode ->
-
                     val idCell = sharedPreferences.getInt("idCell", 0)
 
-                    if (statusCode) {
                         insertarRegistros(
                             jsonArreglo!!,
                             rootView.context,
@@ -115,17 +111,11 @@ class dialogPermiso : DialogFragment() {
                                         checkStatusRequest(idCell,1){request,cont ->
                                             txtcont.text = cont.toString()
                                         }
-                                        delay(1000)
+                                        delay(10000)
                                     }
                                 }
                             }
                         }
-
-                    }
-
-
-                }
-
             } else {
                 val idCell = sharedPreferences.getInt("idCell", 0)
 
@@ -142,11 +132,10 @@ class dialogPermiso : DialogFragment() {
                                 checkStatusRequest(idCell,1){request,cont ->
                                     txtcont.text = cont.toString()
                                 }
-                                delay(1000)
+                                delay(10000)
                             }
                         }
                     }
-
                 }
 
             }
@@ -154,52 +143,6 @@ class dialogPermiso : DialogFragment() {
         return rootView;
     }
 
-    private fun addNewCell(callback: (Boolean) -> Unit) {
-
-        val url =
-            "http://" + getString(R.string.servidor) + "/kudePOO/aplicacion/apps/berries/addNewCell.php";
-        val queue = Volley.newRequestQueue(context)
-        val socketTimeout = 1200000 // 20 minutos en milisegundos
-
-        var statusCode = -1
-
-        val stringRequest = object : StringRequest(Method.GET, url,
-            Response.Listener { response ->
-                try {
-                    val jsonRespuesta = JSONObject(response)
-                    statusCode = jsonRespuesta.getInt("statusCode")
-                    val idCell = jsonRespuesta.getInt("idCell")
-                    if (statusCode == 1) {
-                        val sharedPreferences =
-                            PreferenceManager.getDefaultSharedPreferences(context)
-                        val editor = sharedPreferences.edit()
-                        editor.putInt("idCell", idCell)
-                        editor.apply()
-                        callback(true)
-                    }
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                    callback(false)
-                }
-            },
-            Response.ErrorListener { error ->
-                // Manejar el error de la solicitud
-                Toast.makeText(context, "Ocurrió un error en la conexión", Toast.LENGTH_SHORT)
-                    .show()
-                callback(false)
-            }
-        ) {}
-
-        stringRequest.retryPolicy =
-            DefaultRetryPolicy(
-                socketTimeout,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-            )
-
-        queue.add(stringRequest)
-
-    }
 
     private fun checkStatusRequest(idCell: Int, type: Int, callback: (Boolean,Int) -> Unit){
         val url =
@@ -212,11 +155,26 @@ class dialogPermiso : DialogFragment() {
                     val jsonRespuesta = JSONObject(response)
                     val error = jsonRespuesta.getInt("error")
                     val cuenta = jsonRespuesta.getInt("cuenta")
-                    println(error)
+                    println("error: $error")
                     println("tipo:$type")
+                    println("contador:$contTemporal")
                     txtReconexion.visibility = View.GONE
+                    if(contTemporal>1 && error==1){
+                        cargaPermiso.isGone = true
+                        tareaJob?.cancel()
+                        var dbBerries = DBBerries(context, " DBBerries", null, R.string.versionBD)
+                        val db = dbBerries.writableDatabase
+                        db.execSQL("DELETE FROM cubetascontadasberries")
+                        Toast.makeText(
+                            context,
+                            "Se subieron los registros exitosamente",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        activityMain?.Resultado(true)
+                        dismiss()
+                    }
+
                     if(error==3){
-                        println("entre aqui en la respuesta 3")
                         cargaPermiso.isGone = true
                         tareaJob?.cancel()
                         var dbBerries = DBBerries(context, " DBBerries", null, R.string.versionBD)
@@ -252,6 +210,7 @@ class dialogPermiso : DialogFragment() {
             )
 
         queue.add(stringRequest)
+        contTemporal += 1
     }
 
     fun insertarRegistros(
@@ -268,8 +227,10 @@ class dialogPermiso : DialogFragment() {
         val queueResponsivas = Volley.newRequestQueue(context)
 
         // Configurar una política de reintento con un tiempo de espera de 10 minutos
-        val socketTimeout = 1200000 // 20 minutos en milisegundos
-        println(json)
+        val socketTimeout = 7200000 // 2 horas en milisegundos
+        //println(json)
+
+        //print("Entre aqui");
         // Parámetros a enviar en la solicitud POST
         val params = HashMap<String, String>()
         params["array"] = json
@@ -299,25 +260,28 @@ class dialogPermiso : DialogFragment() {
                     tareaJob?.cancel()
                     dismiss()
                 } else {
-
+                    println("entre aqui")
                     // SI LA RESPUESTA DE PHP NO FUE 1, PUEDE HABER UN ERROR INESPERADO O EL USUARIO ES INCORRECTO
                     tareaJob?.cancel()
                     if (statusCode == 0) {
                         Toast.makeText(context, "Ocurrió un error", Toast.LENGTH_SHORT).show()
                         callback(0)
+                        cargaPermiso.isGone = true
                     }
                     if (statusCode == 2) {
                         Toast.makeText(context, "Usuario incorrecto", Toast.LENGTH_SHORT).show()
                         callback(0)
+                        cargaPermiso.isGone = true
+                    }
+                    if (statusCode == 3) {
+                        tareaJob?.cancel()
+                        Toast.makeText(context, "sucedio una llamada", Toast.LENGTH_SHORT).show()
+                        callback(0)
                     }
                 }
-                cargaPermiso.isGone = true
+
             },
             Response.ErrorListener { error ->
-                // Manejar el error de la solicitud
-                //Toast.makeText(context, "Ocurrió un error en la conexión", Toast.LENGTH_SHORT)
-                    //.show()
-                //cargaPermiso.isGone = true
                 tareaJob?.cancel()
                 callback(1)
             }) {

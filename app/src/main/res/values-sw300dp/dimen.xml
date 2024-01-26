@@ -82,8 +82,8 @@
 
     <!--=================================================DIMENS PARA PANTALLA DE SUBIR=================================================-->
     <!--    MODAL DE PERMISOS-->
-    <dimen name="modal_permisos_height">400dp</dimen>
-    <dimen name="modal_permisos_width">300dp</dimen>
+    <dimen name="modal_permisos_height">600dp</dimen>
+    <dimen name="modal_permisos_width">350dp</dimen>
 
     <dimen name="modal_permisos_label1">25sp</dimen>
     <dimen name="modal_permisos_label1_top">10dp</dimen>

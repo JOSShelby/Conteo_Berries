@@ -64,7 +64,14 @@
             android:textColor="#FFFFFF"
             android:textSize="@dimen/texto_titulo" />
 
+        <ProgressBar
+            android:id="@+id/progressMenu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            />
         <LinearLayout
+            android:id="@+id/linearMenu"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
