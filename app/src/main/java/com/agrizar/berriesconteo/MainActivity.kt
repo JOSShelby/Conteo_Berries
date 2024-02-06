@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado , dialogAutori
     private lateinit var db: SQLiteDatabase
     private lateinit var btnSubirDatos: LinearLayout
     private lateinit var txtSubir: TextView
+    private lateinit var txtCell: TextView
     private lateinit var imgSubido: LinearLayout
     private lateinit var linearMenu: LinearLayout
     private lateinit var progressMenu: ProgressBar
@@ -90,7 +91,7 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado , dialogAutori
         for (i in 0..numCont) {
             val cadenaAgregarCubeta =
                 "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,variedad,bandera) " +
-                        "VALUES('2024-03-03',1,1,1,'49019',13,1, 0)"
+                        "VALUES('2024-03-10',1,1,1,'49019',13,1, 0)"
             dbVer.execSQL(cadenaAgregarCubeta)
         }
 
@@ -119,14 +120,18 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado , dialogAutori
         if (idCell == 0) {
             addNewCell() { statusCode ->
                 println("registrado");
+                val idCell = sharedPreferences.getInt("idCell", 0)
+                txtCell.text = "Cell $idCell"
             }
         }
 
         btnSubirDatos = findViewById(R.id.btnSubir)
         txtSubir = findViewById(R.id.txtSubir)
+        txtCell = findViewById(R.id.txtCell)
         imgSubido = findViewById(R.id.imgSubido)
         val btnSelectSectors: LinearLayout = findViewById(R.id.btnSelectSectors)
 
+        txtCell.text = "Cell $idCell"
 
 //      NOS MANDA A LA PANTALLA DE CAPTURAR CUANDO PRESIONEMOS EL BOTON
         val btn: LinearLayout = findViewById(R.id.btnCapturar)
@@ -265,7 +270,6 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado , dialogAutori
         }, 1000)
     }
 
-
     private fun addNewCell(callback: (Boolean) -> Unit) {
 
         val url =
@@ -292,6 +296,7 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado , dialogAutori
                         editor.putInt("idCell", idCell)
                         editor.apply()
                         linearMenu.visibility = View.VISIBLE
+
                         progressMenu.visibility = View.GONE
                         callback(true)
 

@@ -52,17 +52,57 @@
         android:gravity="center"
         android:orientation="vertical">
         <!--        TITULO DE CONTEO BERRIES-->
-        <TextView
-            android:id="@+id/titulo1"
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/redondeo"
-            android:fontFamily="sans-serif-medium"
-            android:padding="15dp"
-            android:text="CONTEO BERRIES"
-            android:textAlignment="center"
-            android:textColor="#FFFFFF"
-            android:textSize="@dimen/texto_titulo" />
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:weightSum="3"
+                >
+                <TextView
+                    android:id="@+id/titulo1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="sans-serif-medium"
+                    android:padding="5dp"
+                    android:text="CONTEO BERRIES"
+                    android:textAlignment="center"
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/texto_titulo"
+                    android:layout_weight="1"
+                    />
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:src="@drawable/berries_logo"
+                    />
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/txtCell"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:padding="15dp"
+                android:text=""
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/texto_titulo"
+                android:layout_weight="1"
+                />
+
+        </LinearLayout>
+
 
         <ProgressBar
             android:id="@+id/progressMenu"

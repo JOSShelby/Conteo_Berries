@@ -2,8 +2,6 @@ package com.agrizar.berriesconteo
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
@@ -80,10 +78,7 @@ class dialogPermiso : DialogFragment() {
 
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
             val idCell = sharedPreferences.getInt("idCell", 0)
-
-
             val scope = CoroutineScope(Dispatchers.IO)
-
 
             tareaJob = scope.launch {
                 while (isActive) {
@@ -143,7 +138,6 @@ class dialogPermiso : DialogFragment() {
         return rootView;
     }
 
-
     private fun checkStatusRequest(idCell: Int, type: Int, callback: (Boolean,Int) -> Unit){
         val url =
             "http://" + getString(R.string.servidor) + "/kudePOO/aplicacion/apps/berries/checkTemporalRequest.php?idCell=$idCell&type=$type";
@@ -155,16 +149,11 @@ class dialogPermiso : DialogFragment() {
                     val jsonRespuesta = JSONObject(response)
                     val error = jsonRespuesta.getInt("error")
                     val cuenta = jsonRespuesta.getInt("cuenta")
-                    println("error: $error")
-                    println("tipo:$type")
-                    println("contador:$contTemporal")
+
                     txtReconexion.visibility = View.GONE
-                    if(contTemporal>1 && error==1){
+                    if(contTemporal>10 && error==1){
                         cargaPermiso.isGone = true
                         tareaJob?.cancel()
-                        var dbBerries = DBBerries(context, " DBBerries", null, R.string.versionBD)
-                        val db = dbBerries.writableDatabase
-                        db.execSQL("DELETE FROM cubetascontadasberries")
                         Toast.makeText(
                             context,
                             "Se subieron los registros exitosamente",
@@ -177,9 +166,6 @@ class dialogPermiso : DialogFragment() {
                     if(error==3){
                         cargaPermiso.isGone = true
                         tareaJob?.cancel()
-                        var dbBerries = DBBerries(context, " DBBerries", null, R.string.versionBD)
-                        val db = dbBerries.writableDatabase
-                        db.execSQL("DELETE FROM cubetascontadasberries")
                         Toast.makeText(
                             context,
                             "Se subieron los registros exitosamente",
@@ -220,6 +206,10 @@ class dialogPermiso : DialogFragment() {
         usuario: String,
         idCell: Int,callback: (Int) -> Unit
     ) {
+
+        var dbBerries = DBBerries(context, " DBBerries", null, R.string.versionBD)
+        val db = dbBerries.writableDatabase
+        db.execSQL("DELETE FROM cubetascontadasberries")
         // RUTA PARA MANDAR EL ARREGLO, USER Y PASSWORD - EN PRUEBAS
         val urlRegistros =
             "http://" + getString(R.string.servidor) + "/kudePOO/aplicacion/apps/berries/insertarRegistros.php";
@@ -228,9 +218,7 @@ class dialogPermiso : DialogFragment() {
 
         // Configurar una política de reintento con un tiempo de espera de 10 minutos
         val socketTimeout = 7200000 // 2 horas en milisegundos
-        //println(json)
 
-        //print("Entre aqui");
         // Parámetros a enviar en la solicitud POST
         val params = HashMap<String, String>()
         params["array"] = json
@@ -247,9 +235,7 @@ class dialogPermiso : DialogFragment() {
 
                 // SI LA RESPUESTA DEL PHP INSERTÓ LOS DATOS A LA BD DEL KUDE, NOS REGRESA EL ESTADO 1
                 if (statusCode == 1) {
-                    var dbBerries = DBBerries(context, " DBBerries", null, R.string.versionBD)
-                    val db = dbBerries.writableDatabase
-                    db.execSQL("DELETE FROM cubetascontadasberries")
+
                     Toast.makeText(
                         context,
                         "Se subieron los registros exitosamente",
