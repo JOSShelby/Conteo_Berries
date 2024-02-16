@@ -36,7 +36,7 @@
     <dimen name="msj_img_height">200dp</dimen>
     <dimen name="msj_img_width">200dp</dimen>
 
-    <dimen name="msj_label1_texto">35sp</dimen>
+    <dimen name="msj_label1_texto">40sp</dimen>
     <dimen name="msj_label1_bottom">400dp</dimen>
 
     <dimen name="msj_label2_texto">35sp</dimen>

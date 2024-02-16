@@ -8,6 +8,227 @@
     tools:context="com.agrizar.berriesconteo.pantalla_capturar">
 
 
+    <!--MENSAJE QUE PREGUNTA LA ACEPTACION DE LAS CUBETAS-->
+    <RelativeLayout
+        android:id="@+id/mensajeAlert"
+        android:layout_width="@dimen/msj_confirmacion_width"
+        android:layout_height="@dimen/msj_confirmacion_height"
+        android:background="@drawable/alert"
+        android:elevation="10dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <ImageView
+            android:layout_width="@dimen/msj_img_width"
+            android:layout_height="@dimen/msj_img_height"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/msj_img_top"
+            android:src="@drawable/pregunta" />
+
+        <TextView
+            android:id="@+id/txtCuentaCubetasEmpleado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="260dp"
+            android:gravity="center"
+            android:text="Cuenta del Empleado : "
+            android:textSize="@dimen/msj_label1_texto"
+            android:textStyle="bold"
+            android:visibility="visible"
+            />
+
+        <TextView
+            android:id="@+id/txtCuentaTotalAcumulado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="220dp"
+            android:gravity="center"
+            android:text="Total Acumulado : "
+            android:textSize="@dimen/msj_label1_texto"
+            android:textStyle="bold"
+            android:visibility="visible"
+            />
+
+        <TextView
+            android:id="@+id/txtConfirmacionRecepcion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="160dp"
+            android:gravity="center"
+            android:text="CONFIRMAR \n RECEPCION  "
+            android:textSize="@dimen/msj_label1_texto"
+            android:textStyle="bold"
+            android:visibility="visible"
+            />
+
+        <TextView
+            android:id="@+id/txtCuentaRecibidas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="300dp"
+            android:gravity="center"
+            android:text="Cubetas Recibidas : "
+            android:textSize="@dimen/msj_label1_texto"
+            android:textStyle="bold"
+            android:visibility="visible"
+            />
+
+        <TextView
+            android:id="@+id/txtcuentaEmpleado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="300dp"
+            android:gravity="center"
+            android:text="El empleado tiene : "
+            android:textSize="@dimen/msj_label1_texto"
+            android:textStyle="bold"
+            android:visibility="visible"
+            />
+
+        <TextView
+            android:id="@+id/mensajeConteoEmpleado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="240dp"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/black"
+            android:textSize="40dp"
+            android:textStyle="bold"
+            android:visibility="visible"
+            />
+
+        <TextView
+            android:id="@+id/txtCubetas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="240dp"
+            android:layout_marginEnd="80dp"
+            android:gravity="center"
+            android:text="cubetas"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:visibility="visible"
+            />
+
+        <TextView
+            android:id="@+id/txtCubetasTotal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="200dp"
+            android:gravity="center"
+            android:text="¿Cuantas cubetas desea Agregar?"
+            android:textSize="@dimen/msj_label3_texto"
+            android:textStyle="bold"
+            android:visibility="visible"
+            />
+
+        <TextView
+            android:id="@+id/txtCubetasPregunta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="200dp"
+            android:gravity="center"
+            android:text="¿Cuantas cubetas desea Agregar?"
+            android:textSize="@dimen/msj_label3_texto"
+            android:textStyle="bold"
+            android:visibility="visible"
+            />
+
+        <LinearLayout
+            android:id="@+id/LinearCheckBoxes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="150dp"
+            android:gravity="center"
+            android:layout_marginStart="40dp"
+            android:orientation="horizontal"
+            android:weightSum="4"
+            android:visibility="visible"
+            >
+
+            <CheckBox
+                android:id="@+id/check1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="1"
+                android:layout_weight="1" />
+
+            <CheckBox
+                android:id="@+id/check2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="2"
+                />
+
+            <CheckBox
+                android:id="@+id/check3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="3"
+                />
+
+            <CheckBox
+                android:id="@+id/check4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="4"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <Button
+                android:id="@+id/botonConfirmacion"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/msj_btnsino_height"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:backgroundTint="#449CDF"
+                android:elevation="10dp"
+                android:text="SI"
+                android:textSize="@dimen/msj_btnsino_text" />
+
+            <Button
+                android:id="@+id/botonCancelacion"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/msj_btnsino_height"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:backgroundTint="#D35A5A"
+                android:elevation="10dp"
+                android:text="NO"
+                android:textSize="@dimen/msj_btnsino_text" />
+        </LinearLayout>
+    </RelativeLayout>
+
+
     <!--    CONTENEDOR GENERAL-->
     <LinearLayout
         android:layout_width="match_parent"
@@ -116,16 +337,17 @@
 
             <!--        CONTENEDOR DE LOS SPINNERS-->
             <LinearLayout
+                android:id="@+id/linearSpinners"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:weightSum="6">
 
-                <FrameLayout
-                    android:id="@+id/container_frame_layout"
-                    android:layout_width="300dp"
-                    android:layout_height="300dp"
-                    android:layout_gravity="center" />
+                <!--                <FrameLayout-->
+                <!--                    android:id="@+id/container_frame_layout"-->
+                <!--                    android:layout_width="300dp"-->
+                <!--                    android:layout_height="300dp"-->
+                <!--                    android:layout_gravity="center" />-->
                 <!--                SPINNER DE MODULO-->
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -133,7 +355,7 @@
                     android:layout_marginBottom="@dimen/cont_spinner_bottom"
                     android:layout_weight="1"
                     android:background="@drawable/spinners"
-                    android:elevation="10dp"
+                    android:elevation="5dp"
                     android:orientation="horizontal"
                     android:weightSum="3">
 
@@ -163,7 +385,7 @@
                     android:layout_marginBottom="@dimen/cont_spinner_bottom"
                     android:layout_weight="1"
                     android:background="@drawable/spinners"
-                    android:elevation="10dp"
+                    android:elevation="5dp"
                     android:orientation="horizontal"
                     android:weightSum="3">
 
@@ -193,7 +415,7 @@
                     android:layout_marginBottom="@dimen/cont_spinner_bottom"
                     android:layout_weight="1"
                     android:background="@drawable/spinners"
-                    android:elevation="10dp"
+                    android:elevation="5dp"
                     android:orientation="horizontal"
                     android:weightSum="3">
 
@@ -223,7 +445,7 @@
                     android:layout_marginBottom="@dimen/cont_spinner_bottom"
                     android:layout_weight="1"
                     android:background="@drawable/spinners"
-                    android:elevation="10dp"
+                    android:elevation="5dp"
                     android:orientation="horizontal"
                     android:weightSum="3">
 
@@ -254,7 +476,7 @@
                     android:layout_marginBottom="@dimen/cont_spinner_bottom"
                     android:layout_weight="1"
                     android:background="@drawable/spinners"
-                    android:elevation="10dp"
+                    android:elevation="5dp"
                     android:orientation="horizontal"
                     android:weightSum="3">
 
@@ -284,7 +506,7 @@
                     android:layout_marginBottom="@dimen/cont_spinner_bottom"
                     android:layout_weight="1"
                     android:background="@drawable/spinners"
-                    android:elevation="10dp"
+                    android:elevation="5dp"
                     android:orientation="horizontal"
                     android:weightSum="3">
 
@@ -307,123 +529,11 @@
                         android:textAlignment="center"
                         android:visibility="invisible" />
                 </LinearLayout>
-                <!--            SPINNER DE CUBETAS-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/cont_spinner_height"
-                    android:layout_marginBottom="@dimen/cont_spinner_bottom"
-                    android:layout_weight="1"
-                    android:background="@drawable/spinners"
-                    android:elevation="10dp"
-                    android:orientation="horizontal"
-                    android:weightSum="3">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
-                        android:fontFamily="sans-serif-medium"
-                        android:gravity="center"
-                        android:text="Cubetas : "
-                        android:textSize="@dimen/textview_spinner_text"
-                        android:textStyle="bold" />
-
-                    <Spinner
-                        android:id="@+id/inpCubetas"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:hint="Cubetas"
-                        android:textAlignment="center"
-                        android:visibility="invisible" />
-                </LinearLayout>
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
 
-    <!--MENSAJE QUE PREGUNTA LA ACEPTACION DE LAS CUBETAS-->
-    <RelativeLayout
-        android:id="@+id/mensajeAlert"
-        android:layout_width="@dimen/msj_confirmacion_width"
-        android:layout_height="@dimen/msj_confirmacion_height"
-        android:background="@drawable/alert"
-        android:elevation="10dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:layout_width="@dimen/msj_img_width"
-            android:layout_height="@dimen/msj_img_height"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="@dimen/msj_img_top"
-            android:src="@drawable/pregunta" />
-
-        <TextView
-            android:id="@+id/mensajeConteoEmpleado"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="280dp"
-            android:text="El empleado ha contado: "
-            android:textSize="@dimen/msj_label1_texto"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/mensajeCubetasAgregar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/msj_label2_bottom"
-            android:gravity="center"
-            android:text="Se le agregarán: "
-            android:textSize="@dimen/msj_label2_texto"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/msj_label3_bottom"
-            android:gravity="center"
-            android:text="¿La cantidad de cubetas es correcta?"
-            android:textSize="@dimen/msj_label3_texto"
-            android:textStyle="bold" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="bottom"
-            android:orientation="horizontal"
-            android:weightSum="2">
-
-            <Button
-                android:id="@+id/botonConfirmacion"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/msj_btnsino_height"
-                android:layout_marginBottom="10dp"
-                android:layout_weight="1"
-                android:backgroundTint="#449CDF"
-                android:elevation="10dp"
-                android:text="SI"
-                android:textSize="@dimen/msj_btnsino_text" />
-
-            <Button
-                android:id="@+id/botonCancelacion"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/msj_btnsino_height"
-                android:layout_marginBottom="10dp"
-                android:layout_weight="1"
-                android:backgroundTint="#D35A5A"
-                android:elevation="10dp"
-                android:text="NO"
-                android:textSize="@dimen/msj_btnsino_text" />
-        </LinearLayout>
-    </RelativeLayout>
     <!--MENSAJE QUE INDICA QUE SE REGISTRO CON EXITO-->
     <RelativeLayout
         android:id="@+id/mensajeCorrecto"
@@ -456,4 +566,22 @@
             android:textSize="@dimen/msj_exito_texto"
             android:textStyle="bold" />
     </RelativeLayout>
+
+    <ImageButton
+        android:id="@+id/btnCodeBar"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:layout_weight="1"
+        android:background="@drawable/redondeo"
+        android:elevation="10dp"
+        android:padding="10dp"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/codigo"
+
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

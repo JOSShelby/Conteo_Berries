@@ -63,15 +63,13 @@ class dialogPermiso : DialogFragment() {
         val txtContraseña = rootView.findViewById<EditText>(R.id.txtcontraseña)
         val btnSubir = rootView.findViewById<Button>(R.id.btnSubirDatos)
         cargaPermiso = rootView.findViewById(R.id.linearProgress)
-        txtcont = rootView.findViewById(R.id.txtCont)
-        txtcontt = rootView.findViewById(R.id.txtContTotal)
-        txtReconexion = rootView.findViewById(R.id.txtReconexion)
+
 
         val mArgs = arguments
         val jsonArreglo = mArgs!!.getString("jsonArreglo");
         val arrCont = mArgs!!.getString("arrCont");
 
-        txtcontt.text = arrCont
+        //txtcontt.text = arrCont
 
 //      BOTON QUE MANDA EL USER Y PASSWORD A PHP PARA QUE INSERTE EL REGISTRO SI SON CORRECTOS LOS DATOS
         btnSubir.setOnClickListener {
@@ -80,17 +78,18 @@ class dialogPermiso : DialogFragment() {
             val idCell = sharedPreferences.getInt("idCell", 0)
             val scope = CoroutineScope(Dispatchers.IO)
 
-            tareaJob = scope.launch {
-                while (isActive) {
-                    checkStatusRequest(idCell,0){request,cont ->
-                       txtcont.text = cont.toString()
-                    }
-                    delay(10000)
-                }
-            }
+//            tareaJob = scope.launch {
+//                while (isActive) {
+//                    checkStatusRequest(idCell,0){request,cont ->
+//                       txtcont.text = cont.toString()
+//                    }
+//                    delay(10000)
+//                }
+//            }
 
             cargaPermiso.isGone = false
             if (idCell == 0) {
+
                     val idCell = sharedPreferences.getInt("idCell", 0)
 
                         insertarRegistros(
@@ -101,14 +100,14 @@ class dialogPermiso : DialogFragment() {
                             idCell
                         ) { errorData ->
                             if(errorData == 1){
-                                tareaJob = scope.launch {
-                                    while (isActive) {
-                                        checkStatusRequest(idCell,1){request,cont ->
-                                            txtcont.text = cont.toString()
-                                        }
-                                        delay(10000)
-                                    }
-                                }
+//                                tareaJob = scope.launch {
+//                                    while (isActive) {
+//                                        checkStatusRequest(idCell,1){request,cont ->
+//                                            txtcont.text = cont.toString()
+//                                        }
+//                                        delay(10000)
+//                                    }
+//                                }
                             }
                         }
             } else {
@@ -122,14 +121,14 @@ class dialogPermiso : DialogFragment() {
                     idCell
                 ){errorData ->
                     if(errorData == 1){
-                        tareaJob = scope.launch {
-                            while (isActive) {
-                                checkStatusRequest(idCell,1){request,cont ->
-                                    txtcont.text = cont.toString()
-                                }
-                                delay(10000)
-                            }
-                        }
+//                        tareaJob = scope.launch {
+//                            while (isActive) {
+//                                checkStatusRequest(idCell,1){request,cont ->
+//                                    txtcont.text = cont.toString()
+//                                }
+//                                delay(10000)
+//                            }
+//                        }
                     }
                 }
 
@@ -243,12 +242,12 @@ class dialogPermiso : DialogFragment() {
                     ).show()
                     activityMain?.Resultado(true)
                     callback(0)
-                    tareaJob?.cancel()
+                    //tareaJob?.cancel()
                     dismiss()
                 } else {
                     println("entre aqui")
                     // SI LA RESPUESTA DE PHP NO FUE 1, PUEDE HABER UN ERROR INESPERADO O EL USUARIO ES INCORRECTO
-                    tareaJob?.cancel()
+                    //tareaJob?.cancel()
                     if (statusCode == 0) {
                         Toast.makeText(context, "Ocurrió un error", Toast.LENGTH_SHORT).show()
                         callback(0)
@@ -260,7 +259,7 @@ class dialogPermiso : DialogFragment() {
                         cargaPermiso.isGone = true
                     }
                     if (statusCode == 3) {
-                        tareaJob?.cancel()
+                        //tareaJob?.cancel()
                         Toast.makeText(context, "sucedio una llamada", Toast.LENGTH_SHORT).show()
                         callback(0)
                     }
@@ -268,7 +267,7 @@ class dialogPermiso : DialogFragment() {
 
             },
             Response.ErrorListener { error ->
-                tareaJob?.cancel()
+                //tareaJob?.cancel()
                 callback(1)
             }) {
 

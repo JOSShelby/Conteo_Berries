@@ -16,20 +16,28 @@ import android.view.animation.AlphaAnimation
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import android.widget.Spinner
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.agrizar.berriesconteo.berries.berriesconteo.Consultar
 import com.agrizar.berriesconteo.R
 import com.agrizar.berriesconteo.databinding.ActivityPantallaCapturarBinding
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanIntentResult
+import com.journeyapps.barcodescanner.ScanOptions
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -40,7 +48,6 @@ import java.util.Calendar
 class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInteractionListener,
     dialogAutorizacion.checkAuthorization {
 
-    //  VARIABLES
     private lateinit var binding: ActivityPantallaCapturarBinding
     private lateinit var msgCorrecto: RelativeLayout
     private lateinit var msgConfirmacion: RelativeLayout
@@ -56,12 +63,40 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
     private var seleccionModulo = 0
     private var seleccionSector = 0
     private var seleccionFruto = 0
-    private var seleccionCubetas = 1
+    private var seleccionCubetas = 0
     private var seleccionVariedad = 0
+    private var contBtnAddCubs = 0;
+
+    private lateinit var spinnerFruto: Spinner
+    private lateinit var spinnerVariedades: Spinner
+    private lateinit var spinnerLugar: Spinner
+    private lateinit var spinnerModulo: Spinner
+    private lateinit var spinnerSector: Spinner
+    private lateinit var spinnerEstacion: Spinner
+
+    private lateinit var linearSpinners: LinearLayout
+
+    private lateinit var check1: CheckBox
+    private lateinit var check2: CheckBox
+    private lateinit var check3: CheckBox
+    private lateinit var check4: CheckBox
+
+    private lateinit var linearCheckBoxes: LinearLayout
+    private lateinit var txtCubetasPregunta: TextView
+    private lateinit var mensajeConteoEmpleado: TextView
+    private lateinit var txtcuentaEmpleado: TextView
+    private lateinit var txtCubetas: TextView
+    private lateinit var txtCubetasTotal: TextView
+
+    private lateinit var txtCuentaRecibidas: TextView
+    private lateinit var txtCuentaCubetasEmpleado: TextView
+    private lateinit var txtCuentaTotalAcumulado: TextView
+    private lateinit var txtConfirmacionRecepcion: TextView
 
     var seleccionLote = 0
 
     private val CAMERA_PERMISSION_CODE = 101
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -71,10 +106,8 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == CAMERA_PERMISSION_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // El usuario concedió el permiso, puedes acceder a la cámara aquí
                 println("permiso concedido")
             } else {
-                // El usuario denegó el permiso, toma medidas adecuadas (mostrar mensaje, deshabilitar funciones, etc.)
                 println("permiso no concedido")
             }
         }
@@ -85,6 +118,14 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
         setContentView(R.layout.activity_pantalla_capturar)
         binding = ActivityPantallaCapturarBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
+
+        initializeVariables()
+        checkBoxes()
 
         if (ContextCompat.checkSelfPermission(
                 this,
@@ -102,32 +143,436 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
             println("Permiso de la cámara ya concedido")
         }
 
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .add(R.id.container_frame_layout, QRScannerFragment())
-                .commit()
+        val lectorcodigo = registerForActivityResult(ScanContract()) { result: ScanIntentResult ->
+            if (result.contents == null) {
+                Toast.makeText(this, "Se cancelo el escaneo", Toast.LENGTH_LONG).show()
+            } else {
+                addNewBuckets(result.contents)
+            }
         }
 
-        cubsSwitch = binding.cubsSwitch
+        binding.btnCodeBar.setOnClickListener {
+            if (seleccionModulo != 0 && seleccionEstacion != 0 && seleccionSector != 0 && seleccionFruto != 0) {
+                openQrLector(lectorcodigo)
+            } else {
+                Toast.makeText(this, "Debe Llenar los datos minimos", Toast.LENGTH_LONG).show()
+            }
+        }
+
         checkSwitchTimeCubs()
 
         val btnCheckBuckets = binding.btnCheckBuckets
-
         btnCheckBuckets.setOnClickListener {
             val intent = Intent(this, Consultar::class.java)
             startActivity(intent)
         }
 
-//      ESTABLECE LA PANTALLA COMPLETA
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
+        initializeSpinner()
+        configurationSpinnerFruitAndVarieties()
+        configurationSpinnerPlaceSectorEstacionModulo()
 
 //      BUSCA EL EDITTEXT DONDE SE COLOCARA EL NUMERO DE EMPLEADO CON EL ESCANER EXTERNO
         this.cajaEscribeEscaner = binding.CajaEscribeEscaner
+    }
 
-//      DETECTARA CUANDO SE DE UN ENTER EN EL EDITTEXT
+    private fun initializeBeep() {
+        //      INDICA QUE SE PUEDE REPRODUCIR UN SOLO EFECTO AL MISMO TIEMPO
+        val maxStreams = 1
+//      SE CREA UN OBJETO CON ATRIBUTOS DEL SONIDO
+        val audioAttributes = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_MEDIA)  // INDICA QUE EL SONIDO SE UTILIZA COMO MUSICA O SONIDO EN SEGUNDO PLANO
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION) // INDICA QUE ES UN SONIDO DE NOTIFICACION O EFECTO DE SONIDO BREVE
+            .build() // FINALIZA LA CONSTRUCCION DE LOS ATRIBUTOS
+        soundPool = SoundPool.Builder()
+            .setMaxStreams(maxStreams)// LE ASIGNA LA VARIABLE CREADA ANTERIORMENTE
+            .setAudioAttributes(audioAttributes) // LE ASIGNA LOS ATRIBUTOS CREADOS ANTERIORMENTE
+            .build() // FINALIZA LA CONSTRUCCION DEL OBJETO
+
+//      CARGA EL SONIDO DE PIDIDO PARA ESCANEAR
+        beepSoundId = soundPool.load(this, R.raw.beep, 1)
+    }
+
+    private fun checkSwitchTimeCubs() {
+        cubsSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            println("entre en el cambio boton : $cambio")
+            if (cambio == 0) {
+                var dialogopermiso = dialogAutorizacion();
+                dialogopermiso.show(supportFragmentManager, "titulo")
+            } else {
+                cambio = 0
+            }
+        }
+    }
+
+    private fun openQrLector(lectorcodigo: ActivityResultLauncher<ScanOptions>) {
+        val options = ScanOptions()
+        options.setDesiredBarcodeFormats(ScanOptions.ALL_CODE_TYPES)
+        options.setPrompt("escanne el codigo");
+        options.setCameraId(0)
+        options.setOrientationLocked(true);
+        options.setBarcodeImageEnabled(true);
+        lectorcodigo.launch(options);
+    }
+
+    private fun initializeVariables() {
+        linearCheckBoxes = binding.LinearCheckBoxes
+        txtCubetasPregunta = binding.txtCubetasPregunta
+        txtcuentaEmpleado = binding.txtcuentaEmpleado
+        mensajeConteoEmpleado = binding.mensajeConteoEmpleado
+        txtCubetas = binding.txtCubetas
+        txtCubetasTotal = binding.txtCubetasTotal
+
+        txtCuentaRecibidas = binding.txtCuentaRecibidas
+        txtCuentaCubetasEmpleado = binding.txtCuentaCubetasEmpleado
+        txtCuentaTotalAcumulado = binding.txtCuentaTotalAcumulado
+        txtConfirmacionRecepcion = binding.txtConfirmacionRecepcion
+
+        linearSpinners = binding.linearSpinners
+
+        check1 = binding.check1
+        check2 = binding.check2
+        check3 = binding.check3
+        check4 = binding.check4
+
+        msgCorrecto = binding.mensajeCorrecto
+        msgConfirmacion = binding.mensajeAlert
+        txtCorrecto = binding.txtCorrecto
+        imgCorrecto = binding.imgCorrecto
+
+        cubsSwitch = binding.cubsSwitch
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+
+    fun addNewBuckets(Nempleado: String) {
+        //REALIZA LA ACCION AL DETECTAR EL SALTO DE LINEA
+        val scannedText = Nempleado.trim() // OBTIENE EL TEXTO SIN ESPACIOS
+
+//                  BORRA EL CONTENIDO ESCANEADO DEL EDITTEXT PARA QUE SE MANTENGA VACIO
+        cajaEscribeEscaner.setText("")
+
+        //      MUESTRA EL NUMERO DE EMPLEADO EN EL LABEL
+        val num_empleadoMostrar = findViewById<TextView>(R.id.inpNumEmpleado)
+        num_empleadoMostrar.text = "Número de empleado: $scannedText"
+
+//      TRAE EL CONTENIDO DEL XML ACTIVITY_PANTALLA_CAPTURAR
+        val btnConfirmar = findViewById<Button>(R.id.botonConfirmacion)
+        val btnRechazar = findViewById<Button>(R.id.botonCancelacion)
+
+        // println("$seleccionModulo,$seleccionEstacion,$seleccionSector,$seleccionFruto");
+
+//      REPRODUCE EL SONIDO DE PITADO
+        //soundPool.play(beepSoundId, 1.0f, 1.0f, 0, 0, 1.0f)
+
+//      VALIDA QUE LOS SPINNERS NO ESTEN VACIOS
+        if (seleccionModulo != 0 && seleccionEstacion != 0 && seleccionSector != 0 && seleccionFruto != 0) {
+
+//          HACE VISIBLE EL ALERT PARA QUE SE ACEPTEN O NO LAS CUBETAS
+            msgConfirmacion.isVisible = true
+
+//          GUARDA EL NUMERO DE EMPLEADO EN UNA VARIABLE
+            val num_empleado = scannedText
+
+//          OBTIENE LA FECHA Y HORA ACTUAL
+            val calendar = Calendar.getInstance()
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+
+//          SE DECLARAN VARIABLES PARA VER O INSERTAR EN LA BASE DE DATOS
+            val dbBerries = DBBerries(applicationContext, " DBBerries", null, R.string.versionBD);
+            val db = dbBerries.writableDatabase
+            val dbVer = dbBerries.readableDatabase
+
+//          CONSULTA PARA OBTENER LAS CUBETAS QUE LLEVA EL COSECHADOR
+            val conlumnsCubetas = arrayOf(
+                "fecha",
+                "moduloid",
+                "estacion",
+                "sector",
+                "numero_empleado",
+                "fruto",
+                "status"
+            )
+            val seleccion = "numero_empleado = ?" //CONDICION WHERE
+            val seleccionArgum = arrayOf(scannedText) //VALOR DEL NUMERO DE EMPLEADO
+            val cursorCubetas: Cursor = db.query(
+                "cubetascontadasberries",
+                conlumnsCubetas,
+                seleccion,
+                seleccionArgum,
+                null,
+                null,
+                "idcubeta ASC"
+            )
+            val count = cursorCubetas.count
+
+//          MUESTRA EL NUMERO DE CUBETAS CONTADAS POR ESE EMPLEADO
+            val resultadoCount = findViewById<TextView>(R.id.mensajeConteoEmpleado)
+            resultadoCount.text = "$count"
+
+//          EN ESPERA DE QUE SE LE DE CLICK AL BOTON DE CONFIRMAR CUBETAS
+
+            linearCheckBoxes.isGone = false
+            txtCubetasPregunta.isGone = false
+            txtcuentaEmpleado.isGone = false
+            mensajeConteoEmpleado.isGone = false
+            txtCubetas.isGone = false
+            txtCubetasTotal.isGone = false
+            linearSpinners.isGone = true
+
+            txtCuentaRecibidas.isGone = true
+            txtCuentaCubetasEmpleado.isGone = true
+            txtCuentaTotalAcumulado.isGone = true
+            txtConfirmacionRecepcion.isGone = true
+
+            btnConfirmar.setOnClickListener {
+                if (seleccionCubetas != 0) {
+                    if (contBtnAddCubs == 0) {
+                        contBtnAddCubs = 1
+
+                        linearCheckBoxes.isGone = true
+                        txtCubetasPregunta.isGone = true
+                        txtcuentaEmpleado.isGone = true
+                        mensajeConteoEmpleado.isGone = true
+                        txtCubetas.isGone = true
+                        txtCubetasTotal.isGone = true
+
+                        txtCuentaRecibidas.isGone = false
+                        txtCuentaCubetasEmpleado.isGone = false
+                        txtCuentaTotalAcumulado.isGone = false
+                        txtConfirmacionRecepcion.isGone = false
+
+                        txtCuentaRecibidas.text = "CUENTA DEL EMPLEADO : $count"
+                        txtCuentaCubetasEmpleado.text = "CUBETAS RECIBIDAS : $seleccionCubetas"
+                        txtCuentaTotalAcumulado.text = "TOTAL ACUMULADO : ${count+seleccionCubetas}"
+
+                    } else {
+                        contBtnAddCubs = 0
+
+                        linearCheckBoxes.isGone = false
+                        txtCubetasPregunta.isGone = false
+                        txtcuentaEmpleado.isGone = false
+                        mensajeConteoEmpleado.isGone = false
+                        txtCubetasTotal.isGone = false
+                        txtCubetas.isGone = false
+                        linearSpinners.isGone = false
+
+                        txtCuentaRecibidas.isGone = true
+                        txtCuentaCubetasEmpleado.isGone = true
+                        txtCuentaTotalAcumulado.isGone = true
+                        txtConfirmacionRecepcion.isGone = true
+
+//
+
+
+
+                        val queryCubetas =
+                            "SELECT * FROM cubetascontadasberries WHERE numero_empleado = '$num_empleado' AND bandera = 0 "
+                        val cursor = dbVer.rawQuery(queryCubetas, null)
+                        val contadorCursor = cursor.count
+                        val sumaTotalCubetas = cursor.count + seleccionCubetas
+                        var bandera = 0
+                        var contCuatroMas = 0
+
+                        if (contadorCursor == 4) {
+                            bandera = 1;// la cuenta de cubetas esta en el limite
+                        }
+
+                        if (sumaTotalCubetas > 4) {
+                            contCuatroMas = 1 // la seccion y el conteo son mas de 4
+                        }
+                        if (selectionTimeCubs == 1) {
+
+                            if (bandera == 1) {
+
+                                //CONSULTA PARA OBTENER LAS ULTIMA hora de su ultimo registro
+                                val queryCubetas =
+                                    "SELECT idcubeta,fecha FROM cubetascontadasberries WHERE numero_empleado = '$num_empleado' AND bandera = 0 ORDER BY idcubeta DESC LIMIT 1"
+                                val cursor = dbVer.rawQuery(queryCubetas, null)
+
+                                while (cursor.moveToNext()) {
+                                    val fecha =
+                                        cursor.getString(cursor.getColumnIndexOrThrow("fecha"))
+
+                                    val inputFormat =
+                                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                                    val inputDateTime = LocalDateTime.parse(fecha, inputFormat)
+
+                                    // Sumar 15 minutos
+                                    val newDateTime = inputDateTime.plus(10, ChronoUnit.MINUTES)
+
+                                    val currentDateTime = LocalDateTime.now()
+
+                                    if (currentDateTime > newDateTime) {
+
+                                        val subconsulta =
+                                            "(SELECT idcubeta FROM cubetascontadasberries WHERE numero_empleado = '$num_empleado' AND bandera = 0 )"
+                                        val queryActualizar =
+                                            "UPDATE cubetascontadasberries SET status = 1 , bandera = 1 WHERE idcubeta IN $subconsulta"
+                                        dbVer.execSQL(queryActualizar)
+
+                                        for (i in 1..seleccionCubetas) {
+                                            val cadenaAgregarCubeta =
+                                                "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,variedad,bandera) " +
+                                                        "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$scannedText',$seleccionFruto,$seleccionVariedad, 0)"
+                                            dbVer.execSQL(cadenaAgregarCubeta)
+                                        }
+                                        seleccionCubetas = 0
+                                        ChecksOff()
+                                        pantallaMensaje(1)
+                                    } else {
+                                        seleccionCubetas = 0
+                                        ChecksOff()
+                                        txtCorrecto.text =
+                                            "Error ya fueron pitadas 4 cubetas al empleado $num_empleado \n la ultima cubeta fue pitada a las $fecha \n podra volver a pitar el empleado dentro de 10 min. "
+                                        pantallaMensaje(3)
+
+                                    }
+                                }
+                            } else {
+                                if (contCuatroMas == 1) {
+                                    println("la suma del contador y las cubetas registradas da mas de 4")
+                                    //funcion para traer el mensaje
+                                    seleccionCubetas = 0
+                                    ChecksOff()
+                                    pantallaMensaje(2)
+                                } else {
+
+                                    for (i in 1..seleccionCubetas) {
+                                        val cadenaAgregarCubeta =
+                                            "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,variedad,bandera) " +
+                                                    "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$scannedText',$seleccionFruto,$seleccionVariedad, 0)"
+                                        dbVer.execSQL(cadenaAgregarCubeta)
+                                    }
+
+                                    //funcion para traer el mensaje
+                                    linearSpinners.isGone = true
+                                    seleccionCubetas = 0
+                                    ChecksOff()
+                                    pantallaMensaje(1)
+                                }
+                            }
+                        } else {
+
+                            for (i in 1..seleccionCubetas) {
+                                val cadenaAgregarCubeta =
+                                    "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,variedad,bandera) " +
+                                            "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$scannedText',$seleccionFruto,$seleccionVariedad, 0)"
+                                dbVer.execSQL(cadenaAgregarCubeta)
+                            }
+
+                            val subconsulta =
+                                "(SELECT idcubeta FROM cubetascontadasberries WHERE numero_empleado = '$num_empleado' AND bandera = 0 )"
+                            val queryActualizar =
+                                "UPDATE cubetascontadasberries SET status = 1 , bandera = 1 WHERE idcubeta IN $subconsulta"
+                            dbVer.execSQL(queryActualizar)
+                            seleccionCubetas = 0
+                            ChecksOff()
+                            pantallaMensaje(1)
+                            linearSpinners.isGone = false
+                        }
+//              OCULTA LA PANTALLA DE PREGUNTA
+                        msgConfirmacion.isVisible = false
+
+//              CIERRA LA BD AL TERMINAR EL CICLO FOR
+                        dbVer.close()
+                        db.close()
+                    }
+
+                } else {
+                    Toast.makeText(this, "Falta Seleccionar las cubetas", Toast.LENGTH_LONG).show()
+                }
+            }
+
+
+//          EN ESPERA DE QUE SE LE DE CLICK AL BOTON DE RECHAZAR CUBETAS
+            btnRechazar.setOnClickListener {
+                msgConfirmacion.isVisible = false
+                contBtnAddCubs = 0
+                linearCheckBoxes.isGone = false
+                txtCubetasPregunta.isGone = false
+                txtcuentaEmpleado.isGone = false
+                mensajeConteoEmpleado.isGone = false
+                linearSpinners.isGone = false
+                ChecksOff()
+
+            }
+        } else {
+            Toast.makeText(applicationContext, "Ponga los Datos Minimos", Toast.LENGTH_SHORT).show()
+            num_empleadoMostrar.setText("Número de empleado: ")
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onValueReturned(value: String) {
+        addNewBuckets(value)
+    }
+
+    fun pantallaMensaje(tipo: Int) {
+
+        var delay: Long = 0;
+
+        //mensaje de correcto
+        if (tipo == 1) {
+            txtCorrecto.text = "Registrado Correctamente"
+            imgCorrecto.setImageResource(R.drawable.correcto)
+            delay = 1;
+
+        }
+        //mensaje de mas de 4 cubetas que fueron intentadas meter
+        if (tipo == 2) {
+            txtCorrecto.text = "Error se trato de meter mas de 4 cubetas "
+            imgCorrecto.setImageResource(R.drawable.error)
+            delay = 3;
+        }
+        //mensaje de mas de 4 cubetas que fueron intentadas meter
+        if (tipo == 3) {
+
+            imgCorrecto.setImageResource(R.drawable.error)
+            delay = 3;
+
+        }
+
+//              ANIMACION PARA APARECER EL MENSAJE DE EXITO DE INSERSION
+        val fadeInAnimation = AlphaAnimation(5f, 1f)
+        fadeInAnimation.duration = 1500 * delay // DURACION EN MILISEGUNDOS
+
+//              ANIMACION PARA ESPERAR
+        fadeInAnimation.duration = 1000 * delay// DURACION EN MILISEGUNDOS
+
+//              ANIMACION PARA DESAPARECER EL MENSAJE DE EXITO DE INSERSION
+        val fadeOutAnimation = AlphaAnimation(1f, 0f)
+        fadeOutAnimation.duration = 500 * delay // DURACION EN MILISEGUNDOS
+
+        //SE PINTA EL MENSAJE DE EXITO DE INSERSION CON SU ANIMACION DE ENTRADA Y SALIDA
+        msgCorrecto.startAnimation(fadeInAnimation)
+        msgCorrecto.postDelayed({
+            msgCorrecto.startAnimation(fadeOutAnimation)
+        }, 1000)
+    }
+
+    override fun checkAuthorization(resultado: Boolean) {
+        if (resultado) {
+            selectionTimeCubs = if (cubsSwitch.isChecked) {
+                1
+            } else {
+                0
+            }
+        } else {
+            cambio = 1
+            if (cubsSwitch.isChecked) {
+                cubsSwitch.isChecked = false
+                selectionTimeCubs = 0
+            } else {
+                cubsSwitch.isChecked = true
+                selectionTimeCubs = 1
+            }
+
+
+        }
+
+    }
+
+    fun readEmployeeWithTextView() {
         cajaEscribeEscaner.addTextChangedListener(object : TextWatcher {
             @RequiresApi(Build.VERSION_CODES.O)
             override fun afterTextChanged(s: Editable?) {
@@ -146,183 +591,26 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                 // NO SE UTILIZA EN ESTE EJEMPLO
             }
         })
+    }
 
-//      METEMOS 1S LAYOUTS EN VARIABLES USANDO LA INSTANCIA CREADA
-        msgCorrecto = binding.mensajeCorrecto
-        msgConfirmacion = binding.mensajeAlert
-        txtCorrecto = binding.txtCorrecto
-        imgCorrecto = binding.imgCorrecto
+    fun initializeSpinner() {
+        spinnerFruto = binding.inpFruto
+        spinnerVariedades = binding.inpVariedades
+        spinnerLugar = binding.inpLugar
+        spinnerModulo = binding.inpModulo
+        spinnerSector = binding.inpSector
+        spinnerEstacion = binding.inpEstacion
+    }
 
-//      INDICA QUE SE PUEDE REPRODUCIR UN SOLO EFECTO AL MISMO TIEMPO
-        val maxStreams = 1
-//      SE CREA UN OBJETO CON ATRIBUTOS DEL SONIDO
-        val audioAttributes = AudioAttributes.Builder()
-            .setUsage(AudioAttributes.USAGE_MEDIA)  // INDICA QUE EL SONIDO SE UTILIZA COMO MUSICA O SONIDO EN SEGUNDO PLANO
-            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION) // INDICA QUE ES UN SONIDO DE NOTIFICACION O EFECTO DE SONIDO BREVE
-            .build() // FINALIZA LA CONSTRUCCION DE LOS ATRIBUTOS
-        soundPool = SoundPool.Builder()
-            .setMaxStreams(maxStreams)// LE ASIGNA LA VARIABLE CREADA ANTERIORMENTE
-            .setAudioAttributes(audioAttributes) // LE ASIGNA LOS ATRIBUTOS CREADOS ANTERIORMENTE
-            .build() // FINALIZA LA CONSTRUCCION DEL OBJETO
 
-//      CARGA EL SONIDO DE PIDIDO PARA ESCANEAR
-        beepSoundId = soundPool.load(this, R.raw.beep, 1)
-
+    fun configurationSpinnerPlaceSectorEstacionModulo() {
         //      SPINNER DE MODULOS TRAIDO DE LA BD
-        val spinnerLugar = binding.inpLugar
+
         val arrLugar: MutableList<String> = mutableListOf()
 
         arrLugar.add("LUGAR...")
         arrLugar.add("AGZ3")
         arrLugar.add("AGZ1")
-
-//      ADAPTADOR PARA EL SPINNER DE FRUTO
-        val spinnerFruto = binding.inpFruto
-        val arrFrutoTitulos: MutableList<String> = mutableListOf()
-        arrFrutoTitulos.add("FRUTO.....")
-        arrFrutoTitulos.add("FRAMBUESA")
-        arrFrutoTitulos.add("ZARZAMORA")
-        val adapterFruto =
-            ArrayAdapter(this, android.R.layout.simple_spinner_item, arrFrutoTitulos)
-        spinnerFruto.adapter = adapterFruto
-
-        //      ADAPTADOR PARA EL SPINNER DE FRUTO
-        val spinnerVariedades = binding.inpVariedades
-
-        spinnerFruto.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                val arrVariedadesTitulos: MutableList<String> = mutableListOf()
-                if (position == 0) {
-                    seleccionFruto = 0
-                }
-                if (position == 1) {
-
-                    seleccionFruto = 13
-
-                    arrVariedadesTitulos.add("VARIEDADES.....")
-                    arrVariedadesTitulos.add("SAPPHIRE")
-                    arrVariedadesTitulos.add("DJ")
-                    val adapterVariedades =
-                        ArrayAdapter(
-                            this@pantalla_capturar,
-                            android.R.layout.simple_spinner_item,
-                            arrVariedadesTitulos
-                        )
-                    spinnerVariedades.adapter = adapterVariedades
-
-                    spinnerVariedades.onItemSelectedListener =
-                        object : AdapterView.OnItemSelectedListener {
-                            override fun onItemSelected(
-                                parent: AdapterView<*>?,
-                                view: View?,
-                                position: Int,
-                                id: Long
-                            ) {
-                                if (position == 0) {
-                                    seleccionVariedad = 0
-                                }
-                                if (position == 1) {
-                                    seleccionVariedad = 1
-                                }
-                                if (position == 2) {
-                                    seleccionVariedad = 2
-                                }
-
-                            }
-
-                            override fun onNothingSelected(parent: AdapterView<*>?) {
-                                // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
-                            }
-                        }
-
-                }
-                if (position == 2) {
-                    seleccionFruto = 14
-                    arrVariedadesTitulos.add("VARIEDADES.....")
-                    arrVariedadesTitulos.add("TP04")
-                    val adapterVariedades =
-                        ArrayAdapter(
-                            this@pantalla_capturar,
-                            android.R.layout.simple_spinner_item,
-                            arrVariedadesTitulos
-                        )
-                    spinnerVariedades.adapter = adapterVariedades
-                    spinnerVariedades.onItemSelectedListener =
-                        object : AdapterView.OnItemSelectedListener {
-                            override fun onItemSelected(
-                                parent: AdapterView<*>?,
-                                view: View?,
-                                position: Int,
-                                id: Long
-                            ) {
-                                if (position == 0) {
-                                    seleccionVariedad = 0
-                                }
-
-                                if (position == 1) {
-                                    seleccionVariedad = 3
-                                }
-
-                            }
-
-                            override fun onNothingSelected(parent: AdapterView<*>?) {
-                                // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
-                            }
-                        }
-                }
-
-                if (position == 1 || position == 2) {
-                    spinnerVariedades.visibility = View.VISIBLE
-                } else {
-                    spinnerVariedades.visibility = View.INVISIBLE
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
-            }
-        }
-
-//      ADAPTADOR PARA EL SPINNER DE CUBETAS
-        val spinnerCubetas = binding.inpCubetas
-        val arrCubetas: MutableList<Int> = mutableListOf()
-        arrCubetas.add(1)
-        arrCubetas.add(2)
-        arrCubetas.add(3)
-        arrCubetas.add(4)
-        val adapterCubeta = ArrayAdapter(this, android.R.layout.simple_spinner_item, arrCubetas)
-
-        spinnerCubetas.adapter = adapterCubeta
-        spinnerCubetas.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                if (position == 0) {
-                    seleccionCubetas = 1
-                }
-                if (position == 1) {
-                    seleccionCubetas = 2
-                }
-                if (position == 2) {
-                    seleccionCubetas = 3
-                }
-                if (position == 3) {
-                    seleccionCubetas = 4
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
-            }
-        }
 
         val adapterLugar = ArrayAdapter(this, android.R.layout.simple_spinner_item, arrLugar)
         adapterLugar.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -351,7 +639,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                 }
 
                 //SPINNER DE MODULOS TRAIDO DE LA BD
-                val spinnermodulo = binding.inpModulo
+
                 val arrModuloTitulos: MutableList<String> = mutableListOf()
                 val dbBerries =
                     DBBerries(applicationContext, " DBBerries", null, R.string.versionBD);
@@ -370,8 +658,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                 }
 
                 //SPINNER DE SECTORES TRAIDO DE LA BD
-                val spinnerSector = binding.inpSector
-                val spinnerEstacion = binding.inpEstacion
+
                 val arrEstacionTitulos: MutableList<String> = mutableListOf()
                 val arrEstacionId: MutableList<Int> = mutableListOf()
                 val arrSectorTitulos: MutableList<String> = mutableListOf()
@@ -385,8 +672,8 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                     arrModuloTitulos
                 )
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                spinnermodulo.adapter = adapter
-                spinnermodulo.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                spinnerModulo.adapter = adapter
+                spinnerModulo.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                     override fun onItemSelected(
                         parent: AdapterView<*>?,
                         view: View?,
@@ -492,306 +779,197 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                                     }
                                 }
                         }
-
-
                     }
 
                     override fun onNothingSelected(parent: AdapterView<*>?) {
                         // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
                     }
                 }
-
-                spinnerCubetas.isVisible = aparecerSpinners
                 spinnerFruto.isVisible = aparecerSpinners
                 spinnerSector.isVisible = aparecerSpinners
                 spinnerEstacion.isVisible = aparecerSpinners
-                spinnermodulo.isVisible = aparecerSpinners
-
-
+                spinnerModulo.isVisible = aparecerSpinners
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
             }
         }
-
     }
 
-    private fun checkSwitchTimeCubs() {
-        cubsSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            println("entre en el cambio boton : $cambio")
-            if (cambio == 0) {
-                var dialogopermiso = dialogAutorizacion();
-                dialogopermiso.show(supportFragmentManager, "titulo")
-            } else {
-                cambio = 0
-            }
-        }
-    }
+    fun configurationSpinnerFruitAndVarieties() {
+        //      ADAPTADOR PARA EL SPINNER DE FRUTO
+        val arrFrutoTitulos: MutableList<String> = mutableListOf()
+        arrFrutoTitulos.add("FRUTO.....")
+        arrFrutoTitulos.add("FRAMBUESA")
+        arrFrutoTitulos.add("ZARZAMORA")
+        val adapterFruto =
+            ArrayAdapter(this, android.R.layout.simple_spinner_item, arrFrutoTitulos)
+        spinnerFruto.adapter = adapterFruto
 
-    @RequiresApi(Build.VERSION_CODES.O)
-
-    fun addNewBuckets(Nempleado: String) {
-        //REALIZA LA ACCION AL DETECTAR EL SALTO DE LINEA
-        val scannedText = Nempleado.trim() // OBTIENE EL TEXTO SIN ESPACIOS
-
-//                  BORRA EL CONTENIDO ESCANEADO DEL EDITTEXT PARA QUE SE MANTENGA VACIO
-        cajaEscribeEscaner.setText("")
-
-        //      MUESTRA EL NUMERO DE EMPLEADO EN EL LABEL
-        val num_empleadoMostrar = findViewById<TextView>(R.id.inpNumEmpleado)
-        num_empleadoMostrar.text = "Número de empleado: $scannedText"
-
-//      TRAE EL CONTENIDO DEL XML ACTIVITY_PANTALLA_CAPTURAR
-        val btnConfirmar = findViewById<Button>(R.id.botonConfirmacion)
-        val btnRechazar = findViewById<Button>(R.id.botonCancelacion)
-
-        // println("$seleccionModulo,$seleccionEstacion,$seleccionSector,$seleccionFruto");
-
-//      REPRODUCE EL SONIDO DE PITADO
-        soundPool.play(beepSoundId, 1.0f, 1.0f, 0, 0, 1.0f)
-
-//      VALIDA QUE LOS SPINNERS NO ESTEN VACIOS
-        if (seleccionModulo != 0 && seleccionEstacion != 0 && seleccionSector != 0 && seleccionFruto != 0) {
-
-//          HACE VISIBLE EL ALERT PARA QUE SE ACEPTEN O NO LAS CUBETAS
-            msgConfirmacion.isVisible = true
-
-//          GUARDA EL NUMERO DE EMPLEADO EN UNA VARIABLE
-            val num_empleado = scannedText
-
-//          OBTIENE LA FECHA Y HORA ACTUAL
-            val calendar = Calendar.getInstance()
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-
-//          SE DECLARAN VARIABLES PARA VER O INSERTAR EN LA BASE DE DATOS
-            val dbBerries = DBBerries(applicationContext, " DBBerries", null, R.string.versionBD);
-            val db = dbBerries.writableDatabase
-            val dbVer = dbBerries.readableDatabase
-
-//          CONSULTA PARA OBTENER LAS CUBETAS QUE LLEVA EL COSECHADOR
-            val conlumnsCubetas = arrayOf(
-                "fecha",
-                "moduloid",
-                "estacion",
-                "sector",
-                "numero_empleado",
-                "fruto",
-                "status"
-            )
-            val seleccion = "numero_empleado = ?" //CONDICION WHERE
-            val seleccionArgum = arrayOf(scannedText) //VALOR DEL NUMERO DE EMPLEADO
-            val cursorCubetas: Cursor = db.query(
-                "cubetascontadasberries",
-                conlumnsCubetas,
-                seleccion,
-                seleccionArgum,
-                null,
-                null,
-                "idcubeta ASC"
-            )
-            val count = cursorCubetas.count
-
-//          MUESTRA EL NUMERO DE CUBETAS CONTADAS POR ESE EMPLEADO
-            val resultadoCount = findViewById<TextView>(R.id.mensajeConteoEmpleado)
-            resultadoCount.text = "El empleado ha contado: $count cubetas"
-
-//          MUESTRA EL NUMERO DE CUBETAS QUE SE LE VAN A AGREGAR
-            val resultadoCubetasAgregadas = findViewById<TextView>(R.id.mensajeCubetasAgregar)
-            resultadoCubetasAgregadas.text = "Se le agregarán: $seleccionCubetas cubetas"
-
-//          EN ESPERA DE QUE SE LE DE CLICK AL BOTON DE CONFIRMAR CUBETAS
-            btnConfirmar.setOnClickListener {
-
-//              CONSULTA PARA OBTENER LAS ULTIMAS 4 CUBETAS
-                val queryCubetas =
-                    "SELECT * FROM cubetascontadasberries WHERE numero_empleado = '$num_empleado' AND bandera = 0 "
-                val cursor = dbVer.rawQuery(queryCubetas, null)
-
-//              CONTADOR DE REGISTROS
-                val contadorCursor = cursor.count
-
-                val sumaTotalCubetas = cursor.count + seleccionCubetas
-
-//              VARIABLE PARA SABER QUE LAS ULTIMAS 4 CUBETAS FUERON 0 (EL 0 INDICA QUE AUN NO SON LAS 4 CUBETAS)
-//              CUANDO YA SE CONTARON LAS 4 CUBETAS, EL 0 DE LAS ULTIMAS 4 CUBETAS SE VUELVE 1, INDICANDO QUE TIENE QUE PASAR 15 MINS PARA VOLVER A CONTAR
-
-//              PUNTERO PARA SALIR DEL WHILE
-
-//              BANDERA BOOLEAN PARA SABER CUANDO LA CUBETA ES PARTE DE OTRAS 4 ANTERIORES
-                var bandera = 0
-                var contCuatroMas = 0
-
-                if (contadorCursor == 4) {
-                    bandera = 1;// la cuenta de cubetas esta en el limite
+        spinnerFruto.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val arrVariedadesTitulos: MutableList<String> = mutableListOf()
+                if (position == 0) {
+                    seleccionFruto = 0
                 }
+                if (position == 1) {
 
-                if (sumaTotalCubetas > 4) {
-                    contCuatroMas = 1 // la seccion y el conteo son mas de 4
-                }
-                if (selectionTimeCubs == 1) {
+                    seleccionFruto = 13
 
-                    if (bandera == 1) {
+                    arrVariedadesTitulos.add("VARIEDADES.....")
+                    arrVariedadesTitulos.add("SAPPHIRE")
+                    arrVariedadesTitulos.add("DJ")
+                    val adapterVariedades =
+                        ArrayAdapter(
+                            this@pantalla_capturar,
+                            android.R.layout.simple_spinner_item,
+                            arrVariedadesTitulos
+                        )
+                    spinnerVariedades.adapter = adapterVariedades
 
-                        //CONSULTA PARA OBTENER LAS ULTIMA hora de su ultimo registro
-                        val queryCubetas =
-                            "SELECT idcubeta,fecha FROM cubetascontadasberries WHERE numero_empleado = '$num_empleado' AND bandera = 0 ORDER BY idcubeta DESC LIMIT 1"
-                        val cursor = dbVer.rawQuery(queryCubetas, null)
-
-                        while (cursor.moveToNext()) {
-                            val fecha = cursor.getString(cursor.getColumnIndexOrThrow("fecha"))
-
-                            val inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-
-                            // Convertir la cadena de fecha en LocalDateTime
-                            val inputDateTime = LocalDateTime.parse(fecha, inputFormat)
-
-                            // Sumar 15 minutos
-                            val newDateTime = inputDateTime.plus(10, ChronoUnit.MINUTES)
-
-                            val currentDateTime = LocalDateTime.now()
-
-                            if (currentDateTime > newDateTime) {
-
-                                val subconsulta =
-                                    "(SELECT idcubeta FROM cubetascontadasberries WHERE numero_empleado = '$num_empleado' AND bandera = 0 )"
-                                val queryActualizar =
-                                    "UPDATE cubetascontadasberries SET status = 1 , bandera = 1 WHERE idcubeta IN $subconsulta"
-                                dbVer.execSQL(queryActualizar)
-
-
-                                for (i in 1..seleccionCubetas) {
-                                    val cadenaAgregarCubeta =
-                                        "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,variedad,bandera) " +
-                                                "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$scannedText',$seleccionFruto,$seleccionVariedad, 0)"
-                                    dbVer.execSQL(cadenaAgregarCubeta)
+                    spinnerVariedades.onItemSelectedListener =
+                        object : AdapterView.OnItemSelectedListener {
+                            override fun onItemSelected(
+                                parent: AdapterView<*>?,
+                                view: View?,
+                                position: Int,
+                                id: Long
+                            ) {
+                                if (position == 0) {
+                                    seleccionVariedad = 0
                                 }
-                                pantallaMensaje(1)
-                            } else {
-                                txtCorrecto.text =
-                                    "Error ya fueron pitadas 4 cubetas al empleado $num_empleado \n la ultima cubeta fue pitada a las $fecha \n podra volver a pitar el empleado dentro de 10 min. "
-                                pantallaMensaje(3)
-                            }
-                        }
-                    } else {
-                        if (contCuatroMas == 1) {
-                            println("la suma del contador y las cubetas registradas da mas de 4")
-                            //funcion para traer el mensaje
-                            pantallaMensaje(2)
-                        } else {
-
-                            for (i in 1..seleccionCubetas) {
-                                val cadenaAgregarCubeta =
-                                    "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,variedad,bandera) " +
-                                            "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$scannedText',$seleccionFruto,$seleccionVariedad, 0)"
-                                dbVer.execSQL(cadenaAgregarCubeta)
+                                if (position == 1) {
+                                    seleccionVariedad = 1
+                                }
+                                if (position == 2) {
+                                    seleccionVariedad = 2
+                                }
                             }
 
-                            //funcion para traer el mensaje
-                            pantallaMensaje(1)
+                            override fun onNothingSelected(parent: AdapterView<*>?) {
+                                // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
+                            }
                         }
-                    }
-                } else {
 
-                    for (i in 1..seleccionCubetas) {
-                        val cadenaAgregarCubeta =
-                            "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,variedad,bandera) " +
-                                    "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$scannedText',$seleccionFruto,$seleccionVariedad, 0)"
-                        dbVer.execSQL(cadenaAgregarCubeta)
-                    }
-
-                    val subconsulta =
-                        "(SELECT idcubeta FROM cubetascontadasberries WHERE numero_empleado = '$num_empleado' AND bandera = 0 )"
-                    val queryActualizar =
-                        "UPDATE cubetascontadasberries SET status = 1 , bandera = 1 WHERE idcubeta IN $subconsulta"
-                    dbVer.execSQL(queryActualizar)
-                    pantallaMensaje(1)
                 }
-//              OCULTA LA PANTALLA DE PREGUNTA
-                msgConfirmacion.isVisible = false
+                if (position == 2) {
+                    seleccionFruto = 14
+                    arrVariedadesTitulos.add("VARIEDADES.....")
+                    arrVariedadesTitulos.add("TP04")
+                    val adapterVariedades =
+                        ArrayAdapter(
+                            this@pantalla_capturar,
+                            android.R.layout.simple_spinner_item,
+                            arrVariedadesTitulos
+                        )
+                    spinnerVariedades.adapter = adapterVariedades
+                    spinnerVariedades.onItemSelectedListener =
+                        object : AdapterView.OnItemSelectedListener {
+                            override fun onItemSelected(
+                                parent: AdapterView<*>?,
+                                view: View?,
+                                position: Int,
+                                id: Long
+                            ) {
+                                if (position == 0) {
+                                    seleccionVariedad = 0
+                                }
 
-//              CIERRA LA BD AL TERMINAR EL CICLO FOR
-                dbVer.close()
-                db.close()
+                                if (position == 1) {
+                                    seleccionVariedad = 3
+                                }
+
+                            }
+
+                            override fun onNothingSelected(parent: AdapterView<*>?) {
+                                // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
+                            }
+                        }
+                }
+
+                if (position == 1 || position == 2) {
+                    spinnerVariedades.visibility = View.VISIBLE
+                } else {
+                    spinnerVariedades.visibility = View.INVISIBLE
+                }
             }
 
-//          EN ESPERA DE QUE SE LE DE CLICK AL BOTON DE RECHAZAR CUBETAS
-            btnRechazar.setOnClickListener {
-                msgConfirmacion.isVisible = false
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
             }
-        } else {
-            Toast.makeText(applicationContext, "Ponga los Datos Minimos", Toast.LENGTH_SHORT).show()
-            num_empleadoMostrar.setText("Número de empleado: ")
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onValueReturned(value: String) {
-        addNewBuckets(value)
-    }
-
-    fun pantallaMensaje(tipo: Int) {
-
-        var delay: Long = 0;
-
-        //mensaje de correcto
-        if (tipo == 1) {
-            txtCorrecto.text = "Registrado Correctamente"
-            imgCorrecto.setImageResource(R.drawable.correcto)
-            delay = 1;
-
-        }
-        //mensaje de mas de 4 cubetas que fueron intentadas meter
-        if (tipo == 2) {
-            txtCorrecto.text = "Error se trato de meter mas de 4 cubetas "
-            imgCorrecto.setImageResource(R.drawable.error)
-            delay = 3;
-        }
-        //mensaje de mas de 4 cubetas que fueron intentadas meter
-        if (tipo == 3) {
-
-            imgCorrecto.setImageResource(R.drawable.error)
-            delay = 3;
-
-        }
-
-//              ANIMACION PARA APARECER EL MENSAJE DE EXITO DE INSERSION
-        val fadeInAnimation = AlphaAnimation(5f, 1f)
-        fadeInAnimation.duration = 1500 * delay // DURACION EN MILISEGUNDOS
-
-//              ANIMACION PARA ESPERAR
-        fadeInAnimation.duration = 1000 * delay// DURACION EN MILISEGUNDOS
-
-//              ANIMACION PARA DESAPARECER EL MENSAJE DE EXITO DE INSERSION
-        val fadeOutAnimation = AlphaAnimation(1f, 0f)
-        fadeOutAnimation.duration = 500 * delay // DURACION EN MILISEGUNDOS
-
-        //SE PINTA EL MENSAJE DE EXITO DE INSERSION CON SU ANIMACION DE ENTRADA Y SALIDA
-        msgCorrecto.startAnimation(fadeInAnimation)
-        msgCorrecto.postDelayed({
-            msgCorrecto.startAnimation(fadeOutAnimation)
-        }, 1000)
-    }
-
-    override fun checkAuthorization(resultado: Boolean) {
-        if (resultado) {
-            selectionTimeCubs = if (cubsSwitch.isChecked) {
-                1
+    fun checkBoxes() {
+        check1.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                seleccionCubetas = 1
+                check2.isChecked = false
+                check3.isChecked = false
+                check4.isChecked = false
             } else {
-                0
-            }
-        } else {
-            cambio = 1
-            if (cubsSwitch.isChecked) {
-                cubsSwitch.isChecked = false
-                selectionTimeCubs = 0
-            } else {
-                cubsSwitch.isChecked = true
-                selectionTimeCubs = 1
-            }
 
+                if (!check2.isChecked && !check3.isChecked && !check4.isChecked) {
+                    seleccionCubetas = 0
+                }
 
+            }
         }
-
+        check2.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                seleccionCubetas = 2
+                check1.isChecked = false
+                check3.isChecked = false
+                check4.isChecked = false
+            } else {
+                if (!check1.isChecked && !check3.isChecked && !check4.isChecked) {
+                    seleccionCubetas = 0
+                }
+            }
+        }
+        check3.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                seleccionCubetas = 3
+                check2.isChecked = false
+                check1.isChecked = false
+                check4.isChecked = false
+            } else {
+                if (!check2.isChecked && !check1.isChecked && !check4.isChecked) {
+                    seleccionCubetas = 0
+                }
+            }
+        }
+        check4.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                seleccionCubetas = 4
+                check2.isChecked = false
+                check1.isChecked = false
+                check3.isChecked = false
+            } else {
+                if (!check2.isChecked && !check3.isChecked && !check1.isChecked) {
+                    seleccionCubetas = 0
+                }
+            }
+        }
     }
+
+    fun ChecksOff() {
+        check2.isChecked = false
+        check1.isChecked = false
+        check3.isChecked = false
+        check4.isChecked = false
+    }
+//    fun initalizeContastLector(){
+//        if (savedInstanceState == null) {
+//            supportFragmentManager.beginTransaction()
+//                .add(R.id.container_frame_layout, QRScannerFragment())
+//                .commit()
+//        }
+//    }
 }
