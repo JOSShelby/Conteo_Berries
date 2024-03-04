@@ -343,7 +343,8 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
                         txtCuentaRecibidas.text = "CUENTA DEL EMPLEADO : $count"
                         txtCuentaCubetasEmpleado.text = "CUBETAS RECIBIDAS : $seleccionCubetas"
-                        txtCuentaTotalAcumulado.text = "TOTAL ACUMULADO : ${count+seleccionCubetas}"
+                        txtCuentaTotalAcumulado.text =
+                            "TOTAL ACUMULADO : ${count + seleccionCubetas}"
 
                     } else {
                         contBtnAddCubs = 0
@@ -360,10 +361,6 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                         txtCuentaCubetasEmpleado.isGone = true
                         txtCuentaTotalAcumulado.isGone = true
                         txtConfirmacionRecepcion.isGone = true
-
-//
-
-
 
                         val queryCubetas =
                             "SELECT * FROM cubetascontadasberries WHERE numero_empleado = '$num_empleado' AND bandera = 0 "
@@ -445,7 +442,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                                     }
 
                                     //funcion para traer el mensaje
-                                    linearSpinners.isGone = true
+                                    linearSpinners.isGone = false
                                     seleccionCubetas = 0
                                     ChecksOff()
                                     pantallaMensaje(1)
@@ -914,11 +911,9 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                 check3.isChecked = false
                 check4.isChecked = false
             } else {
-
                 if (!check2.isChecked && !check3.isChecked && !check4.isChecked) {
                     seleccionCubetas = 0
                 }
-
             }
         }
         check2.setOnCheckedChangeListener { buttonView, isChecked ->

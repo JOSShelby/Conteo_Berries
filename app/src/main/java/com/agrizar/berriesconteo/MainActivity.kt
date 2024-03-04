@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado , dialogAutori
         for (i in 0..numCont) {
             val cadenaAgregarCubeta =
                 "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,variedad,bandera) " +
-                        "VALUES('2024-03-10',1,1,1,'49019',13,1, 0)"
+                        "VALUES('2024-02-20',1,1,1,'49019',13,1, 0)"
             dbVer.execSQL(cadenaAgregarCubeta)
         }
 
