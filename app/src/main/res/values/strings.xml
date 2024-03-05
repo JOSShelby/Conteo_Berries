@@ -8,9 +8,9 @@
     <!--    SERVIDOR DE PRODUCCION-->
 <!--    <string name="servidor">200.94.50.150</string>-->
     <!--    SERVIDOR DE PRUEBAS-->
-    <string name="servidor">200.94.50.150</string>
+    <string name="servidor">200.94.50.150:90</string>
 
-    <string name="version">1.1v</string>
+    <string name="version">1.2v</string>
 
     <string name="versionBD">1</string>
 </resources>

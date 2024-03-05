@@ -21,13 +21,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <TextView
+            android:id="@+id/txtNEmployee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="data"
+            android:gravity="center"
+            android:textSize="@dimen/msj_label1_texto"
+            android:textStyle="bold"/>
 
         <ImageView
-            android:layout_width="@dimen/msj_img_width"
-            android:layout_height="@dimen/msj_img_height"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/msj_img_top"
+            android:layout_marginTop="40dp"
             android:src="@drawable/pregunta" />
 
         <TextView
@@ -198,32 +206,70 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/LinearSector"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="100dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:weightSum="2"
+            android:visibility="visible"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Elija el Sector"
+                android:textSize="@dimen/textview_spinner_text"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                />
+            <LinearLayout
+                android:id="@+id/linearCheboxesSectores"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center"
+                >
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="bottom"
             android:orientation="horizontal"
             android:weightSum="2">
 
-            <Button
-                android:id="@+id/botonConfirmacion"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/msj_btnsino_height"
-                android:layout_margin="10dp"
-                android:layout_weight="1"
-                android:backgroundTint="#449CDF"
-                android:elevation="10dp"
-                android:text="SI"
-                android:textSize="@dimen/msj_btnsino_text" />
+
 
             <Button
                 android:id="@+id/botonCancelacion"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/msj_btnsino_height"
-                android:layout_margin="10dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 android:backgroundTint="#D35A5A"
                 android:elevation="10dp"
                 android:text="NO"
+                android:textSize="@dimen/msj_btnsino_text" />
+
+            <Button
+                android:id="@+id/botonConfirmacion"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:backgroundTint="#449CDF"
+                android:elevation="10dp"
+                android:text="SI"
                 android:textSize="@dimen/msj_btnsino_text" />
         </LinearLayout>
     </RelativeLayout>
@@ -435,36 +481,6 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:hint="Modulo"
-                        android:textAlignment="center"
-                        android:visibility="invisible" />
-                </LinearLayout>
-                <!--                SPINNER DE SECTOR-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/cont_spinner_height"
-                    android:layout_marginBottom="@dimen/cont_spinner_bottom"
-                    android:layout_weight="1"
-                    android:background="@drawable/spinners"
-                    android:elevation="5dp"
-                    android:orientation="horizontal"
-                    android:weightSum="3">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
-                        android:fontFamily="sans-serif-medium"
-                        android:gravity="center"
-                        android:text="Sector : "
-                        android:textSize="@dimen/textview_spinner_text"
-                        android:textStyle="bold" />
-
-                    <Spinner
-                        android:id="@+id/inpSector"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:hint="Sector"
                         android:textAlignment="center"
                         android:visibility="invisible" />
                 </LinearLayout>

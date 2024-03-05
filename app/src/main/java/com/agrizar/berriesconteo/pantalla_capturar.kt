@@ -71,7 +71,6 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
     private lateinit var spinnerVariedades: Spinner
     private lateinit var spinnerLugar: Spinner
     private lateinit var spinnerModulo: Spinner
-    private lateinit var spinnerSector: Spinner
     private lateinit var spinnerEstacion: Spinner
 
     private lateinit var linearSpinners: LinearLayout
@@ -93,10 +92,14 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
     private lateinit var txtCuentaTotalAcumulado: TextView
     private lateinit var txtConfirmacionRecepcion: TextView
 
+    private lateinit var linearCheboxesSectores: LinearLayout
+    private lateinit var LinearSector: LinearLayout
+    private var indexPrevious = -1
+    private var checkBoxesSectors: MutableList<CheckBox> = mutableListOf()
+
     var seleccionLote = 0
 
     private val CAMERA_PERMISSION_CODE = 101
-
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -118,6 +121,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
         setContentView(R.layout.activity_pantalla_capturar)
         binding = ActivityPantallaCapturarBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
 
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -152,7 +156,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
         }
 
         binding.btnCodeBar.setOnClickListener {
-            if (seleccionModulo != 0 && seleccionEstacion != 0 && seleccionSector != 0 && seleccionFruto != 0) {
+            if (seleccionModulo != 0 && seleccionEstacion != 0 && seleccionFruto != 0) {
                 openQrLector(lectorcodigo)
             } else {
                 Toast.makeText(this, "Debe Llenar los datos minimos", Toast.LENGTH_LONG).show()
@@ -173,6 +177,54 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
 //      BUSCA EL EDITTEXT DONDE SE COLOCARA EL NUMERO DE EMPLEADO CON EL ESCANER EXTERNO
         this.cajaEscribeEscaner = binding.CajaEscribeEscaner
+    }
+
+    private fun createCheckBoxesSectors(arrSectorId: MutableList<Int>) {
+        linearCheboxesSectores.removeAllViewsInLayout()
+        checkBoxesSectors.clear()
+        arrSectorId.forEachIndexed { index, idsector ->
+            checkBoxesSectors.add(CheckBox(this))
+            checkBoxesSectors[index].text = idsector.toString()
+            linearCheboxesSectores.addView(checkBoxesSectors[index])
+            checkBoxesSectors[index].setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    println(index)
+                    seleccionSector = idsector
+                    indexPrevious = if (indexPrevious == -1) {
+                        index
+                    } else {
+                        offCheckBox(checkBoxesSectors[indexPrevious])
+                        index
+                    }
+                } else {
+                    println(index)
+                    if (checkIfCheckBoxOff(checkBoxesSectors, index)) {
+                        seleccionSector = 0;
+                        indexPrevious = -1
+                    }
+                }
+            }
+        }
+    }
+
+    private fun checkIfCheckBoxOff(
+        checkBoxes: MutableList<CheckBox>,
+        indexCheckSelect: Int
+    ): Boolean {
+        var cont = 0
+        checkBoxes.forEachIndexed { index, checkBox ->
+            if (index != indexCheckSelect) {
+                if (checkBox.isChecked) {
+                    cont = 1
+                }
+            }
+        }
+
+        return cont != 1
+    }
+
+    private fun offCheckBox(checkBox: CheckBox) {
+        checkBox.isChecked = false
     }
 
     private fun initializeBeep() {
@@ -240,6 +292,9 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
         imgCorrecto = binding.imgCorrecto
 
         cubsSwitch = binding.cubsSwitch
+
+        linearCheboxesSectores = binding.linearCheboxesSectores
+        LinearSector = binding.LinearSector
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -247,7 +302,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
     fun addNewBuckets(Nempleado: String) {
         //REALIZA LA ACCION AL DETECTAR EL SALTO DE LINEA
         val scannedText = Nempleado.trim() // OBTIENE EL TEXTO SIN ESPACIOS
-
+        binding.txtNEmployee.text = "Nùmero de Empleado : $Nempleado"
 //                  BORRA EL CONTENIDO ESCANEADO DEL EDITTEXT PARA QUE SE MANTENGA VACIO
         cajaEscribeEscaner.setText("")
 
@@ -265,7 +320,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
         //soundPool.play(beepSoundId, 1.0f, 1.0f, 0, 0, 1.0f)
 
 //      VALIDA QUE LOS SPINNERS NO ESTEN VACIOS
-        if (seleccionModulo != 0 && seleccionEstacion != 0 && seleccionSector != 0 && seleccionFruto != 0) {
+        if (seleccionModulo != 0 && seleccionEstacion != 0 && seleccionFruto != 0) {
 
 //          HACE VISIBLE EL ALERT PARA QUE SE ACEPTEN O NO LAS CUBETAS
             msgConfirmacion.isVisible = true
@@ -312,6 +367,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 //          EN ESPERA DE QUE SE LE DE CLICK AL BOTON DE CONFIRMAR CUBETAS
 
             linearCheckBoxes.isGone = false
+            LinearSector.isGone = false
             txtCubetasPregunta.isGone = false
             txtcuentaEmpleado.isGone = false
             mensajeConteoEmpleado.isGone = false
@@ -325,11 +381,12 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
             txtConfirmacionRecepcion.isGone = true
 
             btnConfirmar.setOnClickListener {
-                if (seleccionCubetas != 0) {
+                if (seleccionCubetas != 0 && seleccionSector != 0) {
                     if (contBtnAddCubs == 0) {
                         contBtnAddCubs = 1
 
                         linearCheckBoxes.isGone = true
+                        LinearSector.isGone = true
                         txtCubetasPregunta.isGone = true
                         txtcuentaEmpleado.isGone = true
                         mensajeConteoEmpleado.isGone = true
@@ -350,6 +407,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                         contBtnAddCubs = 0
 
                         linearCheckBoxes.isGone = false
+                        LinearSector.isGone = false
                         txtCubetasPregunta.isGone = false
                         txtcuentaEmpleado.isGone = false
                         mensajeConteoEmpleado.isGone = false
@@ -414,11 +472,14 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                                             dbVer.execSQL(cadenaAgregarCubeta)
                                         }
                                         seleccionCubetas = 0
+                                        seleccionSector = 0
                                         ChecksOff()
+                                        checksOffDynamic(checkBoxesSectors)
                                         pantallaMensaje(1)
                                     } else {
                                         seleccionCubetas = 0
                                         ChecksOff()
+                                        checksOffDynamic(checkBoxesSectors)
                                         txtCorrecto.text =
                                             "Error ya fueron pitadas 4 cubetas al empleado $num_empleado \n la ultima cubeta fue pitada a las $fecha \n podra volver a pitar el empleado dentro de 10 min. "
                                         pantallaMensaje(3)
@@ -430,7 +491,9 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                                     println("la suma del contador y las cubetas registradas da mas de 4")
                                     //funcion para traer el mensaje
                                     seleccionCubetas = 0
+                                    seleccionSector = 0
                                     ChecksOff()
+                                    checksOffDynamic(checkBoxesSectors)
                                     pantallaMensaje(2)
                                 } else {
 
@@ -444,7 +507,9 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                                     //funcion para traer el mensaje
                                     linearSpinners.isGone = false
                                     seleccionCubetas = 0
+                                    seleccionSector = 0
                                     ChecksOff()
+                                    checksOffDynamic(checkBoxesSectors)
                                     pantallaMensaje(1)
                                 }
                             }
@@ -464,6 +529,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                             dbVer.execSQL(queryActualizar)
                             seleccionCubetas = 0
                             ChecksOff()
+                            checksOffDynamic(checkBoxesSectors)
                             pantallaMensaje(1)
                             linearSpinners.isGone = false
                         }
@@ -476,21 +542,36 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                     }
 
                 } else {
-                    Toast.makeText(this, "Falta Seleccionar las cubetas", Toast.LENGTH_LONG).show()
+                    if (seleccionCubetas == 0 && seleccionSector == 0) {
+                        Toast.makeText(this, "Falta Seleccionar los campos", Toast.LENGTH_LONG)
+                            .show()
+                    } else {
+                        if (seleccionCubetas == 0) {
+                            Toast.makeText(this, "Falta Seleccionar las cubetas", Toast.LENGTH_LONG)
+                                .show()
+                        }
+
+                        if (seleccionSector == 0) {
+                            Toast.makeText(this, "Falta Seleccionar el sector", Toast.LENGTH_LONG)
+                                .show()
+                        }
+                    }
                 }
             }
-
 
 //          EN ESPERA DE QUE SE LE DE CLICK AL BOTON DE RECHAZAR CUBETAS
             btnRechazar.setOnClickListener {
                 msgConfirmacion.isVisible = false
                 contBtnAddCubs = 0
+                seleccionSector = 0
                 linearCheckBoxes.isGone = false
+                LinearSector.isGone = false
                 txtCubetasPregunta.isGone = false
                 txtcuentaEmpleado.isGone = false
                 mensajeConteoEmpleado.isGone = false
                 linearSpinners.isGone = false
                 ChecksOff()
+                checksOffDynamic(checkBoxesSectors)
 
             }
         } else {
@@ -595,10 +676,8 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
         spinnerVariedades = binding.inpVariedades
         spinnerLugar = binding.inpLugar
         spinnerModulo = binding.inpModulo
-        spinnerSector = binding.inpSector
         spinnerEstacion = binding.inpEstacion
     }
-
 
     fun configurationSpinnerPlaceSectorEstacionModulo() {
         //      SPINNER DE MODULOS TRAIDO DE LA BD
@@ -680,6 +759,9 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
                         seleccionModulo = position
 
+                        arrEstacionId.clear()
+                        arrEstacionTitulos.clear()
+
                         if (seleccionModulo != 0) {
 
                             val queryEstacion =
@@ -724,8 +806,6 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                                                 "SELECT idsector,nombresector FROM sectoresberries WHERE idsector in (SELECT idsector FROM relacioncompletasector WHERE idrelacion in (SELECT id FROM relacionlotemoduloestacionsector WHERE idlote = $seleccionLote and idmodulo = $seleccionModulo and idestacion = $seleccionEstacion  ) )  ORDER BY idsector ASC"
                                             val cursorSector = db.rawQuery(querySector, null)
 
-                                            arrSectorTitulos.add("SECTOR...")
-                                            arrSectorId.add(0)
                                             while (cursorSector.moveToNext()) {
                                                 val nombresector =
                                                     cursorSector.getString(
@@ -743,29 +823,9 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                                                     )
                                                 arrSectorId.add(idsector)
                                             }
-
-                                            val adapterSector = ArrayAdapter(
-                                                this@pantalla_capturar,
-                                                android.R.layout.simple_spinner_item,
-                                                arrSectorTitulos
-                                            )
-
-                                            spinnerSector.adapter = adapterSector
-                                            spinnerSector.onItemSelectedListener =
-                                                object : AdapterView.OnItemSelectedListener {
-                                                    override fun onItemSelected(
-                                                        parent: AdapterView<*>?,
-                                                        view: View?,
-                                                        position: Int,
-                                                        id: Long
-                                                    ) {
-                                                        seleccionSector = arrSectorId[position]
-                                                    }
-
-                                                    override fun onNothingSelected(parent: AdapterView<*>?) {
-                                                        // ESTO SE EJECUTA CUANDO NO SE SELECCIONA NADA
-                                                    }
-                                                }
+                                            seleccionSector = 0
+                                            indexPrevious = -1
+                                            createCheckBoxesSectors(arrSectorId)
 
                                         }
 
@@ -783,7 +843,6 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                     }
                 }
                 spinnerFruto.isVisible = aparecerSpinners
-                spinnerSector.isVisible = aparecerSpinners
                 spinnerEstacion.isVisible = aparecerSpinners
                 spinnerModulo.isVisible = aparecerSpinners
             }
@@ -951,6 +1010,12 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                     seleccionCubetas = 0
                 }
             }
+        }
+    }
+
+    private fun checksOffDynamic(checkBoxes: MutableList<CheckBox>) {
+        checkBoxes.forEach { checkbox ->
+            checkbox.isChecked = false
         }
     }
 
