@@ -59,6 +59,8 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
     private var cambio = 0;
     private var selectionTimeCubs = 1
     private var beepSoundId = 0
+
+
     private var seleccionEstacion = 0
     private var seleccionModulo = 0
     private var seleccionSector = 0
@@ -97,7 +99,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
     private var indexPrevious = -1
     private var checkBoxesSectors: MutableList<CheckBox> = mutableListOf()
 
-    var seleccionLote = 0
+     private var seleccionLote = 0
 
     private val CAMERA_PERMISSION_CODE = 101
 
@@ -298,7 +300,6 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-
     fun addNewBuckets(Nempleado: String) {
         //REALIZA LA ACCION AL DETECTAR EL SALTO DE LINEA
         val scannedText = Nempleado.trim() // OBTIENE EL TEXTO SIN ESPACIOS
@@ -467,8 +468,8 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
                                         for (i in 1..seleccionCubetas) {
                                             val cadenaAgregarCubeta =
-                                                "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,variedad,bandera) " +
-                                                        "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$scannedText',$seleccionFruto,$seleccionVariedad, 0)"
+                                                "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,variedad,bandera,loteid) " +
+                                                        "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$scannedText',$seleccionFruto,$seleccionVariedad,0,$seleccionLote)"
                                             dbVer.execSQL(cadenaAgregarCubeta)
                                         }
                                         seleccionCubetas = 0
@@ -499,8 +500,8 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
                                     for (i in 1..seleccionCubetas) {
                                         val cadenaAgregarCubeta =
-                                            "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,variedad,bandera) " +
-                                                    "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$scannedText',$seleccionFruto,$seleccionVariedad, 0)"
+                                            "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,variedad,bandera,loteid) " +
+                                                    "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$scannedText',$seleccionFruto,$seleccionVariedad,0,$seleccionLote)"
                                         dbVer.execSQL(cadenaAgregarCubeta)
                                     }
 
@@ -517,8 +518,8 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
                             for (i in 1..seleccionCubetas) {
                                 val cadenaAgregarCubeta =
-                                    "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,variedad,bandera) " +
-                                            "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$scannedText',$seleccionFruto,$seleccionVariedad, 0)"
+                                    "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,variedad,bandera,loteid) " +
+                                            "VALUES('${dateFormat.format(calendar.time)}',$seleccionModulo,$seleccionEstacion,$seleccionSector,'$scannedText',$seleccionFruto,$seleccionVariedad,0,$seleccionLote)"
                                 dbVer.execSQL(cadenaAgregarCubeta)
                             }
 
@@ -706,10 +707,10 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                 if (position == 1 || position == 2) {
                     aparecerSpinners = true;
 
-                    if (position == 1) {
-                        seleccionLote = 1
+                    seleccionLote = if (position == 1) {
+                        1
                     } else {
-                        seleccionLote = 2
+                        2
                     }
 
                 }

@@ -90,8 +90,8 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado , dialogAutori
 
         for (i in 0..numCont) {
             val cadenaAgregarCubeta =
-                "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,variedad,bandera) " +
-                        "VALUES('2024-02-20',1,1,1,'49019',13,1, 0)"
+                "INSERT INTO cubetascontadasberries(fecha,moduloid,estacion,sector,numero_empleado,fruto,variedad,bandera,loteid) " +
+                        "VALUES('2024-02-20',1,1,1,'49019',13,1, 0,1)"
             dbVer.execSQL(cadenaAgregarCubeta)
         }
 
@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado , dialogAutori
         val idCell = sharedPreferences.getInt("idCell", 0)
 
         if (idCell == 0) {
-            addNewCell() { statusCode ->
+            addNewCell() { _ ->
                 println("registrado");
                 val idCell = sharedPreferences.getInt("idCell", 0)
                 txtCell.text = "Cell $idCell"
@@ -164,7 +164,7 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado , dialogAutori
             val arrEstacionTitulos: MutableList<String>? = mutableListOf()
             val arrCont: MutableList<MutableList<String>>? = mutableListOf()
             val columnsCubetas =
-                arrayOf("fecha", "moduloid", "estacion", "sector", "numero_empleado", "fruto", "variedad")
+                arrayOf("fecha", "moduloid", "estacion", "sector", "numero_empleado", "fruto", "variedad","loteid")
             val cursorCubetas: Cursor = db.query(
                 "cubetascontadasberries",
                 columnsCubetas,
@@ -215,6 +215,10 @@ class MainActivity : AppCompatActivity(), dialogPermiso.Resultado , dialogAutori
                     val variedad =
                         cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("variedad"))
                     arrayDatos!!.add(variedad)
+
+                    val loteid =
+                        cursorCubetas.getString(cursorCubetas.getColumnIndexOrThrow("loteid"))
+                    arrayDatos!!.add(loteid)
 
 //                  METE LOS ARREGLOS QUE SE FORMARON DE LAS COLUMNAS, DENTRO DE UN ARREGLO
                     arrCont!!.add(arrayDatos)

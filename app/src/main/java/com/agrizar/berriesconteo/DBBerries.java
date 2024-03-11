@@ -17,6 +17,7 @@ public class DBBerries extends SQLiteOpenHelper {
     private static final String TABLA_CUBETASCONT = "CREATE TABLE cubetascontadasberries" +
             "(idcubeta INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "fecha TEXT," +
+            "loteid integer ," +
             "moduloid integer references modulosberries(idmodulo)," +
             "estacion integer references estacionberries(idestacion)," +
             "sector integer references sectoresberries(idsector)," +
