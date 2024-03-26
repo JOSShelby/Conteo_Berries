@@ -34,7 +34,6 @@ class Consultar : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_consultar)
 
-
 //      TRAE EL LINEARLAYOUT
         val linearlistaCosechadores: LinearLayout = findViewById(R.id.linearlistaCosechadores)
 //      TRAE EL LINEARLAYOUT DE LOS TITULOS

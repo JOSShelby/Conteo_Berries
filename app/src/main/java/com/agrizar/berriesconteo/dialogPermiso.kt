@@ -78,15 +78,6 @@ class dialogPermiso : DialogFragment() {
             val idCell = sharedPreferences.getInt("idCell", 0)
             val scope = CoroutineScope(Dispatchers.IO)
 
-//            tareaJob = scope.launch {
-//                while (isActive) {
-//                    checkStatusRequest(idCell,0){request,cont ->
-//                       txtcont.text = cont.toString()
-//                    }
-//                    delay(10000)
-//                }
-//            }
-
             cargaPermiso.isGone = false
             if (idCell == 0) {
 
@@ -100,14 +91,7 @@ class dialogPermiso : DialogFragment() {
                             idCell
                         ) { errorData ->
                             if(errorData == 1){
-//                                tareaJob = scope.launch {
-//                                    while (isActive) {
-//                                        checkStatusRequest(idCell,1){request,cont ->
-//                                            txtcont.text = cont.toString()
-//                                        }
-//                                        delay(10000)
-//                                    }
-//                                }
+
                             }
                         }
             } else {
@@ -121,17 +105,8 @@ class dialogPermiso : DialogFragment() {
                     idCell
                 ){errorData ->
                     if(errorData == 1){
-//                        tareaJob = scope.launch {
-//                            while (isActive) {
-//                                checkStatusRequest(idCell,1){request,cont ->
-//                                    txtcont.text = cont.toString()
-//                                }
-//                                delay(10000)
-//                            }
-//                        }
                     }
                 }
-
             }
         }
         return rootView;
@@ -264,7 +239,6 @@ class dialogPermiso : DialogFragment() {
                         callback(0)
                     }
                 }
-
             },
             Response.ErrorListener { error ->
                 //tareaJob?.cancel()

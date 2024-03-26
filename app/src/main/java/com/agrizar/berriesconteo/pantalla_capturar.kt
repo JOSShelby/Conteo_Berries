@@ -13,6 +13,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.AlphaAnimation
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -120,6 +121,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         setContentView(R.layout.activity_pantalla_capturar)
         binding = ActivityPantallaCapturarBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -178,7 +180,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
         configurationSpinnerPlaceSectorEstacionModulo()
 
 //      BUSCA EL EDITTEXT DONDE SE COLOCARA EL NUMERO DE EMPLEADO CON EL ESCANER EXTERNO
-        this.cajaEscribeEscaner = binding.CajaEscribeEscaner
+
     }
 
     private fun createCheckBoxesSectors(arrSectorId: MutableList<Int>) {
@@ -297,19 +299,35 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
 
         linearCheboxesSectores = binding.linearCheboxesSectores
         LinearSector = binding.LinearSector
+
+        cajaEscribeEscaner = binding.edtEmployee
+
+        cajaEscribeEscaner.setOnClickListener {
+            hideKeyboard()
+        }
+
+        cajaEscribeEscaner.isClickable = false
+        cajaEscribeEscaner.requestFocus()
+        readEmployeeWithTextView()
+    }
+
+    private fun hideKeyboard() {
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(cajaEscribeEscaner.windowToken, 0)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun addNewBuckets(Nempleado: String) {
+
         //REALIZA LA ACCION AL DETECTAR EL SALTO DE LINEA
         val scannedText = Nempleado.trim() // OBTIENE EL TEXTO SIN ESPACIOS
-        binding.txtNEmployee.text = "Nùmero de Empleado : $Nempleado"
+        binding.txtNEmployee.text = "N.Empleado : $Nempleado"
 //                  BORRA EL CONTENIDO ESCANEADO DEL EDITTEXT PARA QUE SE MANTENGA VACIO
-        cajaEscribeEscaner.setText("")
+
 
         //      MUESTRA EL NUMERO DE EMPLEADO EN EL LABEL
         val num_empleadoMostrar = findViewById<TextView>(R.id.inpNumEmpleado)
-        num_empleadoMostrar.text = "Número de empleado: $scannedText"
+        num_empleadoMostrar.text = "N.empleado: $scannedText"
 
 //      TRAE EL CONTENIDO DEL XML ACTIVITY_PANTALLA_CAPTURAR
         val btnConfirmar = findViewById<Button>(R.id.botonConfirmacion)
@@ -382,6 +400,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
             txtConfirmacionRecepcion.isGone = true
 
             btnConfirmar.setOnClickListener {
+                cajaEscribeEscaner.requestFocus()
                 if (seleccionCubetas != 0 && seleccionSector != 0) {
                     if (contBtnAddCubs == 0) {
                         contBtnAddCubs = 1
@@ -573,11 +592,13 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
                 linearSpinners.isGone = false
                 ChecksOff()
                 checksOffDynamic(checkBoxesSectors)
+                cajaEscribeEscaner.requestFocus()
 
             }
         } else {
             Toast.makeText(applicationContext, "Ponga los Datos Minimos", Toast.LENGTH_SHORT).show()
             num_empleadoMostrar.setText("Número de empleado: ")
+            cajaEscribeEscaner.requestFocus()
         }
     }
 
@@ -655,11 +676,12 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
         cajaEscribeEscaner.addTextChangedListener(object : TextWatcher {
             @RequiresApi(Build.VERSION_CODES.O)
             override fun afterTextChanged(s: Editable?) {
-                // VERIFICA SI EL CARACTER DE NUEVA LINEA ('\n') ESTA PRESENTE EN EL TEXTO
-                if (s?.toString()?.contains('\n') == true) {
 
+                if (s?.toString()?.contains('\n') == true) {
                     addNewBuckets(s.toString())
+                    cajaEscribeEscaner.text.clear()
                 }
+
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -1026,6 +1048,7 @@ class pantalla_capturar : AppCompatActivity(), QRScannerFragment.OnFragmentInter
         check3.isChecked = false
         check4.isChecked = false
     }
+
 //    fun initalizeContastLector(){
 //        if (savedInstanceState == null) {
 //            supportFragmentManager.beginTransaction()
